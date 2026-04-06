@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Nuxt build
+admin/.nuxt/
+admin/.output/
+admin/dist/
+storefront/.nuxt/
+storefront/.output/
+storefront/dist/
+
+# Laravel
+api/vendor/
+api/node_modules/
+api/storage/*.key
+api/.env
+api/.env.backup
+api/.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# SQLite
+api/database/*.sqlite
+
+# Internal
+.data/
