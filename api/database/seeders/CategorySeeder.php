@@ -18,6 +18,12 @@ class CategorySeeder extends Seeder
 
         foreach ($categoryPaths as $path) {
             $parts = array_map('trim', explode('>', $path));
+
+            // Preskoci prvi nivo ("Dečiji nameštaj i dekoracija") — nije korisna kategorija
+            if (count($parts) > 1) {
+                array_shift($parts);
+            }
+
             $parentId = null;
 
             foreach ($parts as $index => $name) {
@@ -28,10 +34,16 @@ class CategorySeeder extends Seeder
                     continue;
                 }
 
+                $slug = Str::slug($name);
+                // Osiguraj unique slug
+                if (Category::where('slug', $slug)->exists()) {
+                    $slug .= '-' . Str::random(4);
+                }
+
                 $category = Category::create([
                     'parent_id' => $parentId,
                     'name' => $name,
-                    'slug' => Str::slug($name) . ($parentId ? '-' . Str::random(4) : ''),
+                    'slug' => $slug,
                     'description' => $name,
                     'sort_order' => 0,
                     'is_active' => true,
