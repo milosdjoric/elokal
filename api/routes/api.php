@@ -92,7 +92,10 @@ Route::prefix('admin')->group(function () {
 
         Route::get('orders', [OrderController::class, 'index']);
         Route::get('orders/{order}', [OrderController::class, 'show']);
+        Route::put('orders/{order}', [OrderController::class, 'update']);
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus']);
+        Route::patch('orders/{order}/tracking', [OrderController::class, 'updateTracking']);
+        Route::post('orders/{order}/refund', [OrderController::class, 'refund']);
 
         Route::get('customers', [CustomerController::class, 'index']);
         Route::get('customers/{customer}', [CustomerController::class, 'show']);

@@ -30,6 +30,13 @@ class OrderResource extends JsonResource
             'tax' => $this->tax,
             'discount' => $this->discount,
             'total' => $this->total,
+            'refunded_amount' => $this->refunded_amount,
+            'refund_reason' => $this->refund_reason,
+            'tracking' => [
+                'number' => $this->tracking_number,
+                'carrier' => $this->tracking_carrier,
+                'url' => $this->tracking_url,
+            ],
             'notes' => $this->notes,
             'admin_notes' => $this->when($request->routeIs('admin.*') || $request->is('api/admin/*'), $this->admin_notes),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),

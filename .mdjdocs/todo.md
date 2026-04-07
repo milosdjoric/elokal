@@ -349,9 +349,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Testovi
 
 ### v0.2.6 — Cart (server-side upgrade)
-- [ ] Cart totals breakdown: subtotal, shipping estimate, tax, discount, total
+- [x] Cart totals breakdown: subtotal, shipping estimate, tax, discount, total
 - [ ] Coupon field na cart stranici
-- [ ] Cross-sell sekcija ispod tabele
+- [x] Cross-sell sekcija ispod tabele
 
 ### v0.2.7 — Checkout: API
 - [x] Order model + migracija (11 statusa)
@@ -373,7 +373,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Order summary sidebar (sticky, edit qty/remove)
 - [x] Inline validacija (real-time)
 - [x] Persistent cart (sačuvaj pri napuštanju)
-- [ ] Checkout conversion elementi (order bump, trust badges, testimonial)
+- [x] Checkout conversion elementi (order bump, trust badges, testimonial)
 - [x] `/kasa/uspeh/:number` — success stranica
 
 ### v0.2.9 — Orders: API
@@ -388,9 +388,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] `/orders` — listing (filteri: status, datum, kupac, payment; bulk actions; search)
 - [x] `/orders/:id` — detail (header, stavke, totali, adrese, timeline, notes, akcije)
 - [x] Promena statusa (dropdown + beleška)
-- [ ] Tracking unos (broj + carrier)
-- [ ] Refund iniciranje (full/partial)
-- [ ] Edit order (stavke, adrese — samo pending/processing)
+- [x] Tracking unos (broj + carrier)
+- [x] Refund iniciranje (full/partial)
+- [x] Edit order (stavke, adrese — samo pending/processing)
 - [ ] Resend email
 - [x] `/customers` — listing
 - [x] `/customers/:id` — profil sa istorijom

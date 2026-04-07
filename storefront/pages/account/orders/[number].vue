@@ -190,6 +190,26 @@ onMounted(fetchOrder)
             </p>
           </div>
 
+          <!-- Tracking info -->
+          <div v-if="order.tracking?.number" class="mb-6 border border-blue-200 bg-blue-50 p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-blue-800">
+                  {{ order.tracking.carrier || 'Kurir' }}: {{ order.tracking.number }}
+                </p>
+              </div>
+              <a
+                v-if="order.tracking.url"
+                :href="order.tracking.url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm font-medium text-blue-600 hover:text-blue-800 underline"
+              >
+                Prati pošiljku →
+              </a>
+            </div>
+          </div>
+
           <!-- Stavke -->
           <div class="mb-6">
             <h2 class="text-lg font-semibold text-gray-800 mb-3">Stavke</h2>

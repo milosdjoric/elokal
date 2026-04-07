@@ -118,6 +118,11 @@ export interface Order {
   tax: string
   discount: string
   total: string
+  tracking: {
+    number: string | null
+    carrier: string | null
+    url: string | null
+  }
   notes: string | null
   items: OrderItem[]
   created_at: string

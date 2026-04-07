@@ -168,6 +168,13 @@ export interface Order {
   tax: string
   discount: string
   total: string
+  refunded_amount: string
+  refund_reason: string | null
+  tracking: {
+    number: string | null
+    carrier: string | null
+    url: string | null
+  }
   notes: string | null
   admin_notes: string | null
   items: OrderItem[]

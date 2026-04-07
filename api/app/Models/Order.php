@@ -17,6 +17,8 @@ class Order extends Model
         'billing_address_line_1', 'billing_city', 'billing_postal_code', 'billing_country',
         'subtotal', 'shipping_cost', 'tax', 'discount', 'total',
         'notes', 'admin_notes',
+        'tracking_number', 'tracking_carrier', 'tracking_url',
+        'refunded_amount', 'refund_reason',
     ];
 
     protected function casts(): array
@@ -27,6 +29,7 @@ class Order extends Model
             'tax' => 'decimal:2',
             'discount' => 'decimal:2',
             'total' => 'decimal:2',
+            'refunded_amount' => 'decimal:2',
         ];
     }
 

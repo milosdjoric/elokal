@@ -2,7 +2,7 @@
 import type { Order, OrderStatus, OrderTimelineEntry } from '~/types'
 
 const route = useRoute()
-const { get, patch, getErrorMessage } = useApi()
+const { get, post, patch, getErrorMessage } = useApi()
 const { success, error: toastError } = useToast()
 
 const orderId = route.params.id
@@ -12,6 +12,35 @@ const statusLoading = ref(false)
 
 const newStatus = ref<OrderStatus>('pending')
 const adminNotes = ref('')
+
+const trackingNumber = ref('')
+const trackingCarrier = ref('')
+const trackingUrl = ref('')
+const trackingLoading = ref(false)
+
+const refundAmount = ref('')
+const refundReason = ref('')
+const refundLoading = ref(false)
+const showRefundForm = ref(false)
+
+const showEditModal = ref(false)
+const editLoading = ref(false)
+const editForm = reactive({
+  email: '',
+  phone: '',
+  shipping_first_name: '',
+  shipping_last_name: '',
+  shipping_company: '',
+  shipping_address_line_1: '',
+  shipping_address_line_2: '',
+  shipping_city: '',
+  shipping_postal_code: '',
+  shipping_country: 'RS',
+})
+
+const isEditable = computed(() =>
+  order.value?.status === 'pending' || order.value?.status === 'processing',
+)
 
 const statusLabels: Record<OrderStatus, string> = {
   pending: 'Na čekanju',
@@ -42,6 +71,9 @@ async function fetchOrder() {
     order.value = data.data
     newStatus.value = data.data.status
     adminNotes.value = data.data.admin_notes || ''
+    trackingNumber.value = data.data.tracking?.number || ''
+    trackingCarrier.value = data.data.tracking?.carrier || ''
+    trackingUrl.value = data.data.tracking?.url || ''
   }
   catch (e) { toastError(getErrorMessage(e)) }
   finally { loading.value = false }
@@ -60,6 +92,78 @@ async function updateStatus() {
   }
   catch (e) { toastError(getErrorMessage(e)) }
   finally { statusLoading.value = false }
+}
+
+const maxRefundable = computed(() => {
+  if (!order.value) return 0
+  return Math.max(0, parseFloat(order.value.total) - parseFloat(order.value.refunded_amount))
+})
+
+async function submitRefund() {
+  if (!order.value) return
+  refundLoading.value = true
+  try {
+    const data = await post<{ data: Order }>(`/admin/orders/${orderId}/refund`, {
+      amount: parseFloat(refundAmount.value),
+      reason: refundReason.value || undefined,
+    })
+    order.value = data.data
+    newStatus.value = data.data.status
+    showRefundForm.value = false
+    refundAmount.value = ''
+    refundReason.value = ''
+    success('Refund uspešno evidentiran.')
+  }
+  catch (e) { toastError(getErrorMessage(e)) }
+  finally { refundLoading.value = false }
+}
+
+function setFullRefund() {
+  refundAmount.value = maxRefundable.value.toFixed(2)
+}
+
+function openEditModal() {
+  if (!order.value) return
+  editForm.email = order.value.email
+  editForm.phone = order.value.phone || ''
+  editForm.shipping_first_name = order.value.shipping.first_name
+  editForm.shipping_last_name = order.value.shipping.last_name
+  editForm.shipping_company = order.value.shipping.company || ''
+  editForm.shipping_address_line_1 = order.value.shipping.address_line_1
+  editForm.shipping_address_line_2 = order.value.shipping.address_line_2 || ''
+  editForm.shipping_city = order.value.shipping.city
+  editForm.shipping_postal_code = order.value.shipping.postal_code
+  editForm.shipping_country = order.value.shipping.country
+  showEditModal.value = true
+}
+
+async function saveEdit() {
+  editLoading.value = true
+  try {
+    const { put } = useApi()
+    const data = await put<{ data: Order }>(`/admin/orders/${orderId}`, editForm)
+    order.value = data.data
+    showEditModal.value = false
+    success('Narudžbina izmenjena.')
+  }
+  catch (e) { toastError(getErrorMessage(e)) }
+  finally { editLoading.value = false }
+}
+
+async function updateTracking() {
+  if (!order.value) return
+  trackingLoading.value = true
+  try {
+    const data = await patch<{ data: Order }>(`/admin/orders/${orderId}/tracking`, {
+      tracking_number: trackingNumber.value || null,
+      tracking_carrier: trackingCarrier.value || null,
+      tracking_url: trackingUrl.value || null,
+    })
+    order.value = data.data
+    success('Tracking informacije ažurirane.')
+  }
+  catch (e) { toastError(getErrorMessage(e)) }
+  finally { trackingLoading.value = false }
 }
 
 function formatDate(dateStr: string): string {
@@ -107,12 +211,17 @@ onMounted(fetchOrder)
           <h1 class="text-2xl font-bold text-gray-800">{{ order.order_number }}</h1>
           <p class="text-sm text-gray-500">{{ formatDate(order.created_at) }}</p>
         </div>
-        <UiAtomsBadge
-          :variant="statusVariants[order.status] as 'success' | 'warning' | 'danger' | 'info' | 'neutral'"
-          class="text-sm px-3 py-1"
-        >
-          {{ statusLabels[order.status] }}
-        </UiAtomsBadge>
+        <div class="flex items-center gap-3">
+          <UiAtomsButton v-if="isEditable" variant="secondary" size="sm" @click="openEditModal">
+            Izmeni
+          </UiAtomsButton>
+          <UiAtomsBadge
+            :variant="statusVariants[order.status] as 'success' | 'warning' | 'danger' | 'info' | 'neutral'"
+            class="text-sm px-3 py-1"
+          >
+            {{ statusLabels[order.status] }}
+          </UiAtomsBadge>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -226,6 +335,113 @@ onMounted(fetchOrder)
             </div>
           </div>
 
+          <!-- Tracking -->
+          <div class="bg-white border border-gray-200 p-5">
+            <h2 class="font-semibold text-gray-800 mb-4">Tracking</h2>
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Kurir</label>
+                <select
+                  v-model="trackingCarrier"
+                  class="w-full px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                >
+                  <option value="">Izaberite kurira</option>
+                  <option value="Post Express">Post Express</option>
+                  <option value="BEX">BEX</option>
+                  <option value="AKS">AKS</option>
+                  <option value="D Express">D Express</option>
+                  <option value="City Express">City Express</option>
+                  <option value="DHL">DHL</option>
+                  <option value="FedEx">FedEx</option>
+                  <option value="Drugo">Drugo</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Broj pošiljke</label>
+                <input
+                  v-model="trackingNumber"
+                  type="text"
+                  placeholder="npr. RS123456789YU"
+                  class="w-full px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">Link za praćenje</label>
+                <input
+                  v-model="trackingUrl"
+                  type="url"
+                  placeholder="https://..."
+                  class="w-full px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <UiAtomsButton
+                :loading="trackingLoading"
+                class="w-full"
+                variant="secondary"
+                @click="updateTracking"
+              >
+                Sačuvaj tracking
+              </UiAtomsButton>
+            </div>
+          </div>
+
+          <!-- Refund -->
+          <div v-if="maxRefundable > 0" class="bg-white border border-gray-200 p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-semibold text-gray-800">Refund</h2>
+              <button
+                v-if="!showRefundForm"
+                class="text-sm text-red-600 hover:text-red-800 font-medium"
+                @click="showRefundForm = true"
+              >
+                Iniciiraj refund
+              </button>
+            </div>
+
+            <div v-if="parseFloat(order.refunded_amount) > 0" class="text-sm mb-3 p-2 bg-red-50 border border-red-100">
+              <p class="text-red-700 font-medium">
+                Refundirano: {{ formatPrice(order.refunded_amount) }} / {{ formatPrice(order.total) }}
+              </p>
+              <p v-if="order.refund_reason" class="text-red-600 text-xs mt-1">{{ order.refund_reason }}</p>
+            </div>
+
+            <div v-if="showRefundForm" class="space-y-3">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-xs font-medium text-gray-500">Iznos (max {{ maxRefundable.toFixed(2) }})</label>
+                  <button class="text-xs text-primary-600 hover:underline" @click="setFullRefund">Full refund</button>
+                </div>
+                <input
+                  v-model="refundAmount"
+                  type="number"
+                  step="0.01"
+                  :max="maxRefundable"
+                  min="0.01"
+                  placeholder="0.00"
+                  class="w-full px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+              <textarea
+                v-model="refundReason"
+                rows="2"
+                placeholder="Razlog (opciono)..."
+                class="w-full px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <div class="flex gap-2">
+                <UiAtomsButton
+                  variant="danger"
+                  :loading="refundLoading"
+                  :disabled="!refundAmount || parseFloat(refundAmount) <= 0"
+                  class="flex-1"
+                  @click="submitRefund"
+                >
+                  Potvrdi refund
+                </UiAtomsButton>
+                <UiAtomsButton variant="secondary" @click="showRefundForm = false">Otkaži</UiAtomsButton>
+              </div>
+            </div>
+          </div>
+
           <!-- Kontakt -->
           <div class="bg-white border border-gray-200 p-5">
             <h2 class="font-semibold text-gray-800 mb-3">Kontakt</h2>
@@ -255,5 +471,32 @@ onMounted(fetchOrder)
         </div>
       </div>
     </template>
+
+    <!-- Edit modal -->
+    <UiMoleculesModal v-model="showEditModal" title="Izmeni narudžbinu">
+      <form @submit.prevent="saveEdit" class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-700">Kontakt</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <UiAtomsInput v-model="editForm.email" label="Email" type="email" required />
+          <UiAtomsInput v-model="editForm.phone" label="Telefon" type="tel" />
+        </div>
+        <h3 class="text-sm font-semibold text-gray-700 pt-2">Adresa dostave</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <UiAtomsInput v-model="editForm.shipping_first_name" label="Ime" required />
+          <UiAtomsInput v-model="editForm.shipping_last_name" label="Prezime" required />
+        </div>
+        <UiAtomsInput v-model="editForm.shipping_company" label="Firma" />
+        <UiAtomsInput v-model="editForm.shipping_address_line_1" label="Adresa" required />
+        <UiAtomsInput v-model="editForm.shipping_address_line_2" label="Adresa 2" />
+        <div class="grid grid-cols-2 gap-4">
+          <UiAtomsInput v-model="editForm.shipping_city" label="Grad" required />
+          <UiAtomsInput v-model="editForm.shipping_postal_code" label="Poštanski broj" required />
+        </div>
+      </form>
+      <template #footer>
+        <UiAtomsButton variant="secondary" @click="showEditModal = false">Otkaži</UiAtomsButton>
+        <UiAtomsButton :loading="editLoading" @click="saveEdit">Sačuvaj</UiAtomsButton>
+      </template>
+    </UiMoleculesModal>
   </div>
 </template>

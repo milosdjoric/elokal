@@ -413,6 +413,28 @@ useHead({ title: 'Kasa — eLokal' })
             </UiAtomsButton>
 
             <p class="text-xs text-gray-400 text-center mt-3">Plaćanje pouzećem</p>
+
+            <!-- Trust badges -->
+            <div class="mt-6 pt-4 border-t border-gray-100 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+                </svg>
+                Sigurna kupovina — vaši podaci su zaštićeni
+              </div>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Besplatna dostava na sve narudžbine
+              </div>
+              <div class="flex items-center gap-2 text-xs text-gray-500">
+                <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                14 dana za povrat bez pitanja
+              </div>
+            </div>
           </div>
         </div>
       </div>
