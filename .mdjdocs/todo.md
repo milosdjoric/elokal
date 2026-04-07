@@ -91,97 +91,97 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Sale price logika testovi
 
 ### v0.1.12 — API: Konfiguracija
-- [ ] CORS setup (dozvoli admin + storefront domene)
-- [ ] API rate limiting middleware (60/min javne, 120/min auth, 5/min login)
-- [ ] Standardizovan JSON response format ({ data, message })
-- [ ] Standardizovan error format ({ message, errors })
-- [ ] Exception handler customization
-- [ ] Health check endpoint (/api/health)
+- [x] CORS setup (dozvoli admin + storefront domene)
+- [x] API rate limiting middleware (60/min javne, 120/min auth, 5/min login)
+- [x] Standardizovan JSON response format ({ data, message })
+- [x] Standardizovan error format ({ message, errors })
+- [x] Exception handler customization
+- [x] Health check endpoint (/api/health)
 
 ### v0.1.13 — Admin: Setup i auth
-- [ ] Tailwind + base konfiguracija
-- [ ] useApi() composable (base URL, token, error handling, retry)
-- [ ] Auth store (Pinia) — useAuthStore
-- [ ] useAuth() composable (login, logout, isLoggedIn)
-- [ ] Login stranica
-- [ ] Auth middleware (redirect na login ako nema token)
-- [ ] TypeScript tipovi: Admin, AuthResponse, ApiResponse<T>
+- [x] Tailwind + base konfiguracija
+- [x] useApi() composable (base URL, token, error handling, retry)
+- [x] Auth store (Pinia) — useAuthStore
+- [x] useAuth() composable (login, logout, isLoggedIn)
+- [x] Login stranica
+- [x] Auth middleware (redirect na login ako nema token)
+- [x] TypeScript tipovi: Admin, AuthResponse, ApiResponse<T>
 
 ### v0.1.14 — Admin: Layout
-- [ ] Admin layout komponenta (sidebar + header + main content)
-- [ ] Sidebar navigacija (Dashboard, Proizvodi, Kategorije, Media Library, Podešavanja)
-- [ ] Header (admin ime, notifikacije bell, logout dugme)
-- [ ] Breadcrumbs komponenta
-- [ ] Global search u headeru
+- [x] Admin layout komponenta (sidebar + header + main content)
+- [x] Sidebar navigacija (Dashboard, Proizvodi, Kategorije, Media Library, Podešavanja)
+- [x] Header (admin ime, notifikacije bell, logout dugme)
+- [x] Breadcrumbs komponenta
+- [x] Global search u headeru
 
 ### v0.1.15 — Admin: UI Atoms
-- [ ] Button (variants: primary, secondary, danger, ghost; sizes: sm, md, lg; loading state)
-- [ ] Input (label, placeholder, error, disabled, types: text, email, password, number)
-- [ ] Badge (variants: success, warning, danger, info, neutral)
-- [ ] Icon (wrapper za ikonice)
-- [ ] Spinner
-- [ ] Checkbox
-- [ ] Radio
-- [ ] Switch (toggle)
-- [ ] Skeleton loader
-- [ ] Tooltip
-- [ ] Avatar
+- [x] Button (variants: primary, secondary, danger, ghost; sizes: sm, md, lg; loading state)
+- [x] Input (label, placeholder, error, disabled, types: text, email, password, number)
+- [x] Badge (variants: success, warning, danger, info, neutral)
+- [x] Icon (wrapper za ikonice)
+- [x] Spinner
+- [x] Checkbox
+- [x] Radio
+- [x] Switch (toggle)
+- [x] Skeleton loader
+- [x] Tooltip
+- [x] Avatar
 
 ### v0.1.16 — Admin: UI Molecules
-- [ ] Modal (open/close, title, footer actions, focus trap, Escape close)
-- [ ] Toast/Notification sistem (success, error, warning, info, auto dismiss, stacking)
-- [ ] DataTable (sortiranje, paginacija, loading, empty state)
-- [ ] Dropdown (trigger + menu items)
-- [ ] Tabs (horizontal, content slot)
-- [ ] Accordion
-- [ ] QuantitySelector (+/− dugmad)
-- [ ] SearchBar (input + clear + submit)
-- [ ] FileUpload (drag & drop + browse + preview thumbnails)
-- [ ] PriceDisplay (regularna, sale precrtana, badge %)
-- [ ] Confirm dialog (modal sa confirm/cancel)
+- [x] Modal (open/close, title, footer actions, focus trap, Escape close)
+- [x] Toast/Notification sistem (success, error, warning, info, auto dismiss, stacking)
+- [x] DataTable (sortiranje, paginacija, loading, empty state)
+- [x] Dropdown (trigger + menu items)
+- [x] Tabs (horizontal, content slot)
+- [x] Accordion
+- [x] QuantitySelector (+/− dugmad)
+- [x] SearchBar (input + clear + submit)
+- [x] FileUpload (drag & drop + browse + preview thumbnails)
+- [x] PriceDisplay (regularna, sale precrtana, badge %)
+- [x] Confirm dialog (modal sa confirm/cancel)
 
 ### v0.1.17 — Admin: Dashboard
-- [ ] Dashboard stranica sa placeholder statistikama (ukupno proizvoda, kategorija, aktivnih)
+- [x] Dashboard stranica sa placeholder statistikama (ukupno proizvoda, kategorija, aktivnih)
 
 ### v0.1.18 — Admin: Proizvodi
-- [ ] Product listing stranica (DataTable, pretraga, filter po statusu, paginacija)
-- [ ] Product create forma (sva polja uključujući cene)
-- [ ] Upload slika sa drag & drop i reorder (sortable)
-- [ ] Primary image selekcija
-- [ ] Kategorije multi-select
-- [ ] SEO polja (meta title, meta description)
-- [ ] Slug auto-generisanje iz naziva (editabilan)
-- [ ] Product edit forma (ista kao create, prefilled)
-- [ ] Delete sa confirm modalom
-- [ ] Toast notifikacije za uspeh/grešku
-- [ ] Form validacija (client-side + server error prikaz)
-- [ ] Loading stanja na svim akcijama
+- [x] Product listing stranica (DataTable, pretraga, filter po statusu, paginacija)
+- [x] Product create forma (sva polja uključujući cene)
+- [x] Upload slika sa drag & drop i reorder (sortable)
+- [x] Primary image selekcija
+- [x] Kategorije multi-select
+- [x] SEO polja (meta title, meta description)
+- [x] Slug auto-generisanje iz naziva (editabilan)
+- [x] Product edit forma (ista kao create, prefilled)
+- [x] Delete sa confirm modalom
+- [x] Toast notifikacije za uspeh/grešku
+- [x] Form validacija (client-side + server error prikaz)
+- [x] Loading stanja na svim akcijama
 
 ### v0.1.19 — Admin: Kategorije
-- [ ] Category listing (tree prikaz)
-- [ ] Category create/edit (inline edit ili modal)
-- [ ] Category delete sa confirm
+- [x] Category listing (tree prikaz)
+- [x] Category create/edit (inline edit ili modal)
+- [x] Category delete sa confirm
 - [ ] Drag & drop reorder
-- [ ] Prikaz broja proizvoda po kategoriji
+- [x] Prikaz broja proizvoda po kategoriji
 - [ ] Image upload za kategoriju
 
 ### v0.1.20 — Admin: Media Library
-- [ ] Media library stranica (grid sa thumbnail-ima)
-- [ ] Drag & drop upload (single + bulk)
-- [ ] Alt text i title editing
-- [ ] Delete sa confirm
+- [x] Media library stranica (grid sa thumbnail-ima)
+- [x] Drag & drop upload (single + bulk)
+- [x] Alt text i title editing
+- [x] Delete sa confirm
 - [ ] Media picker komponenta (reusable u product/category formama)
 
 ### v0.1.21 — Admin: Podešavanja
-- [ ] Settings stranica sa tabovima
-- [ ] General tab: naziv, logo, favicon, adresa, telefon, email, social linkovi
-- [ ] Storefront layout tab: header varijanta, PLP/PDP/Cart/Blog varijante, products per page
-- [ ] Top bar tab: uključen/isključen, tekst, boja
-- [ ] Trust & Conversion tab: stock status, urgency bar, countdown, shipping/return/dispatch tekst, trust badges
-- [ ] Cart & Checkout tab: add to cart feedback, free shipping threshold, guest checkout
-- [ ] Product badges tab: NEW threshold, badge boje
-- [ ] SEO tab: default meta title/description pattern, GA ID, FB Pixel ID
-- [ ] GDPR tab: cookie consent tekst, privacy/terms linkovi
+- [x] Settings stranica sa tabovima
+- [x] General tab: naziv, logo, favicon, adresa, telefon, email, social linkovi
+- [x] Storefront layout tab: header varijanta, PLP/PDP/Cart/Blog varijante, products per page
+- [x] Top bar tab: uključen/isključen, tekst, boja
+- [x] Trust & Conversion tab: stock status, urgency bar, countdown, shipping/return/dispatch tekst, trust badges
+- [x] Cart & Checkout tab: add to cart feedback, free shipping threshold, guest checkout
+- [x] Product badges tab: NEW threshold, badge boje
+- [x] SEO tab: default meta title/description pattern, GA ID, FB Pixel ID
+- [x] GDPR tab: cookie consent tekst, privacy/terms linkovi
 
 ### v0.1.22 — Storefront: Setup
 - [ ] Tailwind + base konfiguracija (boje, fontovi, spacing iz dizajn sistema)
