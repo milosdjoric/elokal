@@ -13,6 +13,7 @@ const activeTab = ref('description')
 
 const tabs = [
   { key: 'description', label: 'Opis' },
+  { key: 'reviews', label: 'Recenzije' },
   { key: 'shipping', label: 'Dostava i povrat' },
   { key: 'faq', label: 'FAQ' },
 ]
@@ -29,8 +30,10 @@ async function fetchProduct() {
     const data = await get<{ data: Product }>(`/v1/products/${route.params.slug}`)
     product.value = data.data
 
-    // Fetch related by first category
-    if (data.data.categories?.length) {
+    // Ručne relacije imaju prioritet, fallback na istu kategoriju
+    if (data.data.related_products?.length) {
+      related.value = data.data.related_products
+    } else if (data.data.categories?.length) {
       const relData = await get<PaginatedResponse<Product>>('/v1/products', {
         category: data.data.categories[0],
         per_page: 8,
@@ -97,7 +100,10 @@ useSeoMeta({
 
           <!-- Info -->
           <div>
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-3">{{ product.name }}</h1>
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <h1 class="text-2xl md:text-3xl font-bold text-gray-800">{{ product.name }}</h1>
+              <ProductWishlistButton :product-id="product.id" />
+            </div>
 
             <div class="mb-4">
               <UiMoleculesPriceDisplay
@@ -174,6 +180,10 @@ useSeoMeta({
             <p v-else class="text-gray-400">Nema opisa.</p>
           </div>
 
+          <div v-show="activeTab === 'reviews'">
+            <ProductReviews :product-id="product.id" />
+          </div>
+
           <div v-show="activeTab === 'shipping'" class="text-sm text-gray-600 space-y-4">
             <div>
               <h4 class="font-semibold text-gray-800 mb-1">Dostava</h4>
@@ -193,6 +203,11 @@ useSeoMeta({
             </UiMoleculesAccordion>
           </div>
         </div>
+
+        <!-- Up-sell -->
+        <section v-if="product.up_sell_products?.length" class="mb-12">
+          <ProductCarousel title="Možda vas zanima i..." :products="product.up_sell_products" />
+        </section>
 
         <!-- Related products -->
         <section v-if="related.length" class="mb-12">

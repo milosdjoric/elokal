@@ -95,4 +95,41 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Proizvod obrisan.']);
     }
+
+    public function relations(Product $product): JsonResponse
+    {
+        return response()->json([
+            'related' => $product->relatedProducts()->with('images')->get()->pluck('id'),
+            'cross_sell' => $product->crossSellProducts()->with('images')->get()->pluck('id'),
+            'up_sell' => $product->upSellProducts()->with('images')->get()->pluck('id'),
+        ]);
+    }
+
+    public function updateRelations(Request $request, Product $product): JsonResponse
+    {
+        $request->validate([
+            'type' => 'required|in:related,cross_sell,up_sell',
+            'product_ids' => 'present|array',
+            'product_ids.*' => 'exists:products,id',
+        ]);
+
+        // Obriši stare relacije za ovaj tip
+        \Illuminate\Support\Facades\DB::table('product_relations')
+            ->where('product_id', $product->id)
+            ->where('type', $request->type)
+            ->delete();
+
+        // Kreiraj nove
+        foreach ($request->product_ids as $index => $relatedId) {
+            if ($relatedId == $product->id) continue;
+            \Illuminate\Support\Facades\DB::table('product_relations')->insert([
+                'product_id' => $product->id,
+                'related_product_id' => $relatedId,
+                'type' => $request->type,
+                'sort_order' => $index,
+            ]);
+        }
+
+        return response()->json(['message' => 'Relacije ažurirane.']);
+    }
 }

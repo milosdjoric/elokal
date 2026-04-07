@@ -117,6 +117,37 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews(): HasMany
+    {
+        return $this->hasMany(Review::class)->where('status', 'approved');
+    }
+
+    public function relatedProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, 'product_relations', 'product_id', 'related_product_id')
+            ->wherePivot('type', 'related')
+            ->orderBy('product_relations.sort_order');
+    }
+
+    public function crossSellProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, 'product_relations', 'product_id', 'related_product_id')
+            ->wherePivot('type', 'cross_sell')
+            ->orderBy('product_relations.sort_order');
+    }
+
+    public function upSellProducts(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, 'product_relations', 'product_id', 'related_product_id')
+            ->wherePivot('type', 'up_sell')
+            ->orderBy('product_relations.sort_order');
+    }
+
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');

@@ -183,6 +183,25 @@ export interface Order {
   updated_at: string
 }
 
+// --- Review ---
+
+export interface Review {
+  id: number
+  product_id: number
+  user: { id: number; name: string }
+  product?: { id: number; name: string; slug: string }
+  rating: number
+  title: string | null
+  content: string
+  is_verified_purchase: boolean
+  status: 'pending' | 'approved' | 'rejected'
+  admin_reply: string | null
+  admin_replied_at: string | null
+  helpful_count: number
+  not_helpful_count: number
+  created_at: string
+}
+
 // --- Customer ---
 
 export interface Customer {

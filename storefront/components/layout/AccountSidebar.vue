@@ -7,6 +7,7 @@ const items = [
   { label: 'Profil', to: '/account/profile', icon: 'user' },
   { label: 'Adrese', to: '/account/addresses', icon: 'map' },
   { label: 'Narudžbine', to: '/account/orders', icon: 'package' },
+  { label: 'Lista želja', to: '/account/wishlist', icon: 'heart' },
 ]
 
 function isActive(path: string): boolean {

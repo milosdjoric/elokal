@@ -407,48 +407,48 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Admin podešavanja: branding (logo, boje), legal info (PIB, matični broj, PDV tekst)
 
 ### v0.2.12 — Reviews: API
-- [ ] Review model + migracija (product_id, user_id, rating, title, content, is_verified_purchase, status, admin_reply)
-- [ ] ReviewController public (index po proizvodu, store)
-- [ ] ReviewController admin (index, approve/reject, reply)
-- [ ] ReviewHelpful (glasanje)
-- [ ] ReviewFormRequest
-- [ ] ReviewResource
-- [ ] Testovi
+- [x] Review model + migracija (product_id, user_id, rating, title, content, is_verified_purchase, status, admin_reply)
+- [x] ReviewController public (index po proizvodu, store)
+- [x] ReviewController admin (index, approve/reject, reply)
+- [x] ReviewHelpful (glasanje)
+- [x] ReviewFormRequest
+- [x] ReviewResource
+- [x] Testovi
 
 ### v0.2.13 — Reviews: Storefront
-- [ ] PDP Reviews tab (prosečna ocena, distribution chart, lista, sortiranje)
-- [ ] Review forma (rating zvezdice, naslov, tekst)
-- [ ] "Was this helpful?" glasanje
-- [ ] "Verified Purchase" badge
+- [x] PDP Reviews tab (prosečna ocena, distribution chart, lista, sortiranje)
+- [x] Review forma (rating zvezdice, naslov, tekst)
+- [x] "Was this helpful?" glasanje
+- [x] "Verified Purchase" badge
 
 ### v0.2.14 — Reviews: Admin
-- [ ] Reviews listing (filteri: status, rating, proizvod)
-- [ ] Approve/reject/reply akcije
-- [ ] Bulk approve/reject
+- [x] Reviews listing (filteri: status, rating, proizvod)
+- [x] Approve/reject/reply akcije
+- [x] Bulk approve/reject
 - [ ] Email notifikacija za novu recenziju
 
 ### v0.2.15 — Wishlist
-- [ ] Wishlist pivot tabela (user_id, product_id)
-- [ ] WishlistController (index, add, remove)
-- [ ] Wishlist API rute
-- [ ] Srce ikonica na product card-u i PDP-u
-- [ ] localStorage za neulogovane, sync pri loginu
-- [ ] `/nalog/lista-zelja` stranica
-- [ ] Wishlist badge u headeru
+- [x] Wishlist pivot tabela (user_id, product_id)
+- [x] WishlistController (index, add, remove)
+- [x] Wishlist API rute
+- [x] Srce ikonica na product card-u i PDP-u
+- [x] localStorage za neulogovane, sync pri loginu
+- [x] `/nalog/lista-zelja` stranica
+- [x] Wishlist badge u headeru
 - [ ] Feature flag: FEATURE_WISHLIST
 
 ### v0.2.16 — Cross-sell / Up-sell
-- [ ] Related products (ista kategorija — već u Fazi 1)
-- [ ] Cross-sell na cart stranici ("Često se kupuje uz...")
-- [ ] Up-sell na PDP-u ("Možda vas zanima i...")
-- [ ] Admin: ručno podešavanje related/cross-sell/up-sell po proizvodu
+- [x] Related products (ista kategorija — već u Fazi 1)
+- [x] Cross-sell na cart stranici ("Često se kupuje uz...")
+- [x] Up-sell na PDP-u ("Možda vas zanima i...")
+- [x] Admin: ručno podešavanje related/cross-sell/up-sell po proizvodu
 
 ### v0.2.17 — Newsletter
-- [ ] NewsletterSubscriber model + migracija
-- [ ] Subscribe/confirm/unsubscribe endpointi
-- [ ] Double opt-in flow
+- [x] NewsletterSubscriber model + migracija
+- [x] Subscribe/confirm/unsubscribe endpointi
+- [x] Double opt-in flow
 - [ ] Newsletter popup (modal, exit intent, jednom po sesiji)
-- [ ] Admin: pregled pretplatnika, export CSV
+- [x] Admin: pregled pretplatnika, export CSV
 - [ ] Feature flag: FEATURE_NEWSLETTER
 
 ### v0.2.18 — Notify Me (Back in Stock)

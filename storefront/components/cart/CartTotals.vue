@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import type { Product } from '~/types'
 
-const { total, count } = useCart()
+const { total, count, items } = useCart()
 const { get } = useApi()
 
-const featuredProducts = ref<Product[]>([])
+const crossSellProducts = ref<Product[]>([])
 
 async function fetchCrossSell() {
   try {
+    // Probaj cross-sell iz prvog proizvoda u korpi
+    if (items.value.length > 0) {
+      const firstSlug = items.value[0].product.slug
+      const data = await get<{ data: Product }>(`/v1/products/${firstSlug}`)
+      if (data.data.cross_sell_products?.length) {
+        const cartIds = new Set(items.value.map(i => i.product.id))
+        crossSellProducts.value = data.data.cross_sell_products.filter((p: Product) => !cartIds.has(p.id)).slice(0, 4)
+        if (crossSellProducts.value.length > 0) return
+      }
+    }
+    // Fallback na featured
     const data = await get<{ data: Product[] }>('/v1/products', { featured: 1, per_page: 4 })
-    featuredProducts.value = data.data
+    const cartIds = new Set(items.value.map(i => i.product.id))
+    crossSellProducts.value = data.data.filter((p: Product) => !cartIds.has(p.id)).slice(0, 4)
   }
   catch { /* silent */ }
 }
@@ -64,11 +76,11 @@ onMounted(fetchCrossSell)
     </div>
 
     <!-- Cross-sell -->
-    <div v-if="featuredProducts.length > 0" class="border border-gray-200 p-6">
-      <h3 class="text-sm font-semibold text-gray-800 mb-4">Možda vas zanima</h3>
+    <div v-if="crossSellProducts.length > 0" class="border border-gray-200 p-6">
+      <h3 class="text-sm font-semibold text-gray-800 mb-4">Često se kupuje uz...</h3>
       <div class="space-y-3">
         <NuxtLink
-          v-for="product in featuredProducts"
+          v-for="product in crossSellProducts"
           :key="product.id"
           :to="`/products/${product.slug}`"
           class="flex items-center gap-3 hover:bg-gray-50 -mx-2 px-2 py-1 rounded transition-colors"

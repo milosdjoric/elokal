@@ -7,14 +7,19 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Storefront\AddressController;
 use App\Http\Controllers\Storefront\AuthController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
 use App\Http\Controllers\Storefront\CheckoutController;
 use App\Http\Controllers\Storefront\PasswordResetController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
+use App\Http\Controllers\Storefront\NewsletterController;
+use App\Http\Controllers\Storefront\ReviewController;
 use App\Http\Controllers\Storefront\SearchController;
+use App\Http\Controllers\Storefront\WishlistController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +43,12 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
 
     Route::get('search', SearchController::class);
 
+    Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
+
+    Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe']);
+    Route::get('newsletter/confirm/{token}', [NewsletterController::class, 'confirm']);
+    Route::get('newsletter/unsubscribe/{token}', [NewsletterController::class, 'unsubscribe']);
+
     // User auth
     Route::post('register', [AuthController::class, 'register'])->middleware('throttle:api-public');
     Route::post('login', [AuthController::class, 'login'])->middleware('throttle:user-login');
@@ -56,6 +67,15 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
 
         Route::put('me/newsletter', [AuthController::class, 'updateNewsletter']);
         Route::apiResource('addresses', AddressController::class)->except(['show']);
+
+        Route::post('products/{product}/reviews', [ReviewController::class, 'store']);
+        Route::post('reviews/{review}/helpful', [ReviewController::class, 'helpful']);
+
+        Route::get('wishlist', [WishlistController::class, 'index']);
+        Route::get('wishlist/ids', [WishlistController::class, 'ids']);
+        Route::post('wishlist/sync', [WishlistController::class, 'sync']);
+        Route::post('wishlist/{product}', [WishlistController::class, 'store']);
+        Route::delete('wishlist/{product}', [WishlistController::class, 'destroy']);
 
         Route::get('orders', [AuthController::class, 'orders']);
         Route::get('orders/{orderNumber}', [AuthController::class, 'showOrder']);
@@ -77,6 +97,8 @@ Route::prefix('admin')->group(function () {
         Route::get('dashboard', DashboardController::class);
 
         Route::apiResource('products', ProductController::class);
+        Route::get('products/{product}/relations', [ProductController::class, 'relations']);
+        Route::put('products/{product}/relations', [ProductController::class, 'updateRelations']);
 
         Route::get('media', [ProductImageController::class, 'index']);
         Route::patch('media/{image}', [ProductImageController::class, 'update']);
@@ -99,5 +121,15 @@ Route::prefix('admin')->group(function () {
 
         Route::get('customers', [CustomerController::class, 'index']);
         Route::get('customers/{customer}', [CustomerController::class, 'show']);
+
+        Route::get('newsletter', [AdminNewsletterController::class, 'index']);
+        Route::get('newsletter/stats', [AdminNewsletterController::class, 'stats']);
+        Route::get('newsletter/export', [AdminNewsletterController::class, 'export']);
+        Route::delete('newsletter/{subscriber}', [AdminNewsletterController::class, 'destroy']);
+
+        Route::get('reviews', [AdminReviewController::class, 'index']);
+        Route::patch('reviews/{review}/approve', [AdminReviewController::class, 'approve']);
+        Route::patch('reviews/{review}/reject', [AdminReviewController::class, 'reject']);
+        Route::post('reviews/{review}/reply', [AdminReviewController::class, 'reply']);
     });
 });

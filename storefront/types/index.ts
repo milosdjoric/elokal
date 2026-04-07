@@ -44,6 +44,9 @@ export interface Product {
   meta_description: string | null
   categories: number[]
   images: ProductImage[]
+  related_products?: Product[]
+  cross_sell_products?: Product[]
+  up_sell_products?: Product[]
   created_at: string
   updated_at: string
 }
@@ -127,6 +130,34 @@ export interface Order {
   items: OrderItem[]
   created_at: string
   updated_at: string
+}
+
+// --- Review ---
+
+export interface ReviewUser {
+  id: number
+  name: string
+}
+
+export interface Review {
+  id: number
+  product_id: number
+  user: ReviewUser
+  rating: number
+  title: string | null
+  content: string
+  is_verified_purchase: boolean
+  admin_reply: string | null
+  admin_replied_at: string | null
+  helpful_count: number
+  not_helpful_count: number
+  created_at: string
+}
+
+export interface ReviewStats {
+  average_rating: number
+  total_reviews: number
+  distribution: Record<number, number>
 }
 
 export type OrderStatus =

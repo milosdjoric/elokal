@@ -71,6 +71,13 @@ class ProductController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
+        // Učitaj ručne relacije, ili fallback na auto (ista kategorija)
+        $product->load([
+            'crossSellProducts' => fn ($q) => $q->where('is_active', true)->with('images'),
+            'upSellProducts' => fn ($q) => $q->where('is_active', true)->with('images'),
+            'relatedProducts' => fn ($q) => $q->where('is_active', true)->with('images'),
+        ]);
+
         return new ProductResource($product);
     }
 }

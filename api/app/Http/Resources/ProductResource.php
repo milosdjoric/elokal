@@ -35,6 +35,9 @@ class ProductResource extends JsonResource
             'is_on_sale' => $this->isSaleActive(),
             'categories' => $this->whenLoaded('categories', fn () => $this->categories->pluck('id')),
             'images' => $this->whenLoaded('images'),
+            'related_products' => self::collection($this->whenLoaded('relatedProducts')),
+            'cross_sell_products' => self::collection($this->whenLoaded('crossSellProducts')),
+            'up_sell_products' => self::collection($this->whenLoaded('upSellProducts')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

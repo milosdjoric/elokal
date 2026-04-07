@@ -37,6 +37,11 @@ function handleAddToCart() {
         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
 
+      <!-- Wishlist heart -->
+      <div class="absolute top-2 right-2 z-10">
+        <ProductWishlistButton :product-id="product.id" size="sm" />
+      </div>
+
       <!-- Badges -->
       <div class="absolute top-2 left-2 flex flex-col gap-1">
         <UiAtomsBadge v-if="product.is_on_sale" variant="sale">-{{ product.sale_percentage }}%</UiAtomsBadge>
