@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\ShippingController as AdminShippingController;
 use App\Http\Controllers\Admin\CallbackRequestController as AdminCallbackController;
 use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Storefront\ProductController as StorefrontProductContro
 use App\Http\Controllers\Storefront\BlogController;
 use App\Http\Controllers\Storefront\CallbackRequestController;
 use App\Http\Controllers\Storefront\CouponController as StorefrontCouponController;
+use App\Http\Controllers\Storefront\ShippingController as StorefrontShippingController;
 use App\Http\Controllers\Storefront\NewsletterController;
 use App\Http\Controllers\Storefront\StockNotificationController;
 use App\Http\Controllers\Storefront\ReviewController;
@@ -59,6 +61,7 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::post('products/{product}/notify-me', [StockNotificationController::class, 'store']);
     Route::post('callback-request', [CallbackRequestController::class, 'store']);
     Route::post('coupon/validate', [StorefrontCouponController::class, 'validate']);
+    Route::post('shipping/methods', [StorefrontShippingController::class, 'methods']);
 
     Route::get('blog', [BlogController::class, 'index']);
     Route::get('blog/sidebar', [BlogController::class, 'sidebar']);
@@ -171,6 +174,14 @@ Route::prefix('admin')->group(function () {
         Route::get('tags', [AdminBlogController::class, 'tags']);
         Route::post('tags', [AdminBlogController::class, 'storeTag']);
         Route::delete('tags/{tag}', [AdminBlogController::class, 'destroyTag']);
+
+        Route::get('shipping-zones', [AdminShippingController::class, 'zones']);
+        Route::post('shipping-zones', [AdminShippingController::class, 'storeZone']);
+        Route::put('shipping-zones/{zone}', [AdminShippingController::class, 'updateZone']);
+        Route::delete('shipping-zones/{zone}', [AdminShippingController::class, 'destroyZone']);
+        Route::post('shipping-zones/{zone}/methods', [AdminShippingController::class, 'storeMethod']);
+        Route::put('shipping-methods/{method}', [AdminShippingController::class, 'updateMethod']);
+        Route::delete('shipping-methods/{method}', [AdminShippingController::class, 'destroyMethod']);
 
         Route::get('inventory', [InventoryController::class, 'index']);
         Route::post('inventory/{product}/adjust', [InventoryController::class, 'adjust']);
