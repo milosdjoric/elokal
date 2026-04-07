@@ -4,7 +4,7 @@ interface Props {
   placeholder?: string
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   placeholder: 'Pretraži...',
 })
 
@@ -16,8 +16,6 @@ const emit = defineEmits<{
 function handleSubmit() {
   emit('search', props.modelValue)
 }
-
-const props = defineProps<Props>()
 
 function clear() {
   emit('update:modelValue', '')
