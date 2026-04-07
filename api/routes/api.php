@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\CallbackRequestController as AdminCallbackController;
 use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -170,6 +171,13 @@ Route::prefix('admin')->group(function () {
         Route::get('tags', [AdminBlogController::class, 'tags']);
         Route::post('tags', [AdminBlogController::class, 'storeTag']);
         Route::delete('tags/{tag}', [AdminBlogController::class, 'destroyTag']);
+
+        Route::get('inventory', [InventoryController::class, 'index']);
+        Route::post('inventory/{product}/adjust', [InventoryController::class, 'adjust']);
+        Route::get('inventory/{product}/history', [InventoryController::class, 'history']);
+        Route::post('inventory/bulk-adjust', [InventoryController::class, 'bulkAdjust']);
+        Route::get('inventory/export', [InventoryController::class, 'export']);
+        Route::post('inventory/import', [InventoryController::class, 'import']);
 
         Route::apiResource('coupons', CouponController::class);
         Route::post('coupons/bulk-generate', [CouponController::class, 'bulkGenerate']);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\StockMovement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -69,8 +70,9 @@ class OrderController extends Controller
         // Vrati stock ako cancelled
         if ($request->status === 'cancelled' && $oldStatus !== 'cancelled') {
             foreach ($order->items as $item) {
-                if ($item->product_id) {
-                    $item->product?->increment('stock_quantity', $item->quantity);
+                if ($item->product_id && $item->product) {
+                    $item->product->increment('stock_quantity', $item->quantity);
+                    StockMovement::record($item->product->fresh(), $item->quantity, 'cancellation', "Order #{$order->order_number}", 'order', $order->id);
                 }
             }
         }

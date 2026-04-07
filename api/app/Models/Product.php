@@ -132,6 +132,11 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class)->orderByDesc('created_at');
+    }
+
     public function relatedProducts(): BelongsToMany
     {
         return $this->belongsToMany(self::class, 'product_relations', 'product_id', 'related_product_id')

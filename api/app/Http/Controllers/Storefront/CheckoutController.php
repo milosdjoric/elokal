@@ -7,6 +7,7 @@ use App\Http\Resources\OrderResource;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\StockMovement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -66,8 +67,9 @@ class CheckoutController extends Controller
                     'line_total' => $lineTotal,
                 ];
 
-                // Smanji stock
+                // Smanji stock + logiraj
                 $product->decrement('stock_quantity', $item['quantity']);
+                StockMovement::record($product->fresh(), -$item['quantity'], 'sale');
             }
 
             // Kupon
