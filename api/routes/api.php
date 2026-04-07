@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Storefront\AuthController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
+use App\Http\Controllers\Storefront\PasswordResetController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
 use App\Http\Controllers\Storefront\SearchController;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +33,23 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('categories/{slug}', [StorefrontCategoryController::class, 'show']);
 
     Route::get('search', SearchController::class);
+
+    // User auth
+    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:api-public');
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:user-login');
+    Route::post('forgot-password', [PasswordResetController::class, 'sendResetLink'])->middleware('throttle:api-public');
+    Route::post('reset-password', [PasswordResetController::class, 'reset'])->middleware('throttle:api-public');
+
+    // Authenticated user
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('me', [AuthController::class, 'me']);
+        Route::put('me', [AuthController::class, 'update']);
+        Route::put('me/password', [AuthController::class, 'updatePassword']);
+        Route::delete('me', [AuthController::class, 'destroy']);
+        Route::post('email/verify', [AuthController::class, 'verifyEmail']);
+        Route::post('email/resend', [AuthController::class, 'resendVerification']);
+    });
 });
 
 // Admin auth
