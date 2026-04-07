@@ -42,7 +42,16 @@ function openQuickView(product: Product) {
 
 onMounted(fetchCategory)
 
-useHead({ title: computed(() => category.value ? `${category.value.name} — eLokal` : 'eLokal') })
+useHead({
+  title: computed(() => category.value ? `${category.value.name} — eLokal` : 'eLokal'),
+  link: [{ rel: 'canonical', href: computed(() => `http://localhost:3000/categories/${route.params.slug}`) }],
+})
+
+useSeoMeta({
+  description: computed(() => category.value?.description || `Proizvodi iz kategorije ${category.value?.name}`),
+  ogTitle: computed(() => category.value?.name || ''),
+  ogDescription: computed(() => category.value?.description || ''),
+})
 </script>
 
 <template>

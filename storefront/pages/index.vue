@@ -30,7 +30,17 @@ function openQuickView(product: Product) {
 
 onMounted(fetchData)
 
-useHead({ title: 'eLokal — Početna' })
+useHead({
+  title: 'eLokal — Kvalitetni proizvodi za vaš dom',
+  link: [{ rel: 'canonical', href: 'http://localhost:3000' }],
+})
+
+useSeoMeta({
+  description: 'Otkrijte širok izbor dečijeg nameštaja i dekoracije po najboljim cenama. Besplatna dostava za narudžbine iznad 5.000 din.',
+  ogTitle: 'eLokal — Kvalitetni proizvodi za vaš dom',
+  ogDescription: 'Otkrijte širok izbor dečijeg nameštaja i dekoracije po najboljim cenama.',
+  ogType: 'website',
+})
 </script>
 
 <template>

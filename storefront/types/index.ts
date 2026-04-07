@@ -40,6 +40,8 @@ export interface Product {
   sale_percentage: number | null
   formatted_unit_price: string | null
   is_on_sale: boolean
+  meta_title: string | null
+  meta_description: string | null
   categories: number[]
   images: ProductImage[]
   created_at: string

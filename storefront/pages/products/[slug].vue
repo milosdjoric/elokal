@@ -60,7 +60,21 @@ onMounted(() => {
 })
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
-useHead({ title: computed(() => product.value ? `${product.value.name} — eLokal` : 'eLokal') })
+useHead({
+  title: computed(() => product.value?.meta_title || (product.value ? `${product.value.name} — eLokal` : 'eLokal')),
+  link: [{ rel: 'canonical', href: computed(() => `http://localhost:3000/products/${route.params.slug}`) }],
+})
+
+useSeoMeta({
+  description: computed(() => product.value?.meta_description || product.value?.short_description || ''),
+  ogTitle: computed(() => product.value?.name || ''),
+  ogDescription: computed(() => product.value?.short_description || ''),
+  ogImage: computed(() => {
+    const img = product.value?.images?.find(i => i.is_primary) || product.value?.images?.[0]
+    return img ? resolveImageUrl(img.image_path) : ''
+  }),
+  ogType: 'website',
+})
 </script>
 
 <template>
