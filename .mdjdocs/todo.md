@@ -272,31 +272,31 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Breadcrumbs
 
 ### v0.1.31 — Storefront: Search
-- [ ] `/pretraga?q=` stranica (isti layout kao PLP)
-- [ ] AJAX autocomplete u headeru (debounced 300ms)
-- [ ] Recent searches (localStorage)
+- [x] `/pretraga?q=` stranica (isti layout kao PLP)
+- [x] AJAX autocomplete u headeru (debounced 300ms)
+- [x] Recent searches (localStorage)
 - [ ] Trending searches (admin konfiguriše)
 - [ ] Search scope po kategoriji (dropdown)
-- [ ] No results state + predlozi
+- [x] No results state + predlozi
 
 ### v0.1.32 — Storefront: Korpa
-- [ ] `/korpa` stranica
-- [ ] Tabela stavki (slika, naziv, cena, quantity, line total, remove)
-- [ ] Cart totals (subtotal, placeholder shipping/tax, total)
-- [ ] "Checkout" dugme → placeholder stranica
-- [ ] Empty cart state (poruka, continue shopping, featured proizvodi)
+- [x] `/korpa` stranica
+- [x] Tabela stavki (slika, naziv, cena, quantity, line total, remove)
+- [x] Cart totals (subtotal, placeholder shipping/tax, total)
+- [x] "Checkout" dugme → placeholder stranica
+- [x] Empty cart state (poruka, continue shopping, featured proizvodi)
 - [ ] Cart layout varijanta (A klasičan / B dve kolone — iz podešavanja)
 
 ### v0.1.33 — Storefront: SEO
-- [ ] useHead() i useSeoMeta() na svakoj stranici
-- [ ] Dinamički meta tagovi iz API-ja (product, category)
-- [ ] Open Graph tagovi (title, description, image)
-- [ ] Canonical URL-ovi
+- [x] useHead() i useSeoMeta() na svakoj stranici
+- [x] Dinamički meta tagovi iz API-ja (product, category)
+- [x] Open Graph tagovi (title, description, image)
+- [x] Canonical URL-ovi
 
 ### v0.1.34 — Storefront: Error stranice
-- [ ] 404 stranica (poruka, search, popular kategorije, featured proizvodi)
-- [ ] 500 stranica (friendly poruka, kontakt info)
-- [ ] Nuxt error.vue handler
+- [x] 404 stranica (poruka, search, popular kategorije, featured proizvodi)
+- [x] 500 stranica (friendly poruka, kontakt info)
+- [x] Nuxt error.vue handler
 
 ---
 
