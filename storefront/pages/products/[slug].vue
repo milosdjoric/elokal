@@ -181,7 +181,12 @@ useSeoMeta({
             </div>
 
             <!-- SKU -->
-            <p v-if="product.sku" class="text-xs text-gray-400 mb-6">SKU: {{ product.sku }}</p>
+            <p v-if="product.sku" class="text-xs text-gray-400 mb-4">SKU: {{ product.sku }}</p>
+
+            <!-- Callback -->
+            <div class="mb-6">
+              <ProductCallbackModal :product-id="product.id" :product-name="product.name" />
+            </div>
 
             <!-- Trust info -->
             <div class="border border-gray-200 divide-y divide-gray-100">

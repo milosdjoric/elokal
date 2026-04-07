@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\CallbackRequestController as AdminCallbackController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\StockNotificationController as AdminStockNotificationController;
 use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Storefront\CheckoutController;
 use App\Http\Controllers\Storefront\PasswordResetController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
 use App\Http\Controllers\Storefront\BlogController;
+use App\Http\Controllers\Storefront\CallbackRequestController;
 use App\Http\Controllers\Storefront\NewsletterController;
 use App\Http\Controllers\Storefront\StockNotificationController;
 use App\Http\Controllers\Storefront\ReviewController;
@@ -50,6 +52,7 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
 
     Route::post('products/{product}/notify-me', [StockNotificationController::class, 'store']);
+    Route::post('callback-request', [CallbackRequestController::class, 'store']);
 
     Route::get('blog', [BlogController::class, 'index']);
     Route::get('blog/sidebar', [BlogController::class, 'sidebar']);
@@ -148,6 +151,9 @@ Route::prefix('admin')->group(function () {
         Route::get('tags', [AdminBlogController::class, 'tags']);
         Route::post('tags', [AdminBlogController::class, 'storeTag']);
         Route::delete('tags/{tag}', [AdminBlogController::class, 'destroyTag']);
+
+        Route::get('callback-requests', [AdminCallbackController::class, 'index']);
+        Route::patch('callback-requests/{callbackRequest}', [AdminCallbackController::class, 'updateStatus']);
 
         Route::get('stock-notifications', [AdminStockNotificationController::class, 'index']);
         Route::get('stock-notifications/product/{product}', [AdminStockNotificationController::class, 'byProduct']);

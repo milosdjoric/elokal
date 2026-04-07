@@ -500,11 +500,11 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Contact form (adminu)
 
 ### v0.2.23 — Request a Call Back
-- [ ] CallbackRequest model
-- [ ] Dugme na PDP-u
-- [ ] Modal forma (proizvod info, telefon, kanal: Call/SMS/WhatsApp)
+- [x] CallbackRequest model
+- [x] Dugme na PDP-u
+- [x] Modal forma (proizvod info, telefon, kanal: Call/SMS/WhatsApp)
 - [ ] Email notifikacija adminu
-- [ ] Admin: lista zahteva
+- [x] Admin: lista zahteva
 
 ### v0.2.24 — API dokumentacija
 - [ ] OpenAPI 3.0 spec (annotations na controllerima)
