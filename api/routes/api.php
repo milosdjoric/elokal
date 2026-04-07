@@ -45,6 +45,9 @@ Route::prefix('admin')->group(function () {
 
         Route::apiResource('products', ProductController::class);
 
+        Route::get('media', [ProductImageController::class, 'index']);
+        Route::patch('media/{image}', [ProductImageController::class, 'update']);
+
         Route::post('products/{product}/images', [ProductImageController::class, 'store']);
         Route::delete('products/{product}/images/{image}', [ProductImageController::class, 'destroy']);
         Route::patch('products/{product}/images/reorder', [ProductImageController::class, 'reorder']);

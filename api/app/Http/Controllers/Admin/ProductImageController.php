@@ -13,6 +13,35 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductImageController extends Controller
 {
+    public function index(Request $request): JsonResponse
+    {
+        $query = ProductImage::with('product:id,name,slug')
+            ->orderByDesc('created_at');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('alt_text', 'like', "%{$search}%")
+                  ->orWhereHas('product', fn ($q2) => $q2->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $perPage = min($request->input('per_page', 24), 48);
+
+        return response()->json($query->paginate($perPage));
+    }
+
+    public function update(Request $request, ProductImage $image): JsonResponse
+    {
+        $request->validate([
+            'alt_text' => 'nullable|string|max:255',
+        ]);
+
+        $image->update(['alt_text' => $request->alt_text]);
+
+        return response()->json($image);
+    }
+
     public function store(ProductImageRequest $request, Product $product): JsonResponse
     {
         $path = $request->file('image')->store("products/{$product->id}", 'public');
