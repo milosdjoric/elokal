@@ -16,8 +16,8 @@ function isActive(path: string): boolean {
 </script>
 
 <template>
-  <aside class="w-64 bg-gray-900 text-white min-h-screen flex flex-col">
-    <div class="px-6 py-5 border-b border-gray-700">
+  <aside class="w-64 bg-primary-800 text-white min-h-screen flex flex-col">
+    <div class="px-6 py-5 border-b border-primary-700">
       <h1 class="text-xl font-bold tracking-tight">eLokal</h1>
       <p class="text-xs text-gray-400 mt-0.5">Admin Panel</p>
     </div>
@@ -29,8 +29,8 @@ function isActive(path: string): boolean {
         :to="item.to"
         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
         :class="isActive(item.to)
-          ? 'bg-blue-600 text-white'
-          : 'text-gray-300 hover:bg-gray-800 hover:text-white'"
+          ? 'bg-primary-600 text-white'
+          : 'text-primary-100 hover:bg-primary-700 hover:text-white'"
       >
         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
           <path v-if="item.icon === 'home'" stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />

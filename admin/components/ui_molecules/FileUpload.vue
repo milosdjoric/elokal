@@ -66,7 +66,7 @@ onUnmounted(() => {
   <div>
     <div
       class="border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer"
-      :class="isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'"
+      :class="isDragging ? 'border-primary-500 bg-primary-50' : 'border-gray-300 hover:border-gray-400'"
       @dragover.prevent="isDragging = true"
       @dragleave="isDragging = false"
       @drop.prevent="onDrop"
@@ -77,7 +77,7 @@ onUnmounted(() => {
       </svg>
       <p class="text-sm text-gray-600">
         Prevucite slike ovde ili
-        <span class="text-blue-600 font-medium">izaberite fajlove</span>
+        <span class="text-primary-600 font-medium">izaberite fajlove</span>
       </p>
       <p class="text-xs text-gray-400 mt-1">
         JPEG, PNG, WebP do {{ maxSize / 1024 }}MB

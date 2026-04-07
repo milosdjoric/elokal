@@ -28,7 +28,7 @@ const radioId = computed(() => props.id || `radio-${Math.random().toString(36).s
       :value="value"
       :checked="modelValue === value"
       :disabled="disabled"
-      class="h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-500"
+      class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500"
       @change="emit('update:modelValue', value)"
     />
     <span v-if="label" class="text-sm text-gray-700">{{ label }}</span>

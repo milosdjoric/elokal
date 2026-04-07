@@ -29,7 +29,7 @@ const initials = computed(() => {
 <template>
   <div
     class="rounded-full flex items-center justify-center font-medium overflow-hidden"
-    :class="[sizeClasses[size], src ? '' : 'bg-blue-600 text-white']"
+    :class="[sizeClasses[size], src ? '' : 'bg-primary-600 text-white']"
   >
     <img
       v-if="src"

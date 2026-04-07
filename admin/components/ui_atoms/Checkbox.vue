@@ -25,7 +25,7 @@ const checkboxId = computed(() => props.id || `checkbox-${Math.random().toString
       type="checkbox"
       :checked="modelValue"
       :disabled="disabled"
-      class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+      class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
       @change="emit('update:modelValue', ($event.target as HTMLInputElement).checked)"
     />
     <span v-if="label" class="text-sm text-gray-700">{{ label }}</span>

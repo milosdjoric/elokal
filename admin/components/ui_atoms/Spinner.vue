@@ -16,7 +16,7 @@ const sizeClasses: Record<string, string> = {
 
 <template>
   <svg
-    class="animate-spin text-blue-600"
+    class="animate-spin text-primary-600"
     :class="sizeClasses[size]"
     fill="none"
     viewBox="0 0 24 24"

@@ -41,7 +41,7 @@ const inputId = computed(() => props.id || `input-${Math.random().toString(36).s
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
-      class="w-full px-3 py-2 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50 disabled:text-gray-500"
+      class="w-full px-3 py-2 border rounded-lg shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-50 disabled:text-gray-500"
       :class="error ? 'border-red-500' : 'border-gray-300'"
       @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />

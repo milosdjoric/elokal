@@ -28,8 +28,8 @@ function toggle() {
       role="switch"
       :aria-checked="modelValue"
       :disabled="disabled"
-      class="relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-      :class="modelValue ? 'bg-blue-600' : 'bg-gray-200'"
+      class="relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+      :class="modelValue ? 'bg-primary-600' : 'bg-gray-200'"
       @click="toggle"
     >
       <span
