@@ -17,6 +17,7 @@ withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   'update:modelValue': [value: string | number]
+  'blur': []
 }>()
 </script>
 
@@ -35,6 +36,7 @@ const emit = defineEmits<{
       class="w-full px-4 py-2.5 border text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-gray-50"
       :class="error ? 'border-red-500' : 'border-gray-300'"
       @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      @blur="emit('blur')"
     />
     <p v-if="error" class="mt-1 text-sm text-red-600">{{ error }}</p>
   </div>

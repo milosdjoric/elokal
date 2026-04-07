@@ -80,15 +80,15 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Unit price formatting
 
 ### v0.1.11 — API: Testovi
-- [ ] Admin auth testovi (login, logout, me, invalid credentials, rate limit)
-- [ ] Product CRUD testovi (index, store, show, update, destroy, validacija, auth guard)
-- [ ] Product images testovi (upload, delete, reorder)
-- [ ] Category CRUD testovi (CRUD, tree structure)
-- [ ] Public product testovi (listing, filteri, sortiranje, paginacija, show by slug)
-- [ ] Public category testovi (tree, show sa proizvodima)
-- [ ] Search testovi (pretraga, no results, logovanje)
-- [ ] Dashboard testovi
-- [ ] Sale price logika testovi
+- [x] Admin auth testovi (login, logout, me, invalid credentials, rate limit)
+- [x] Product CRUD testovi (index, store, show, update, destroy, validacija, auth guard)
+- [x] Product images testovi (upload, delete, reorder)
+- [x] Category CRUD testovi (CRUD, tree structure)
+- [x] Public product testovi (listing, filteri, sortiranje, paginacija, show by slug)
+- [x] Public category testovi (tree, show sa proizvodima)
+- [x] Search testovi (pretraga, no results, logovanje)
+- [x] Dashboard testovi
+- [x] Sale price logika testovi
 
 ### v0.1.12 — API: Konfiguracija
 - [x] CORS setup (dozvoli admin + storefront domene)
@@ -303,29 +303,29 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ## v0.2.x — Faza 2: Kupovina & Nalozi
 
 ### v0.2.1 — Auth: API
-- [ ] User registracija endpoint (ime, prezime, email, telefon, password)
-- [ ] User login endpoint
-- [ ] User logout endpoint
+- [x] User registracija endpoint (ime, prezime, email, telefon, password)
+- [x] User login endpoint
+- [x] User logout endpoint
 - [ ] Social login endpoints (Google, Facebook, Apple — Laravel Socialite)
-- [ ] Forgot password endpoint
-- [ ] Reset password endpoint
-- [ ] Email verification endpoint
-- [ ] Resend verification endpoint
-- [ ] Get me endpoint
-- [ ] Update me endpoint
-- [ ] Update password endpoint
-- [ ] Delete account endpoint (soft delete + anonimizacija)
-- [ ] Account lockout (5 pokušaja → 15 min lock)
-- [ ] Auth testovi
+- [x] Forgot password endpoint
+- [x] Reset password endpoint
+- [x] Email verification endpoint
+- [x] Resend verification endpoint
+- [x] Get me endpoint
+- [x] Update me endpoint
+- [x] Update password endpoint
+- [x] Delete account endpoint (soft delete + anonimizacija)
+- [x] Account lockout (5 pokušaja → 15 min lock)
+- [x] Auth testovi
 
 ### v0.2.2 — Auth: Storefront
-- [ ] `/nalog/prijava` — login stranica + login modal opcija
-- [ ] `/nalog/registracija` — registracija sa password strength meter
-- [ ] `/nalog/zaboravljena-lozinka` — forgot password
+- [x] `/nalog/prijava` — login stranica + login modal opcija
+- [x] `/nalog/registracija` — registracija sa password strength meter
+- [x] `/nalog/zaboravljena-lozinka` — forgot password
 - [ ] Social login dugmad (Google, Facebook, Apple)
-- [ ] Post-login redirect (vrati gde je bio)
-- [ ] useAuthStore + useAuth() composable
-- [ ] Auth middleware (redirect na login)
+- [x] Post-login redirect (vrati gde je bio)
+- [x] useAuthStore + useAuth() composable
+- [x] Auth middleware (redirect na login)
 
 ### v0.2.3 — Auth: Admin 2FA
 - [ ] TOTP setup (QR kod + backup kodovi)
@@ -333,20 +333,20 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Obavezno za super_admin, opciono za ostale
 
 ### v0.2.4 — Account stranice: Storefront
-- [ ] `/nalog` — dashboard (poslednja narudžbina, brzi linkovi)
-- [ ] `/nalog/profil` — edit profila, promena lozinke, delete account
-- [ ] `/nalog/adrese` — CRUD adresa (label, polja, is_default)
-- [ ] `/nalog/narudzbine` — listing narudžbina
-- [ ] `/nalog/narudzbine/:number` — detalj (progress bar, stavke, tracking, invoice download)
-- [ ] `/nalog/newsletter` — subscription toggle
-- [ ] Account sidebar navigacija
+- [x] `/nalog` — dashboard (poslednja narudžbina, brzi linkovi)
+- [x] `/nalog/profil` — edit profila, promena lozinke, delete account
+- [x] `/nalog/adrese` — CRUD adresa (label, polja, is_default)
+- [x] `/nalog/narudzbine` — listing narudžbina
+- [x] `/nalog/narudzbine/:number` — detalj (progress bar, stavke, tracking, invoice download)
+- [x] `/nalog/newsletter` — subscription toggle
+- [x] Account sidebar navigacija
 
 ### v0.2.5 — Address: API
-- [ ] Address model + migracija
-- [ ] AddressController (CRUD)
-- [ ] AddressFormRequest
-- [ ] AddressResource
-- [ ] Testovi
+- [x] Address model + migracija
+- [x] AddressController (CRUD)
+- [x] AddressFormRequest
+- [x] AddressResource
+- [x] Testovi
 
 ### v0.2.6 — Cart (server-side upgrade)
 - [ ] Cart totals breakdown: subtotal, shipping estimate, tax, discount, total
@@ -354,46 +354,46 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Cross-sell sekcija ispod tabele
 
 ### v0.2.7 — Checkout: API
-- [ ] Order model + migracija (11 statusa)
-- [ ] OrderItem model + migracija
-- [ ] CheckoutController (validate, create order)
-- [ ] Order number auto-generisanje
-- [ ] Stock validacija pri checkout-u
-- [ ] Guest checkout flow (bez registracije)
-- [ ] OrderResource, OrderItemResource
-- [ ] Testovi
+- [x] Order model + migracija (11 statusa)
+- [x] OrderItem model + migracija
+- [x] CheckoutController (validate, create order)
+- [x] Order number auto-generisanje
+- [x] Stock validacija pri checkout-u
+- [x] Guest checkout flow (bez registracije)
+- [x] OrderResource, OrderItemResource
+- [x] Testovi
 
 ### v0.2.8 — Checkout: Storefront
-- [ ] `/kasa` — single-page checkout (default varijanta A)
-- [ ] Shipping form (ime, prezime, email, telefon, adresa, grad, poštanski, država)
-- [ ] Billing vs Shipping checkbox (same by default)
+- [x] `/kasa` — single-page checkout (default varijanta A)
+- [x] Shipping form (ime, prezime, email, telefon, adresa, grad, poštanski, država)
+- [x] Billing vs Shipping checkbox (same by default)
 - [ ] Smart defaults (država iz IP geolokacije)
 - [ ] Address Autofill (Google Places API)
-- [ ] Saved addresses dropdown (za ulogovane)
-- [ ] Order summary sidebar (sticky, edit qty/remove)
-- [ ] Inline validacija (real-time)
-- [ ] Persistent cart (sačuvaj pri napuštanju)
+- [x] Saved addresses dropdown (za ulogovane)
+- [x] Order summary sidebar (sticky, edit qty/remove)
+- [x] Inline validacija (real-time)
+- [x] Persistent cart (sačuvaj pri napuštanju)
 - [ ] Checkout conversion elementi (order bump, trust badges, testimonial)
-- [ ] `/kasa/uspeh/:number` — success stranica
+- [x] `/kasa/uspeh/:number` — success stranica
 
 ### v0.2.9 — Orders: API
-- [ ] OrderController admin (index, show, updateStatus)
-- [ ] Order status flow validacija (koji status može preći u koji)
-- [ ] OrderTimeline model (log svih promena)
-- [ ] Order notes (interne + vidljive kupcu)
-- [ ] CustomerController admin (index, show)
-- [ ] Testovi
+- [x] OrderController admin (index, show, updateStatus)
+- [x] Order status flow validacija (koji status može preći u koji)
+- [x] OrderTimeline model (log svih promena)
+- [x] Order notes (interne + vidljive kupcu)
+- [x] CustomerController admin (index, show)
+- [x] Testovi
 
 ### v0.2.10 — Orders: Admin
-- [ ] `/orders` — listing (filteri: status, datum, kupac, payment; bulk actions; search)
-- [ ] `/orders/:id` — detail (header, stavke, totali, adrese, timeline, notes, akcije)
-- [ ] Promena statusa (dropdown + beleška)
+- [x] `/orders` — listing (filteri: status, datum, kupac, payment; bulk actions; search)
+- [x] `/orders/:id` — detail (header, stavke, totali, adrese, timeline, notes, akcije)
+- [x] Promena statusa (dropdown + beleška)
 - [ ] Tracking unos (broj + carrier)
 - [ ] Refund iniciranje (full/partial)
 - [ ] Edit order (stavke, adrese — samo pending/processing)
 - [ ] Resend email
-- [ ] `/customers` — listing
-- [ ] `/customers/:id` — profil sa istorijom
+- [x] `/customers` — listing
+- [x] `/customers/:id` — profil sa istorijom
 
 ### v0.2.11 — Print / PDF
 - [ ] Invoice PDF generisanje (logo, podaci prodavca, PIB, kupac, stavke, totali)

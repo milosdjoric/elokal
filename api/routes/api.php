@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Storefront\AddressController;
 use App\Http\Controllers\Storefront\AuthController;
@@ -53,9 +54,11 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
         Route::post('email/verify', [AuthController::class, 'verifyEmail']);
         Route::post('email/resend', [AuthController::class, 'resendVerification']);
 
+        Route::put('me/newsletter', [AuthController::class, 'updateNewsletter']);
         Route::apiResource('addresses', AddressController::class)->except(['show']);
 
         Route::get('orders', [AuthController::class, 'orders']);
+        Route::get('orders/{orderNumber}', [AuthController::class, 'showOrder']);
     });
 
     // Checkout (guest ili auth)
@@ -90,5 +93,8 @@ Route::prefix('admin')->group(function () {
         Route::get('orders', [OrderController::class, 'index']);
         Route::get('orders/{order}', [OrderController::class, 'show']);
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus']);
+
+        Route::get('customers', [CustomerController::class, 'index']);
+        Route::get('customers/{customer}', [CustomerController::class, 'show']);
     });
 });

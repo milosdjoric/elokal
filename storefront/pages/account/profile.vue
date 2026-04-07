@@ -16,6 +16,9 @@ const passwordForm = reactive({
   password_confirmation: '',
 })
 
+const newsletterSubscribed = ref(authStore.user?.newsletter_subscribed || false)
+const savingNewsletter = ref(false)
+
 const saving = ref(false)
 const savingPassword = ref(false)
 const success = ref('')
@@ -59,6 +62,28 @@ async function updatePassword() {
   finally { savingPassword.value = false }
 }
 
+async function toggleNewsletter() {
+  savingNewsletter.value = true
+  error.value = ''
+  success.value = ''
+  try {
+    const data = await $fetch<{ message: string; newsletter_subscribed: boolean }>(`${apiBase}/v1/me/newsletter`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${authStore.token}`, 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ newsletter_subscribed: newsletterSubscribed.value }),
+    })
+    if (authStore.user) {
+      authStore.user.newsletter_subscribed = data.newsletter_subscribed
+    }
+    success.value = data.message
+  }
+  catch (e: unknown) {
+    newsletterSubscribed.value = !newsletterSubscribed.value
+    error.value = (e as { data?: { message?: string } }).data?.message || 'Greška.'
+  }
+  finally { savingNewsletter.value = false }
+}
+
 useHead({ title: 'Profil — eLokal' })
 </script>
 
@@ -93,6 +118,31 @@ useHead({ title: 'Profil — eLokal' })
             <UiAtomsInput v-model="passwordForm.password_confirmation" label="Potvrdite novu lozinku" type="password" required />
             <UiAtomsButton type="submit" :loading="savingPassword">Promeni lozinku</UiAtomsButton>
           </form>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="border border-gray-200 p-6">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">Newsletter</h2>
+          <div class="flex items-center justify-between max-w-md">
+            <div>
+              <p class="text-sm text-gray-800">Primaj novosti i ponude</p>
+              <p class="text-xs text-gray-400 mt-0.5">Obaveštenja o novim proizvodima, akcijama i popustima.</p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              :aria-checked="newsletterSubscribed"
+              :disabled="savingNewsletter"
+              class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              :class="newsletterSubscribed ? 'bg-primary-600' : 'bg-gray-200'"
+              @click="newsletterSubscribed = !newsletterSubscribed; toggleNewsletter()"
+            >
+              <span
+                class="inline-block h-4 w-4 rounded-full bg-white transition-transform"
+                :class="newsletterSubscribed ? 'translate-x-6' : 'translate-x-1'"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>

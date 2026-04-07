@@ -20,7 +20,16 @@ class AdminAuthController extends Controller
 
         $admin = Admin::where('email', $request->email)->first();
 
+        if ($admin && $admin->isLocked()) {
+            $minutes = $admin->lockoutRemainingMinutes();
+            throw ValidationException::withMessages([
+                'email' => ["Nalog je zaključan. Pokušajte ponovo za {$minutes} min."],
+            ]);
+        }
+
         if (! $admin || ! Hash::check($request->password, $admin->password)) {
+            $admin?->incrementFailedAttempts();
+
             throw ValidationException::withMessages([
                 'email' => ['Pogrešni kredencijali.'],
             ]);
@@ -32,6 +41,7 @@ class AdminAuthController extends Controller
             ]);
         }
 
+        $admin->resetFailedAttempts();
         $token = $admin->createToken('admin-token')->plainTextToken;
 
         return response()->json([

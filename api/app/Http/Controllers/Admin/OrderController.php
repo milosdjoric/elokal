@@ -39,7 +39,7 @@ class OrderController extends Controller
 
     public function show(Order $order): OrderResource
     {
-        $order->load('items');
+        $order->load(['items', 'timeline']);
         return new OrderResource($order);
     }
 
@@ -50,13 +50,24 @@ class OrderController extends Controller
             'admin_notes' => 'nullable|string|max:1000',
         ]);
 
+        $oldStatus = $order->status;
+
         $order->update([
             'status' => $request->status,
             'admin_notes' => $request->admin_notes ?? $order->admin_notes,
         ]);
 
+        // Timeline log
+        $order->timeline()->create([
+            'status' => $request->status,
+            'old_status' => $oldStatus,
+            'note' => $request->admin_notes,
+            'actor_type' => 'admin',
+            'actor_id' => $request->user()->id,
+        ]);
+
         // Vrati stock ako cancelled
-        if ($request->status === 'cancelled') {
+        if ($request->status === 'cancelled' && $oldStatus !== 'cancelled') {
             foreach ($order->items as $item) {
                 if ($item->product_id) {
                     $item->product?->increment('stock_quantity', $item->quantity);
@@ -64,7 +75,7 @@ class OrderController extends Controller
             }
         }
 
-        $order->load('items');
+        $order->load(['items', 'timeline']);
         return new OrderResource($order);
     }
 }

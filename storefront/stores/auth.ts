@@ -6,6 +6,7 @@ interface User {
   email: string
   phone: string | null
   email_verified_at: string | null
+  newsletter_subscribed: boolean
 }
 
 interface AuthResponse {

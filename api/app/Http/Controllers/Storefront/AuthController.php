@@ -37,12 +37,22 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
+        if ($user && $user->isLocked()) {
+            $minutes = $user->lockoutRemainingMinutes();
+            throw ValidationException::withMessages([
+                'email' => ["Nalog je zaključan. Pokušajte ponovo za {$minutes} min."],
+            ]);
+        }
+
         if (! $user || ! Hash::check($request->password, $user->password)) {
+            $user?->incrementFailedAttempts();
+
             throw ValidationException::withMessages([
                 'email' => ['Pogrešni kredencijali.'],
             ]);
         }
 
+        $user->resetFailedAttempts();
         $token = $user->createToken('user-token')->plainTextToken;
 
         return response()->json([
@@ -152,5 +162,35 @@ class AuthController extends Controller
                 ->response()
                 ->getData(true)
         );
+    }
+
+    public function updateNewsletter(Request $request): JsonResponse
+    {
+        $request->validate([
+            'newsletter_subscribed' => 'required|boolean',
+        ]);
+
+        $request->user()->update([
+            'newsletter_subscribed' => $request->boolean('newsletter_subscribed'),
+        ]);
+
+        return response()->json([
+            'message' => $request->boolean('newsletter_subscribed')
+                ? 'Uspešno ste se prijavili na newsletter.'
+                : 'Uspešno ste se odjavili sa newsletter-a.',
+            'newsletter_subscribed' => $request->user()->newsletter_subscribed,
+        ]);
+    }
+
+    public function showOrder(Request $request, string $orderNumber): JsonResponse
+    {
+        $order = $request->user()->orders()
+            ->with('items.product.images')
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        return response()->json([
+            'data' => new \App\Http\Resources\OrderResource($order),
+        ]);
     }
 }

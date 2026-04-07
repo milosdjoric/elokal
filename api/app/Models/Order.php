@@ -52,4 +52,9 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function timeline(): HasMany
+    {
+        return $this->hasMany(OrderTimeline::class)->orderBy('created_at');
+    }
 }

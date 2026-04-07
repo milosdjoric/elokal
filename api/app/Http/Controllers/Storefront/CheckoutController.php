@@ -88,6 +88,13 @@ class CheckoutController extends Controller
             ]);
 
             $order->items()->createMany($orderItems);
+
+            $order->timeline()->create([
+                'status' => 'pending',
+                'note' => 'Narudžbina kreirana.',
+                'actor_type' => 'system',
+            ]);
+
             $order->load('items');
 
             return (new OrderResource($order))

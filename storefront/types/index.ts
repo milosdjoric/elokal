@@ -82,3 +82,54 @@ export interface Cart {
   total: number
   count: number
 }
+
+// --- Order ---
+
+export interface OrderItem {
+  id: number
+  product_id: number
+  product_name: string
+  product_sku: string | null
+  product_slug: string | null
+  product_image: string | null
+  price: string
+  quantity: number
+  line_total: string
+}
+
+export interface Order {
+  id: number
+  order_number: string
+  status: OrderStatus
+  email: string
+  phone: string | null
+  shipping: {
+    first_name: string
+    last_name: string
+    company: string | null
+    address_line_1: string
+    address_line_2: string | null
+    city: string
+    postal_code: string
+    country: string
+  }
+  subtotal: string
+  shipping_cost: string
+  tax: string
+  discount: string
+  total: string
+  notes: string | null
+  items: OrderItem[]
+  created_at: string
+  updated_at: string
+}
+
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'completed'
+  | 'cancelled'
+  | 'refunded'

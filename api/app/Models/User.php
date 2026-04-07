@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLoginLockout;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,13 +14,14 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, HasLoginLockout, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name',
         'email',
         'password',
         'phone',
+        'newsletter_subscribed',
     ];
 
     protected $hidden = [
@@ -41,6 +43,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'locked_until' => 'datetime',
+            'newsletter_subscribed' => 'boolean',
             'password' => 'hashed',
         ];
     }

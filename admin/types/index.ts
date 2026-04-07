@@ -121,3 +121,69 @@ export interface DashboardStats {
   featured_products: number
   out_of_stock: number
 }
+
+// --- Order ---
+
+export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'completed' | 'cancelled' | 'refunded'
+
+export interface OrderItem {
+  id: number
+  product_id: number
+  product_name: string
+  product_sku: string | null
+  product_slug: string | null
+  product_image: string | null
+  price: string
+  quantity: number
+  line_total: string
+}
+
+export interface OrderTimelineEntry {
+  id: number
+  status: string
+  old_status: string | null
+  note: string | null
+  actor_type: string | null
+  created_at: string
+}
+
+export interface Order {
+  id: number
+  order_number: string
+  status: OrderStatus
+  email: string
+  phone: string | null
+  shipping: {
+    first_name: string
+    last_name: string
+    company: string | null
+    address_line_1: string
+    address_line_2: string | null
+    city: string
+    postal_code: string
+    country: string
+  }
+  subtotal: string
+  shipping_cost: string
+  tax: string
+  discount: string
+  total: string
+  notes: string | null
+  admin_notes: string | null
+  items: OrderItem[]
+  timeline?: OrderTimelineEntry[]
+  created_at: string
+  updated_at: string
+}
+
+// --- Customer ---
+
+export interface Customer {
+  id: number
+  name: string
+  email: string
+  phone: string | null
+  orders_count: number
+  total_spent: string
+  created_at: string
+}
