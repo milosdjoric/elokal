@@ -8,10 +8,21 @@ use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
 use App\Http\Controllers\Storefront\SearchController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+// Health check
+Route::get('health', function () {
+    try {
+        DB::connection()->getPdo();
+        return response()->json(['status' => 'ok', 'timestamp' => now()->toIso8601String()]);
+    } catch (\Exception $e) {
+        return response()->json(['status' => 'error', 'message' => 'Database unavailable'], 503);
+    }
+});
+
 // Storefront (public)
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('products', [StorefrontProductController::class, 'index']);
     Route::get('products/{slug}', [StorefrontProductController::class, 'show']);
 
@@ -26,7 +37,7 @@ Route::prefix('admin')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login'])
         ->middleware('throttle:admin-login');
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'throttle:api-auth'])->group(function () {
         Route::post('logout', [AdminAuthController::class, 'logout']);
         Route::get('me', [AdminAuthController::class, 'me']);
 
