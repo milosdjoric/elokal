@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Storefront\AddressController;
 use App\Http\Controllers\Storefront\AuthController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
 use App\Http\Controllers\Storefront\PasswordResetController;
@@ -49,6 +50,8 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
         Route::delete('me', [AuthController::class, 'destroy']);
         Route::post('email/verify', [AuthController::class, 'verifyEmail']);
         Route::post('email/resend', [AuthController::class, 'resendVerification']);
+
+        Route::apiResource('addresses', AddressController::class)->except(['show']);
     });
 });
 
