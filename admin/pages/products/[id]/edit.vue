@@ -50,6 +50,11 @@ async function refreshImages() {
   await fetchProduct()
 }
 
+onErrorCaptured((err) => {
+  console.error('Captured error in edit page:', err)
+  return false
+})
+
 onMounted(fetchProduct)
 </script>
 
@@ -72,7 +77,8 @@ onMounted(fetchProduct)
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Form -->
         <div class="lg:col-span-2 bg-white border border-gray-200 p-6">
-          <ProductProductForm
+          <ProductForm
+            :key="product.id"
             :product="product"
             :loading="saving"
             :server-errors="serverErrors"
@@ -82,7 +88,7 @@ onMounted(fetchProduct)
 
         <!-- Images sidebar -->
         <div class="bg-white border border-gray-200 p-6">
-          <ProductProductImages
+          <ProductImages
             :product-id="product.id"
             :images="product.images || []"
             @refresh="refreshImages"

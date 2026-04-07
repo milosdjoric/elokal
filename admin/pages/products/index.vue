@@ -107,7 +107,7 @@ async function handleDelete() {
 
 function primaryImage(product: Product): string | null {
   const img = product.images?.find(i => i.is_primary) || product.images?.[0]
-  return img ? `http://localhost:8000/storage/${img.image_path}` : null
+  return img ? resolveImageUrl(img.image_path) : null
 }
 
 onMounted(fetchProducts)

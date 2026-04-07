@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
 use App\Http\Controllers\Storefront\SearchController;
@@ -53,5 +54,8 @@ Route::prefix('admin')->group(function () {
         Route::patch('products/{product}/images/reorder', [ProductImageController::class, 'reorder']);
 
         Route::apiResource('categories', CategoryController::class)->except(['show']);
+
+        Route::get('settings', [SettingController::class, 'index']);
+        Route::put('settings', [SettingController::class, 'update']);
     });
 });

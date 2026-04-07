@@ -37,7 +37,7 @@ async function handleSubmit(data: Record<string, unknown>) {
     <h1 class="text-2xl font-bold text-gray-800 mb-6">Novi proizvod</h1>
 
     <div class="bg-white border border-gray-200 p-6">
-      <ProductProductForm
+      <ProductForm
         :loading="loading"
         :server-errors="serverErrors"
         @submit="handleSubmit"

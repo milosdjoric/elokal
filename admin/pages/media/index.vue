@@ -100,7 +100,7 @@ async function handleDelete() {
 }
 
 function imageUrl(img: MediaImage): string {
-  return `http://localhost:8000/storage/${img.image_path}`
+  return resolveImageUrl(img.image_path)
 }
 
 onMounted(fetchImages)

@@ -127,10 +127,28 @@ const tabs = [
 
 <template>
   <form @submit.prevent="handleSubmit">
-    <UiMoleculesTabs v-model="activeTab" :tabs="tabs">
-      <template #default="{ active }">
+    <!-- Tab buttons -->
+    <div class="border-b border-gray-200 mb-4">
+      <nav class="flex gap-6 -mb-px">
+        <button
+          v-for="tab in tabs"
+          :key="tab.key"
+          type="button"
+          class="py-3 text-sm font-medium border-b-2 transition-colors"
+          :class="activeTab === tab.key
+            ? 'border-primary-600 text-primary-600'
+            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+          @click="activeTab = tab.key"
+        >
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
+
+    <!-- Tab content -->
+    <div>
         <!-- General -->
-        <div v-show="active === 'general'" class="space-y-4">
+        <div v-show="activeTab === 'general'" class="space-y-4">
           <UiAtomsInput
             v-model="form.name"
             label="Naziv proizvoda"
@@ -196,7 +214,7 @@ const tabs = [
         </div>
 
         <!-- Pricing -->
-        <div v-show="active === 'pricing'" class="space-y-4">
+        <div v-show="activeTab === 'pricing'" class="space-y-4">
           <UiAtomsInput
             v-model="form.price"
             label="Cena (RSD)"
@@ -258,7 +276,7 @@ const tabs = [
         </div>
 
         <!-- Categories -->
-        <div v-show="active === 'categories'">
+        <div v-show="activeTab === 'categories'">
           <p class="text-sm text-gray-500 mb-4">Izaberite kategorije kojima pripada proizvod.</p>
 
           <div v-if="categories.length === 0" class="text-sm text-gray-400">
@@ -289,7 +307,7 @@ const tabs = [
         </div>
 
         <!-- SEO -->
-        <div v-show="active === 'seo'" class="space-y-4">
+        <div v-show="activeTab === 'seo'" class="space-y-4">
           <UiAtomsInput
             v-model="form.meta_title"
             label="Meta Title"
@@ -304,8 +322,7 @@ const tabs = [
             />
           </div>
         </div>
-      </template>
-    </UiMoleculesTabs>
+    </div>
 
     <!-- Actions -->
     <div class="flex items-center justify-end gap-3 mt-6 pt-6 border-t border-gray-200">

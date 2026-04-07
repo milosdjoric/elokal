@@ -181,25 +181,49 @@ onMounted(fetchCategories)
           </div>
         </div>
 
-        <!-- Children -->
+        <!-- Children (level 2) -->
         <div v-if="parent.children?.length" class="border-t border-gray-100">
-          <div
-            v-for="child in parent.children"
-            :key="child.id"
-            class="flex items-center justify-between px-4 py-2.5 pl-10 hover:bg-gray-50"
-          >
-            <div class="flex items-center gap-3">
-              <span class="text-sm text-gray-700">{{ child.name }}</span>
-              <UiAtomsBadge v-if="!child.is_active" variant="neutral">Neaktivna</UiAtomsBadge>
-              <span class="text-xs text-gray-400">{{ child.products_count }} proizvoda</span>
+          <div v-for="child in parent.children" :key="child.id">
+            <div class="flex items-center justify-between px-4 py-2.5 pl-10 hover:bg-gray-50">
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-medium text-gray-700">{{ child.name }}</span>
+                <UiAtomsBadge v-if="!child.is_active" variant="neutral">Neaktivna</UiAtomsBadge>
+                <span class="text-xs text-gray-400">{{ child.products_count }} proizvoda</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <UiAtomsButton variant="ghost" size="sm" @click="openCreate(child.id)">
+                  + Pod
+                </UiAtomsButton>
+                <UiAtomsButton variant="ghost" size="sm" @click="openEdit(child)">
+                  Izmeni
+                </UiAtomsButton>
+                <UiAtomsButton variant="ghost" size="sm" @click="confirmDelete(child)">
+                  <span class="text-red-500">Obriši</span>
+                </UiAtomsButton>
+              </div>
             </div>
-            <div class="flex items-center gap-2">
-              <UiAtomsButton variant="ghost" size="sm" @click="openEdit(child)">
-                Izmeni
-              </UiAtomsButton>
-              <UiAtomsButton variant="ghost" size="sm" @click="confirmDelete(child)">
-                <span class="text-red-500">Obriši</span>
-              </UiAtomsButton>
+
+            <!-- Grandchildren (level 3) -->
+            <div v-if="child.children?.length">
+              <div
+                v-for="grandchild in child.children"
+                :key="grandchild.id"
+                class="flex items-center justify-between px-4 py-2 pl-16 hover:bg-gray-50 border-t border-gray-50"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-sm text-gray-600">{{ grandchild.name }}</span>
+                  <UiAtomsBadge v-if="!grandchild.is_active" variant="neutral">Neaktivna</UiAtomsBadge>
+                  <span class="text-xs text-gray-400">{{ grandchild.products_count }} proizvoda</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <UiAtomsButton variant="ghost" size="sm" @click="openEdit(grandchild)">
+                    Izmeni
+                  </UiAtomsButton>
+                  <UiAtomsButton variant="ghost" size="sm" @click="confirmDelete(grandchild)">
+                    <span class="text-red-500">Obriši</span>
+                  </UiAtomsButton>
+                </div>
+              </div>
             </div>
           </div>
         </div>

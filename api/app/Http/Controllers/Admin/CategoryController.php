@@ -13,7 +13,8 @@ class CategoryController extends Controller
     public function index(): JsonResponse
     {
         $categories = Category::whereNull('parent_id')
-            ->with(['children' => fn ($q) => $q->orderBy('sort_order')->withCount('products')])
+            ->with(['children' => fn ($q) => $q->orderBy('sort_order')->withCount('products')
+                ->with(['children' => fn ($q2) => $q2->orderBy('sort_order')->withCount('products')])])
             ->withCount('products')
             ->orderBy('sort_order')
             ->get();

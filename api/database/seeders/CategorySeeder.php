@@ -10,36 +10,35 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        $categories = [
-            'Voće i povrće' => ['Sveže voće', 'Sveže povrće', 'Sušeno voće'],
-            'Mlečni proizvodi' => ['Sirevi', 'Jogurt', 'Mleko'],
-            'Meso i riba' => ['Sveže meso', 'Suhomesnato', 'Riba'],
-            'Pekara' => ['Hleb', 'Peciva', 'Kolači'],
-            'Pića' => ['Sokovi', 'Voda', 'Čajevi'],
-            'Domaćinstvo' => ['Sredstva za čišćenje', 'Higijena'],
-        ];
+        $json = json_decode(file_get_contents(base_path('../.data/demo_deciji_namestaj.json')), true);
 
-        $sortOrder = 0;
+        $categoryPaths = collect($json)->pluck('categories')->unique()->sort()->values();
 
-        foreach ($categories as $parentName => $children) {
-            $parent = Category::create([
-                'name' => $parentName,
-                'slug' => Str::slug($parentName),
-                'description' => "Kategorija: {$parentName}",
-                'sort_order' => $sortOrder++,
-                'is_active' => true,
-            ]);
+        $created = [];
 
-            $childSort = 0;
-            foreach ($children as $childName) {
-                Category::create([
-                    'parent_id' => $parent->id,
-                    'name' => $childName,
-                    'slug' => Str::slug($childName),
-                    'description' => "{$childName} iz kategorije {$parentName}",
-                    'sort_order' => $childSort++,
+        foreach ($categoryPaths as $path) {
+            $parts = array_map('trim', explode('>', $path));
+            $parentId = null;
+
+            foreach ($parts as $index => $name) {
+                $key = implode(' > ', array_slice($parts, 0, $index + 1));
+
+                if (isset($created[$key])) {
+                    $parentId = $created[$key];
+                    continue;
+                }
+
+                $category = Category::create([
+                    'parent_id' => $parentId,
+                    'name' => $name,
+                    'slug' => Str::slug($name) . ($parentId ? '-' . Str::random(4) : ''),
+                    'description' => $name,
+                    'sort_order' => 0,
                     'is_active' => true,
                 ]);
+
+                $created[$key] = $category->id;
+                $parentId = $category->id;
             }
         }
     }
