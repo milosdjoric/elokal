@@ -139,4 +139,18 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Verifikacioni email poslat.']);
     }
+
+    public function orders(Request $request): JsonResponse
+    {
+        $orders = $request->user()->orders()
+            ->with('items')
+            ->orderByDesc('created_at')
+            ->paginate(10);
+
+        return response()->json(
+            \App\Http\Resources\OrderResource::collection($orders)
+                ->response()
+                ->getData(true)
+        );
+    }
 }
