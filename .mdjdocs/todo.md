@@ -452,36 +452,36 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Feature flag: FEATURE_NEWSLETTER
 
 ### v0.2.18 — Notify Me (Back in Stock)
-- [ ] NotifyMe model (product_id, email)
-- [ ] Subscribe endpoint
-- [ ] Automatski email kad stock > 0 (queue job)
-- [ ] Admin: pregled prijavljenih po proizvodu
+- [x] NotifyMe model (product_id, email)
+- [x] Subscribe endpoint
+- [x] Automatski email kad stock > 0 (queue job)
+- [x] Admin: pregled prijavljenih po proizvodu
 
 ### v0.2.19 — Blog: API
-- [ ] Post model + migracija (title, slug, content, excerpt, featured_image, status, published_at, meta)
-- [ ] BlogCategory model + migracija
-- [ ] Tag model + migracija
-- [ ] Pivot tabele (blog_category_post, post_tag)
-- [ ] BlogController public (index, show)
-- [ ] BlogController admin (CRUD)
-- [ ] Scheduled publishing (queue job)
-- [ ] Testovi
+- [x] Post model + migracija (title, slug, content, excerpt, featured_image, status, published_at, meta)
+- [x] BlogCategory model + migracija
+- [x] Tag model + migracija
+- [x] Pivot tabele (blog_category_post, post_tag)
+- [x] BlogController public (index, show)
+- [x] BlogController admin (CRUD)
+- [x] Scheduled publishing (queue job)
+- [x] Testovi
 
 ### v0.2.20 — Blog: Storefront
-- [ ] `/blog` — listing (varijanta iz podešavanja A/B/C)
-- [ ] `/blog/:slug` — post (varijanta A/B)
-- [ ] `/blog/kategorija/:slug` — postovi iz kategorije
-- [ ] `/blog/tag/:slug` — postovi sa tagom
-- [ ] Sidebar widget-i (recent, kategorije, tag cloud)
-- [ ] Social share, related posts, reading time, author info
+- [x] `/blog` — listing (varijanta iz podešavanja A/B/C)
+- [x] `/blog/:slug` — post (varijanta A/B)
+- [x] `/blog/kategorija/:slug` — postovi iz kategorije
+- [x] `/blog/tag/:slug` — postovi sa tagom
+- [x] Sidebar widget-i (recent, kategorije, tag cloud)
+- [x] Social share, related posts, reading time, author info
 
 ### v0.2.21 — Blog: Admin
-- [ ] Blog postovi listing + CRUD
+- [x] Blog postovi listing + CRUD
 - [ ] Rich text editor
 - [ ] Featured image + inline slike (media library)
-- [ ] Kategorije i tagovi management
-- [ ] Draft/Preview/Scheduled publishing
-- [ ] SEO polja
+- [x] Kategorije i tagovi management
+- [x] Draft/Preview/Scheduled publishing
+- [x] SEO polja
 
 ### v0.2.22 — Email notifikacije
 - [ ] Email branding template (logo, boje, footer)

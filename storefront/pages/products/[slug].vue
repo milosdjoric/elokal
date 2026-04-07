@@ -5,11 +5,18 @@ const route = useRoute()
 const { get } = useApi()
 const { addToCart } = useCart()
 
+const authStore = useAuthStore()
+
 const product = ref<Product | null>(null)
 const related = ref<Product[]>([])
 const loading = ref(true)
 const qty = ref(1)
 const activeTab = ref('description')
+
+const notifyEmail = ref('')
+const notifyLoading = ref(false)
+const notifySuccess = ref('')
+const notifyError = ref('')
 
 const tabs = [
   { key: 'description', label: 'Opis' },
@@ -47,6 +54,27 @@ async function fetchProduct() {
   finally { loading.value = false }
 }
 
+async function handleNotifyMe() {
+  if (!product.value) return
+  notifyLoading.value = true
+  notifyError.value = ''
+  try {
+    const { apiBase } = useApi()
+    const email = notifyEmail.value || authStore.user?.email
+    const data = await $fetch<{ message: string }>(`${apiBase}/v1/products/${product.value.id}/notify-me`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ email }),
+    })
+    notifySuccess.value = data.message
+  }
+  catch (e: unknown) {
+    const err = e as { data?: { message?: string } }
+    notifyError.value = err.data?.message || 'Greška.'
+  }
+  finally { notifyLoading.value = false }
+}
+
 function handleAddToCart() {
   if (product.value) {
     addToCart(product.value, qty.value)
@@ -60,6 +88,7 @@ function onScroll() { showStickyBar.value = window.scrollY > 500 }
 onMounted(() => {
   fetchProduct()
   window.addEventListener('scroll', onScroll)
+  if (authStore.user?.email) notifyEmail.value = authStore.user.email
 })
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
@@ -131,6 +160,24 @@ useSeoMeta({
             <div v-if="product.stock_quantity > 0" class="flex items-center gap-4 mb-6">
               <UiMoleculesQuantitySelector v-model="qty" />
               <UiAtomsButton size="lg" @click="handleAddToCart">Dodaj u korpu</UiAtomsButton>
+            </div>
+
+            <!-- Notify me -->
+            <div v-else class="mb-6">
+              <div v-if="notifySuccess" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 text-sm">
+                {{ notifySuccess }}
+              </div>
+              <form v-else class="flex gap-2" @submit.prevent="handleNotifyMe">
+                <input
+                  v-model="notifyEmail"
+                  type="email"
+                  required
+                  :placeholder="authStore.user?.email || 'Vaš email'"
+                  class="flex-1 px-4 py-2.5 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <UiAtomsButton type="submit" :loading="notifyLoading">Obavesti me</UiAtomsButton>
+              </form>
+              <p v-if="notifyError" class="mt-1 text-sm text-red-600">{{ notifyError }}</p>
             </div>
 
             <!-- SKU -->

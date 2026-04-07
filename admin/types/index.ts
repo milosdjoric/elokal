@@ -202,6 +202,43 @@ export interface Review {
   created_at: string
 }
 
+// --- Blog ---
+
+export interface Post {
+  id: number
+  title: string
+  slug: string
+  excerpt: string | null
+  content?: string
+  featured_image: string | null
+  status: 'draft' | 'published' | 'scheduled'
+  published_at: string | null
+  reading_time: number
+  author?: { id: number; name: string }
+  categories?: Array<{ id: number; name: string; slug: string }>
+  tags?: Array<{ id: number; name: string; slug: string }>
+  meta_title: string | null
+  meta_description: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface BlogCategory {
+  id: number
+  name: string
+  slug: string
+  description: string | null
+  sort_order: number
+  posts_count?: number
+}
+
+export interface Tag {
+  id: number
+  name: string
+  slug: string
+  posts_count?: number
+}
+
 // --- Customer ---
 
 export interface Customer {

@@ -160,6 +160,49 @@ export interface ReviewStats {
   distribution: Record<number, number>
 }
 
+// --- Blog ---
+
+export interface PostAuthor {
+  id: number
+  name: string
+}
+
+export interface PostCategory {
+  id: number
+  name: string
+  slug: string
+}
+
+export interface PostTag {
+  id: number
+  name: string
+  slug: string
+}
+
+export interface Post {
+  id: number
+  title: string
+  slug: string
+  excerpt: string | null
+  content?: string
+  featured_image: string | null
+  status: string
+  published_at: string | null
+  reading_time: number
+  author?: PostAuthor
+  categories?: PostCategory[]
+  tags?: PostTag[]
+  meta_title: string | null
+  meta_description: string | null
+  created_at: string
+}
+
+export interface BlogSidebar {
+  recent_posts: Array<{ id: number; title: string; slug: string; featured_image: string | null; published_at: string }>
+  categories: Array<{ id: number; name: string; slug: string; posts_count: number }>
+  tags: Array<{ id: number; name: string; slug: string; posts_count: number }>
+}
+
 export type OrderStatus =
   | 'pending'
   | 'confirmed'

@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\StockNotificationController as AdminStockNotificationController;
 use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
@@ -16,7 +18,9 @@ use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryCont
 use App\Http\Controllers\Storefront\CheckoutController;
 use App\Http\Controllers\Storefront\PasswordResetController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
+use App\Http\Controllers\Storefront\BlogController;
 use App\Http\Controllers\Storefront\NewsletterController;
+use App\Http\Controllers\Storefront\StockNotificationController;
 use App\Http\Controllers\Storefront\ReviewController;
 use App\Http\Controllers\Storefront\SearchController;
 use App\Http\Controllers\Storefront\WishlistController;
@@ -44,6 +48,14 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('search', SearchController::class);
 
     Route::get('products/{product}/reviews', [ReviewController::class, 'index']);
+
+    Route::post('products/{product}/notify-me', [StockNotificationController::class, 'store']);
+
+    Route::get('blog', [BlogController::class, 'index']);
+    Route::get('blog/sidebar', [BlogController::class, 'sidebar']);
+    Route::get('blog/category/{slug}', [BlogController::class, 'byCategory']);
+    Route::get('blog/tag/{slug}', [BlogController::class, 'byTag']);
+    Route::get('blog/{slug}', [BlogController::class, 'show']);
 
     Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe']);
     Route::get('newsletter/confirm/{token}', [NewsletterController::class, 'confirm']);
@@ -121,6 +133,24 @@ Route::prefix('admin')->group(function () {
 
         Route::get('customers', [CustomerController::class, 'index']);
         Route::get('customers/{customer}', [CustomerController::class, 'show']);
+
+        Route::get('posts', [AdminBlogController::class, 'index']);
+        Route::post('posts', [AdminBlogController::class, 'store']);
+        Route::get('posts/{post}', [AdminBlogController::class, 'show']);
+        Route::put('posts/{post}', [AdminBlogController::class, 'update']);
+        Route::delete('posts/{post}', [AdminBlogController::class, 'destroy']);
+
+        Route::get('blog-categories', [AdminBlogController::class, 'categories']);
+        Route::post('blog-categories', [AdminBlogController::class, 'storeCategory']);
+        Route::put('blog-categories/{category}', [AdminBlogController::class, 'updateCategory']);
+        Route::delete('blog-categories/{category}', [AdminBlogController::class, 'destroyCategory']);
+
+        Route::get('tags', [AdminBlogController::class, 'tags']);
+        Route::post('tags', [AdminBlogController::class, 'storeTag']);
+        Route::delete('tags/{tag}', [AdminBlogController::class, 'destroyTag']);
+
+        Route::get('stock-notifications', [AdminStockNotificationController::class, 'index']);
+        Route::get('stock-notifications/product/{product}', [AdminStockNotificationController::class, 'byProduct']);
 
         Route::get('newsletter', [AdminNewsletterController::class, 'index']);
         Route::get('newsletter/stats', [AdminNewsletterController::class, 'stats']);
