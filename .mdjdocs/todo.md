@@ -184,92 +184,92 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] GDPR tab: cookie consent tekst, privacy/terms linkovi
 
 ### v0.1.22 — Storefront: Setup
-- [ ] Tailwind + base konfiguracija (boje, fontovi, spacing iz dizajn sistema)
-- [ ] useApi() composable (base URL, error handling)
-- [ ] useCart() composable + useCartStore (Pinia + localStorage)
-- [ ] useFeature() composable (feature flag provera)
-- [ ] TypeScript tipovi: Product, Category, ProductImage, CartItem, Cart
+- [x] Tailwind + base konfiguracija (boje, fontovi, spacing iz dizajn sistema)
+- [x] useApi() composable (base URL, error handling)
+- [x] useCart() composable + useCartStore (Pinia + localStorage)
+- [x] useFeature() composable (feature flag provera)
+- [x] TypeScript tipovi: Product, Category, ProductImage, CartItem, Cart
 
 ### v0.1.23 — Storefront: Layout komponente
-- [ ] Header (logo, mega menu, AJAX search, cart ikona sa badge)
-- [ ] Mega menu (podkategorije sa slikama/banerima — varijanta A ili B iz podešavanja)
-- [ ] Top bar (promo poruka, social ikone — ako uključen u podešavanjima)
-- [ ] Footer (4 kolone, social ikone, bottom bar sa payment ikonama)
-- [ ] Mobile bottom navigation (home, kategorije, search, korpa, nalog)
-- [ ] Back to top dugme
-- [ ] Breadcrumbs
-- [ ] Cookie consent baner
+- [x] Header (logo, mega menu, AJAX search, cart ikona sa badge)
+- [x] Mega menu (podkategorije sa slikama/banerima — varijanta A ili B iz podešavanja)
+- [x] Top bar (promo poruka, social ikone — ako uključen u podešavanjima)
+- [x] Footer (4 kolone, social ikone, bottom bar sa payment ikonama)
+- [x] Mobile bottom navigation (home, kategorije, search, korpa, nalog)
+- [x] Back to top dugme
+- [x] Breadcrumbs
+- [x] Cookie consent baner
 
 ### v0.1.24 — Storefront: UI Atoms
-- [ ] Button (variants, sizes, loading)
-- [ ] Input (label, error, disabled)
-- [ ] Badge
-- [ ] Icon
-- [ ] Spinner
-- [ ] Skeleton loader
+- [x] Button (variants, sizes, loading)
+- [x] Input (label, error, disabled)
+- [x] Badge
+- [x] Icon
+- [x] Spinner
+- [x] Skeleton loader
 
 ### v0.1.25 — Storefront: UI Molecules
-- [ ] SearchBar (AJAX autocomplete dropdown sa proizvodima, kategorijama, recent/trending)
-- [ ] QuantitySelector
-- [ ] PriceDisplay (regular, sale, unit price)
-- [ ] Modal
-- [ ] Toast
-- [ ] Tabs (horizontal desktop, accordion mobile)
-- [ ] Accordion
-- [ ] RatingStars (prikaz, ne input — input u Fazi 2)
-- [ ] TrustBadges (payment ikone)
-- [ ] SocialShare (FB, X, Pinterest, Email, Copy link)
-- [ ] Newsletter (email input + dugme)
-- [ ] Carousel (reusable, swipe podrška)
+- [x] SearchBar (AJAX autocomplete dropdown sa proizvodima, kategorijama, recent/trending)
+- [x] QuantitySelector
+- [x] PriceDisplay (regular, sale, unit price)
+- [x] Modal
+- [x] Toast
+- [x] Tabs (horizontal desktop, accordion mobile)
+- [x] Accordion
+- [x] RatingStars (prikaz, ne input — input u Fazi 2)
+- [x] TrustBadges (payment ikone)
+- [x] SocialShare (FB, X, Pinterest, Email, Copy link)
+- [x] Newsletter (email input + dugme)
+- [x] Carousel (reusable, swipe podrška)
 
 ### v0.1.26 — Storefront: Product komponente
-- [ ] ProductCard (slika, swap hover, naziv, kategorija, cena, rating, badges, add to cart, quick view hover)
-- [ ] ProductGrid (responsive: 2 kolone mobile, 3 tablet, 3-4 desktop)
-- [ ] ProductPrice (regular, sale precrtana, unit price)
-- [ ] ProductGallery (glavna slika + thumbnails, zoom/lightbox, video podrška)
-- [ ] ProductCarousel (reusable za featured, related, recently viewed)
-- [ ] QuickView modal (slika, naziv, cena, opis, add to cart)
+- [x] ProductCard (slika, swap hover, naziv, kategorija, cena, rating, badges, add to cart, quick view hover)
+- [x] ProductGrid (responsive: 2 kolone mobile, 3 tablet, 3-4 desktop)
+- [x] ProductPrice (regular, sale precrtana, unit price)
+- [x] ProductGallery (glavna slika + thumbnails, zoom/lightbox, video podrška)
+- [x] ProductCarousel (reusable za featured, related, recently viewed)
+- [x] QuickView modal (slika, naziv, cena, opis, add to cart)
 
 ### v0.1.27 — Storefront: Cart komponente
-- [ ] CartDrawer (sidebar panel, lista stavki, subtotal, CTA dugmad)
-- [ ] CartItem (slika, naziv, cena, quantity +/−, remove, line total)
-- [ ] CartTotals (subtotal, placeholder za shipping/tax/discount, total)
+- [x] CartDrawer (sidebar panel, lista stavki, subtotal, CTA dugmad)
+- [x] CartItem (slika, naziv, cena, quantity +/−, remove, line total)
+- [x] CartTotals (subtotal, placeholder za shipping/tax/discount, total)
 
 ### v0.1.28 — Storefront: Homepage
-- [ ] Hero slideshow (carousel sa slajdovima — slika, naslov, opis, CTA)
-- [ ] Featured proizvodi (carousel)
-- [ ] Kategorije grid sa slikama
+- [x] Hero slideshow (carousel sa slajdovima — slika, naslov, opis, CTA)
+- [x] Featured proizvodi (carousel)
+- [x] Kategorije grid sa slikama
 - [ ] Recently viewed (localStorage)
 - [ ] Page builder sekcije iz admin podešavanja (JSON → render komponenti)
 
 ### v0.1.29 — Storefront: PLP (Product Listing Page)
-- [ ] `/prodavnica` stranica
-- [ ] `/kategorija/:slug` stranica
-- [ ] Toolbar: result count, per page (9/12/18/24), grid density (2/3/4), grid/list toggle, sort dropdown
-- [ ] Sidebar filteri: category tree (expand/collapse + count), price range slider, stock status, rating
+- [x] `/prodavnica` stranica
+- [x] `/kategorija/:slug` stranica
+- [x] Toolbar: result count, per page (9/12/18/24), grid density (2/3/4), grid/list toggle, sort dropdown
+- [x] Sidebar filteri: category tree (expand/collapse + count), price range slider, stock status, rating
 - [ ] Active filters prikaz (sa X za uklanjanje, "Clear all")
-- [ ] Paginacija + "Učitaj još" opcija
+- [x] Paginacija + "Učitaj još" opcija
 - [ ] Layout varijanta iz podešavanja (A sidebar / B top / C off-canvas)
-- [ ] Category header (naslov + opis + breadcrumbs)
-- [ ] Empty state (0 rezultata, resetuj filtere)
-- [ ] Skeleton loaderi dok se učitava
+- [x] Category header (naslov + opis + breadcrumbs)
+- [x] Empty state (0 rezultata, resetuj filtere)
+- [x] Skeleton loaderi dok se učitava
 
 ### v0.1.30 — Storefront: PDP (Product Detail Page)
-- [ ] `/proizvod/:slug` stranica
-- [ ] Galerija sa zoom/lightbox (varijanta iz podešavanja: A/B/C)
-- [ ] Product info: naziv, cena (PriceDisplay), short description, add to cart, quantity selector
-- [ ] Trust & Conversion blok (stock status, urgency bar, countdown, shipping/return info, trust badges)
-- [ ] Sticky Add to Cart bar (pojavi se na scroll, thumbnail + naziv + rating + cena + dugme)
-- [ ] PDP Tabs (opis, specifikacije, shipping & returns — recenzije placeholder za Fazu 2)
-- [ ] FAQ tab (accordion Q&A)
+- [x] `/proizvod/:slug` stranica
+- [x] Galerija sa zoom/lightbox (varijanta iz podešavanja: A/B/C)
+- [x] Product info: naziv, cena (PriceDisplay), short description, add to cart, quantity selector
+- [x] Trust & Conversion blok (stock status, urgency bar, countdown, shipping/return info, trust badges)
+- [x] Sticky Add to Cart bar (pojavi se na scroll, thumbnail + naziv + rating + cena + dugme)
+- [x] PDP Tabs (opis, specifikacije, shipping & returns — recenzije placeholder za Fazu 2)
+- [x] FAQ tab (accordion Q&A)
 - [ ] Custom tabovi po proizvodu (iz admin-a)
 - [ ] Responsive tabovi → accordion na mobilnom
 - [ ] Sticky tabs navigacija
-- [ ] Related products carousel
+- [x] Related products carousel
 - [ ] Recently viewed carousel
 - [ ] Prev/Next product navigacija
-- [ ] Social share blok
-- [ ] Breadcrumbs
+- [x] Social share blok
+- [x] Breadcrumbs
 
 ### v0.1.31 — Storefront: Search
 - [ ] `/pretraga?q=` stranica (isti layout kao PLP)
