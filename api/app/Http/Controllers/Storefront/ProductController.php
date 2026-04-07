@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,18 @@ class ProductController extends Controller
             ->where('is_active', true);
 
         if ($request->has('category')) {
-            $query->whereHas('categories', fn ($q) => $q->where('categories.id', $request->category));
+            $categoryId = (int) $request->category;
+            $allIds = collect([$categoryId]);
+
+            // Rekurzivno sakupi sve podkategorije (svi nivoi)
+            $parentIds = collect([$categoryId]);
+            while ($parentIds->isNotEmpty()) {
+                $childIds = Category::whereIn('parent_id', $parentIds)->pluck('id');
+                $allIds = $allIds->merge($childIds);
+                $parentIds = $childIds;
+            }
+
+            $query->whereHas('categories', fn ($q) => $q->whereIn('categories.id', $allIds));
         }
 
         if ($request->boolean('featured')) {
