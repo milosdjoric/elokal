@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Storefront;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
@@ -30,6 +31,7 @@ class CheckoutController extends Controller
             'items' => 'required|array|min:1',
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
+            'coupon_code' => 'nullable|string',
         ]);
 
         return DB::transaction(function () use ($request) {
@@ -68,6 +70,23 @@ class CheckoutController extends Controller
                 $product->decrement('stock_quantity', $item['quantity']);
             }
 
+            // Kupon
+            $discount = 0;
+            $coupon = null;
+            if ($request->filled('coupon_code')) {
+                $coupon = Coupon::where('code', strtoupper($request->coupon_code))->first();
+                if (! $coupon) {
+                    throw ValidationException::withMessages(['coupon_code' => ['Kupon ne postoji.']]);
+                }
+                $valid = $coupon->isValid($request->user()?->id);
+                if ($valid !== true) {
+                    throw ValidationException::withMessages(['coupon_code' => [$valid]]);
+                }
+                $discount = $coupon->calculateDiscount($subtotal);
+            }
+
+            $total = max(0, $subtotal - $discount);
+
             $order = Order::create([
                 'order_number' => Order::generateOrderNumber(),
                 'user_id' => $request->user()?->id,
@@ -83,11 +102,22 @@ class CheckoutController extends Controller
                 'shipping_postal_code' => $request->shipping_postal_code,
                 'shipping_country' => $request->shipping_country ?? 'RS',
                 'subtotal' => $subtotal,
-                'total' => $subtotal,
+                'discount' => $discount,
+                'total' => $total,
                 'notes' => $request->notes,
             ]);
 
             $order->items()->createMany($orderItems);
+
+            // Evidentiranje kupona
+            if ($coupon && $discount > 0) {
+                $coupon->usages()->create([
+                    'order_id' => $order->id,
+                    'user_id' => $request->user()?->id,
+                    'discount_amount' => $discount,
+                ]);
+                $coupon->increment('times_used');
+            }
 
             $order->timeline()->create([
                 'status' => 'pending',
