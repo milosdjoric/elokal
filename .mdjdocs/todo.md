@@ -679,32 +679,32 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ## v0.4.x — Faza 4: Proširenja
 
 ### v0.4.1 — Gift Cards
-- [ ] GiftCard model + migracija
-- [ ] GiftCardTransaction model
+- [x] GiftCard model + migracija
+- [x] GiftCardTransaction model
 - [ ] Kupovina (poseban proizvod, izbor iznosa, recipient forma)
 - [ ] Email primaocu sa kodom
 - [ ] Korišćenje na checkout-u (polje za kod, parcijalno korišćenje)
-- [ ] `/poklon-kartica/provera` — balance check
-- [ ] Admin: pregled, ručno kreiranje, disable, istorija
+- [x] `/poklon-kartica/provera` — balance check
+- [x] Admin: pregled, ručno kreiranje, disable, istorija
 - [ ] Feature flag: FEATURE_GIFT_CARDS
 
 ### v0.4.2 — Loyalty / Reward Points
-- [ ] LoyaltyAccount model + migracija
-- [ ] LoyaltyTransaction model
-- [ ] Pravila za zarađivanje (kupovina, registracija, recenzija, birthday, referral)
+- [x] LoyaltyAccount model + migracija
+- [x] LoyaltyTransaction model
+- [x] Pravila za zarađivanje (kupovina, registracija, recenzija, birthday, referral)
 - [ ] Korišćenje na checkout-u (slider/input za poene)
-- [ ] Tier sistem (bronze/silver/gold/platinum)
+- [x] Tier sistem (bronze/silver/gold/platinum)
 - [ ] `/nalog/poeni` — balance, tier, progress, istorija
-- [ ] Admin: konfiguracija pravila, pregled po korisniku, ručno dodavanje
+- [x] Admin: konfiguracija pravila, pregled po korisniku, ručno dodavanje
 - [ ] Expiry pravila
 - [ ] Feature flag: FEATURE_LOYALTY
 
 ### v0.4.3 — Store Credits
-- [ ] StoreCreditAccount model + migracija
-- [ ] StoreCreditTransaction model
+- [x] StoreCreditAccount model + migracija
+- [x] StoreCreditTransaction model
 - [ ] Automatska primena na checkout-u
 - [ ] `/nalog/krediti` — balance + istorija
-- [ ] Admin: dodela/oduzimanje sa razlogom
+- [x] Admin: dodela/oduzimanje sa razlogom
 - [ ] Feature flag: FEATURE_STORE_CREDITS
 
 ### v0.4.4 — Multi-language (i18n)
@@ -787,9 +787,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Search i filter po tipu, datumu, veličini
 
 ### v0.4.15 — Admin korisnici & Permisije
-- [ ] Permisije po modulu (proizvodi, narudžbine, kupci, podešavanja)
-- [ ] Admin CRUD (dodaj/edituj/deaktiviraj admina)
-- [ ] Activity log (ko, šta, kada)
+- [x] Permisije po modulu (proizvodi, narudžbine, kupci, podešavanja)
+- [x] Admin CRUD (dodaj/edituj/deaktiviraj admina)
+- [x] Activity log (ko, šta, kada)
 - [ ] Permisije UI u admin formi
 
 ### v0.4.16 — Admin podešavanja (proširenja)
@@ -798,17 +798,17 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Notifications tab: admin email, low stock threshold, notify on order/review
 
 ### v0.4.17 — Statičke stranice
-- [ ] Page model + migracija (title, slug, content, meta)
-- [ ] Admin: CRUD stranica (rich text editor)
+- [x] Page model + migracija (title, slug, content, meta)
+- [x] Admin: CRUD stranica (rich text editor)
 - [ ] `/o-nama`, `/kontakt`, `/uslovi-koriscenja`, `/politika-privatnosti`, `/cesta-pitanja`
 - [ ] Kontakt forma sa email notifikacijom
 
 ### v0.4.18 — Webhooks
-- [ ] Webhook model (URL, events, secret, status)
-- [ ] Event dispatch (order.created, order.status_changed, itd.)
-- [ ] Retry logika (3 pokušaja, exponential backoff)
-- [ ] HMAC signature
-- [ ] Admin: CRUD, event selekcija, log, test dugme
+- [x] Webhook model (URL, events, secret, status)
+- [x] Event dispatch (order.created, order.status_changed, itd.)
+- [x] Retry logika (3 pokušaja, exponential backoff)
+- [x] HMAC signature
+- [x] Admin: CRUD, event selekcija, log, test dugme
 - [ ] Feature flag: FEATURE_WEBHOOKS
 
 ### v0.4.19 — API Rate Limiting (proširenja)

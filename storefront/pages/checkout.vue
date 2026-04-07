@@ -249,7 +249,7 @@ useHead({ title: 'Kasa — eLokal' })
       {{ error }}
     </div>
 
-    <form @submit.prevent="handleSubmit">
+    <form novalidate @submit.prevent="handleSubmit">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Form -->
         <div class="lg:col-span-2 space-y-6">

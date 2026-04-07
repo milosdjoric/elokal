@@ -16,6 +16,7 @@ class Admin extends Authenticatable
         'email',
         'password',
         'role',
+        'permissions',
         'is_active',
     ];
 
@@ -28,6 +29,7 @@ class Admin extends Authenticatable
         return [
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'permissions' => 'array',
             'locked_until' => 'datetime',
         ];
     }

@@ -6,16 +6,23 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\GiftCardController as AdminGiftCardController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\LoyaltyController;
 use App\Http\Controllers\Admin\AbandonedCartController as AdminAbandonedCartController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\ImportController;
+use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\ShippingController as AdminShippingController;
+use App\Http\Controllers\Admin\StoreCreditController;
 use App\Http\Controllers\Admin\TaxRateController;
+use App\Http\Controllers\Admin\WebhookController;
 use App\Http\Controllers\Admin\CallbackRequestController as AdminCallbackController;
 use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -32,6 +39,8 @@ use App\Http\Controllers\Storefront\ProductController as StorefrontProductContro
 use App\Http\Controllers\Storefront\BlogController;
 use App\Http\Controllers\Storefront\CallbackRequestController;
 use App\Http\Controllers\Storefront\CouponController as StorefrontCouponController;
+use App\Http\Controllers\Storefront\GiftCardController;
+use App\Http\Controllers\Storefront\PageController as StorefrontPageController;
 use App\Http\Controllers\Storefront\AbandonedCartController;
 use App\Http\Controllers\Storefront\PaymentController;
 use App\Http\Controllers\Storefront\ShippingController as StorefrontShippingController;
@@ -70,6 +79,8 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::post('coupon/validate', [StorefrontCouponController::class, 'validate']);
     Route::post('shipping/methods', [StorefrontShippingController::class, 'methods']);
     Route::get('payment-methods', [PaymentController::class, 'methods']);
+    Route::post('gift-card/check', [GiftCardController::class, 'check']);
+    Route::get('pages/{slug}', [StorefrontPageController::class, 'show']);
     Route::post('abandoned-cart', [AbandonedCartController::class, 'store']);
     Route::get('abandoned-cart/recover/{token}', [AbandonedCartController::class, 'recover']);
     Route::post('abandoned-cart/recovered/{token}', [AbandonedCartController::class, 'markRecovered']);
@@ -185,6 +196,34 @@ Route::prefix('admin')->group(function () {
         Route::get('tags', [AdminBlogController::class, 'tags']);
         Route::post('tags', [AdminBlogController::class, 'storeTag']);
         Route::delete('tags/{tag}', [AdminBlogController::class, 'destroyTag']);
+
+        Route::apiResource('gift-cards', AdminGiftCardController::class)->except(['destroy']);
+        Route::post('gift-cards/{giftCard}/adjust', [AdminGiftCardController::class, 'adjust']);
+
+        Route::get('loyalty', [LoyaltyController::class, 'index']);
+        Route::get('loyalty/{account}', [LoyaltyController::class, 'show']);
+        Route::post('loyalty/{account}/adjust', [LoyaltyController::class, 'adjust']);
+        Route::get('loyalty-config', [LoyaltyController::class, 'config']);
+
+        Route::get('store-credits', [StoreCreditController::class, 'index']);
+        Route::get('store-credits/{account}', [StoreCreditController::class, 'show']);
+        Route::post('store-credits/user/{user}/adjust', [StoreCreditController::class, 'adjust']);
+
+        Route::apiResource('pages', AdminPageController::class);
+
+        Route::get('admins', [AdminUserController::class, 'index']);
+        Route::post('admins', [AdminUserController::class, 'store']);
+        Route::put('admins/{admin}', [AdminUserController::class, 'update']);
+        Route::delete('admins/{admin}', [AdminUserController::class, 'destroy']);
+
+        Route::get('activity-log', [ActivityLogController::class, 'index']);
+
+        Route::get('webhooks', [WebhookController::class, 'index']);
+        Route::post('webhooks', [WebhookController::class, 'store']);
+        Route::put('webhooks/{webhook}', [WebhookController::class, 'update']);
+        Route::delete('webhooks/{webhook}', [WebhookController::class, 'destroy']);
+        Route::get('webhooks/{webhook}/logs', [WebhookController::class, 'logs']);
+        Route::post('webhooks/{webhook}/test', [WebhookController::class, 'test']);
 
         Route::get('abandoned-carts', [AdminAbandonedCartController::class, 'index']);
         Route::get('abandoned-carts/stats', [AdminAbandonedCartController::class, 'stats']);
