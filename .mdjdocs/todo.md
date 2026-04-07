@@ -511,6 +511,32 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Swagger UI na /api/docs
 - [ ] Postman collection export
 
+### Odloženo — eksterne zavisnosti
+> Stavke iz Faze 2 koje zahtevaju eksterne pakete, API ključeve ili SMTP konfiguraciju.
+> Implementirati per-deployment kad budu dostupni kredencijali/servisi.
+
+**Paketi:**
+- [ ] Social login — Google, Facebook, Apple (Laravel Socialite + OAuth kredencijali) — v0.2.1, v0.2.2
+- [ ] Admin 2FA — TOTP setup, QR kod, backup kodovi (pragmarx/google2fa ili similar) — v0.2.3
+- [ ] PDF — Invoice, packing slip, credit note (dompdf ili snappy) — v0.2.11
+- [ ] Rich text editor — TipTap ili Quill za blog content editor — v0.2.21
+- [ ] API dokumentacija — OpenAPI 3.0 spec + Swagger UI (l5-swagger ili scramble) — v0.2.24
+- [ ] Newsletter popup — exit intent modal, jednom po sesiji — v0.2.17
+
+**SMTP (email):**
+- [ ] Email branding template (logo, boje, footer) — v0.2.22
+- [ ] Dobrodošlica, reset lozinke, potvrda narudžbine — v0.2.22
+- [ ] Narudžbina poslata (tracking), isporučena (CTA recenzija) — v0.2.22
+- [ ] Otkazivanje, refund, back in stock — v0.2.22
+- [ ] Newsletter potvrda + dobrodošlica — v0.2.22
+- [ ] Admin notifikacije (nova narudžbina, low stock, nova recenzija) — v0.2.22
+- [ ] Callback request email adminu — v0.2.23
+- [ ] Nova recenzija email adminu — v0.2.14
+
+**Feature flagovi:**
+- [ ] FEATURE_WISHLIST — v0.2.15
+- [ ] FEATURE_NEWSLETTER — v0.2.17
+
 ---
 
 ## v0.3.x — Faza 3: Napredna prodaja
