@@ -7,62 +7,62 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ## v0.1.x — Faza 1: MVP
 
 ### v0.1.1 — Inicijalizacija projekata
-- [ ] Git init + .gitignore
-- [ ] Laravel 11 projekat u `api/`
-- [ ] Nuxt 3 projekat u `admin/` (SPA mode)
-- [ ] Nuxt 3 projekat u `storefront/` (SSR mode)
-- [ ] CLAUDE.md kreiran
-- [ ] Tailwind CSS setup (admin + storefront)
-- [ ] TypeScript konfiguracija (strict mode, oba Nuxt projekta)
-- [ ] Pinia setup (admin + storefront)
-- [ ] Folder struktura: components (ui_atoms, ui_molecules, layout, product, cart), composables, stores, types, utils
+- [x] Git init + .gitignore
+- [x] Laravel 12 projekat u `api/`
+- [x] Nuxt 3 projekat u `admin/` (SPA mode)
+- [x] Nuxt 3 projekat u `storefront/` (SSR mode)
+- [x] CLAUDE.md kreiran
+- [x] Tailwind CSS setup (admin + storefront)
+- [x] TypeScript konfiguracija (strict mode, oba Nuxt projekta)
+- [x] Pinia setup (admin + storefront)
+- [x] Folder struktura: components (ui_atoms, ui_molecules, layout, product, cart), composables, stores, types, utils
 
 ### v0.1.2 — API: Modeli i migracije
-- [ ] Product model + migracija (sva polja: name, slug, short_description, description, price, sale_price, sale_price_from, sale_price_to, cost_price, unit_price, unit_label, sku, stock_quantity, is_active, featured, sort_order, meta_title, meta_description, soft_deletes)
-- [ ] Category model + migracija (parent_id self-referencing, name, slug, description, image_path, sort_order, is_active, meta_title, meta_description)
-- [ ] ProductImage model + migracija (product_id FK, image_path, alt_text, sort_order, is_primary)
-- [ ] category_product pivot migracija
-- [ ] Admin model + migracija (name, email, password, role enum, is_active)
-- [ ] User model proširiti (phone polje)
-- [ ] SearchLog model + migracija (query, results_count, user_id nullable, ip, created_at)
+- [x] Product model + migracija (sva polja: name, slug, short_description, description, price, sale_price, sale_price_from, sale_price_to, cost_price, unit_price, unit_label, sku, stock_quantity, is_active, featured, sort_order, meta_title, meta_description, soft_deletes)
+- [x] Category model + migracija (parent_id self-referencing, name, slug, description, image_path, sort_order, is_active, meta_title, meta_description)
+- [x] ProductImage model + migracija (product_id FK, image_path, alt_text, sort_order, is_primary)
+- [x] category_product pivot migracija
+- [x] Admin model + migracija (name, email, password, role enum, is_active)
+- [x] User model proširiti (phone polje)
+- [x] SearchLog model + migracija (query, results_count, user_id nullable, ip, created_at)
 
 ### v0.1.3 — API: Factories i seederi
-- [ ] ProductFactory
-- [ ] CategoryFactory
-- [ ] ProductImageFactory
-- [ ] AdminSeeder (super_admin: admin@webshop.test / password)
-- [ ] CategorySeeder (6 kategorija sa podkategorijama)
-- [ ] ProductSeeder (30 proizvoda sa slikama)
-- [ ] DatabaseSeeder — povezati sve
+- [x] ProductFactory
+- [x] CategoryFactory
+- [x] ProductImageFactory
+- [x] AdminSeeder (super_admin: admin@webshop.test / password)
+- [x] CategorySeeder (6 kategorija sa podkategorijama)
+- [x] ProductSeeder (30 proizvoda sa slikama)
+- [x] DatabaseSeeder — povezati sve
 
 ### v0.1.4 — API: Auth (admin)
-- [ ] Sanctum setup sa admin guardom
-- [ ] AdminAuthController (login, logout, me)
-- [ ] Auth middleware za admin rute
-- [ ] Rate limiting za login (5 req/min)
+- [x] Sanctum setup sa admin guardom
+- [x] AdminAuthController (login, logout, me)
+- [x] Auth middleware za admin rute
+- [x] Rate limiting za login (5 req/min)
 
 ### v0.1.5 — API: Product CRUD
-- [ ] ProductController (index, store, show, update, destroy)
-- [ ] ProductFormRequest (store validacija)
-- [ ] ProductUpdateRequest (update validacija)
-- [ ] ProductResource
-- [ ] ProductCollection (sa paginacijom)
-- [ ] Filteri: status, kategorija, featured, search query
-- [ ] Sortiranje: name, price, created_at, sort_order
-- [ ] Paginacija sa per_page param
+- [x] ProductController (index, store, show, update, destroy)
+- [x] ProductFormRequest (store validacija)
+- [x] ProductUpdateRequest (update validacija)
+- [x] ProductResource
+- [x] ProductCollection (sa paginacijom)
+- [x] Filteri: status, kategorija, featured, search query
+- [x] Sortiranje: name, price, created_at, sort_order
+- [x] Paginacija sa per_page param
 
 ### v0.1.6 — API: Product Images
-- [ ] ProductImageController (store, destroy, reorder)
-- [ ] Upload validacija (tip, veličina)
-- [ ] Image resize queue job (thumbnail, medium, large)
-- [ ] WebP konverzija
-- [ ] Storage disk konfiguracija
+- [x] ProductImageController (store, destroy, reorder)
+- [x] Upload validacija (tip, veličina)
+- [x] Image resize queue job (thumbnail, medium, large)
+- [x] WebP konverzija
+- [x] Storage disk konfiguracija
 
 ### v0.1.7 — API: Category CRUD
-- [ ] CategoryController (index, store, update, destroy)
-- [ ] CategoryFormRequest
-- [ ] CategoryResource (sa children tree)
-- [ ] Tree struktura response (nested children)
+- [x] CategoryController (index, store, update, destroy)
+- [x] CategoryFormRequest
+- [x] CategoryResource (sa children tree)
+- [x] Tree struktura response (nested children)
 
 ### v0.1.8 — API: Javne rute (storefront)
 - [ ] Public ProductController (index sa filterima, show po slug-u)

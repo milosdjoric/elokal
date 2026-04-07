@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use Illuminate\Support\Facades\Route;
@@ -19,5 +20,7 @@ Route::prefix('admin')->group(function () {
         Route::post('products/{product}/images', [ProductImageController::class, 'store']);
         Route::delete('products/{product}/images/{image}', [ProductImageController::class, 'destroy']);
         Route::patch('products/{product}/images/reorder', [ProductImageController::class, 'reorder']);
+
+        Route::apiResource('categories', CategoryController::class)->except(['show']);
     });
 });
