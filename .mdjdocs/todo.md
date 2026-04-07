@@ -298,6 +298,27 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] 500 stranica (friendly poruka, kontakt info)
 - [x] Nuxt error.vue handler
 
+### Odloženo — Faza 1
+> Stavke koje su preskočene kao manje prioritetne ili zahtevaju dizajn iteracije.
+
+**Admin UI:**
+- [ ] Drag & drop reorder kategorija — v0.1.19
+- [ ] Image upload za kategoriju — v0.1.19
+- [ ] Media picker komponenta (reusable u formama) — v0.1.20
+
+**Storefront UI:**
+- [ ] Recently viewed (localStorage) — v0.1.28, v0.1.30
+- [ ] Page builder sekcije iz admin podešavanja — v0.1.28
+- [ ] Active filters prikaz (sa X, "Clear all") — v0.1.29
+- [ ] Layout varijanta PLP (A/B/C iz podešavanja) — v0.1.29
+- [ ] Custom tabovi po proizvodu — v0.1.30
+- [ ] Responsive tabovi → accordion na mobilnom — v0.1.30
+- [ ] Sticky tabs navigacija — v0.1.30
+- [ ] Prev/Next product navigacija — v0.1.30
+- [ ] Trending searches (admin konfiguriše) — v0.1.31
+- [ ] Search scope po kategoriji — v0.1.31
+- [ ] Cart layout varijanta (A/B iz podešavanja) — v0.1.32
+
 ---
 
 ## v0.2.x — Faza 2: Kupovina & Nalozi
@@ -553,7 +574,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Testovi
 
 ### v0.3.2 — Varijante: Admin
-- [ ] Atributi management stranica (CRUD, color picker, image upload za swatch)
+- [x] Atributi management stranica (CRUD, color picker, image upload za swatch)
 - [ ] Varijante matrica na product formi (auto-generisanje kombinacija)
 - [ ] Bulk edit cena/stock/SKU
 - [ ] Disable pojedinačnih varijanti
@@ -585,9 +606,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Admin: CRUD kupona sa svim pravilima
 - [x] Admin: bulk generate kodova
 - [x] Admin: statistika korišćenja
-- [ ] Coupon polje na cart-u i checkout-u (AJAX validacija)
-- [ ] Prikaz primenjenog kupona (naziv, popust, X za uklanjanje)
-- [ ] Error poruke za nevalidne kupone
+- [x] Coupon polje na cart-u i checkout-u (AJAX validacija)
+- [x] Prikaz primenjenog kupona (naziv, popust, X za uklanjanje)
+- [x] Error poruke za nevalidne kupone
 - [ ] Countdown timer na PDP/card-u za akcije
 
 ### v0.3.6 — Inventar: API
@@ -621,10 +642,10 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Admin: CRUD zona i metoda
 - [ ] Admin: carrier konfiguracija
 - [x] Admin: tracking unos na order detail-u
-- [ ] Checkout: prikaz metoda sa cenom i estimated delivery
-- [ ] Cart: shipping estimate
-- [ ] Free shipping progress bar
-- [ ] `/pracenje/:tracking_number` — tracking stranica
+- [x] Checkout: prikaz metoda sa cenom i estimated delivery
+- [x] Cart: shipping estimate
+- [x] Free shipping progress bar
+- [x] `/pracenje/:tracking_number` — tracking stranica
 - [ ] Email sa tracking brojem
 
 ### v0.3.10 — Plaćanje: API
@@ -673,6 +694,33 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] CSV export narudžbina
 - [x] CSV export kupaca
 - [ ] Scheduled export (nedeljni/mesečni na email)
+
+### Odloženo — Faza 3
+> Stavke koje zahtevaju eksternu zavisnost, velik UI rad ili SMTP.
+
+**Eksterno:**
+- [ ] Stripe integracija (API ključ) — v0.3.10
+- [ ] Email sa tracking brojem — v0.3.9
+- [ ] Low stock email notifikacije — v0.3.6
+- [ ] Scheduled export na email — v0.3.14
+
+**UI-heavy (iterativno sa dizajnom):**
+- [ ] Varijante matrica + bulk edit na product formi — v0.3.2
+- [ ] PDP varijante (swatch/dropdown, promena slike/cene) — v0.3.3
+- [ ] Color/Size swatches na PLP card-u — v0.3.3
+- [ ] Visual filters (slike/swatch) — v0.3.3
+- [ ] Size guide popup — v0.3.3
+- [ ] Countdown timer na PDP/card-u — v0.3.5
+- [ ] Checkout izbor metode plaćanja (UI) — v0.3.11
+
+**Backend (manja prioritetnost):**
+- [ ] CouponCondition model (napredna pravila) — v0.3.4
+- [ ] Stock reservation 15 min — v0.3.6
+- [ ] Backorder opcija — v0.3.6
+- [ ] Shipment model — v0.3.8
+- [ ] Abandoned cart detekcija (timeout job) — v0.3.13
+- [ ] Import history log — v0.3.14
+- [ ] Image import iz URL-a — v0.3.14
 
 ---
 

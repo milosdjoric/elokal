@@ -39,6 +39,27 @@ const error = ref('')
 const errors = ref<Record<string, string[]>>({})
 const touched = ref<Record<string, boolean>>({})
 
+// Kupon
+const couponCode = ref('')
+const couponLoading = ref(false)
+const couponError = ref('')
+const appliedCoupon = ref<{ code: string; type: string; value: string; discount: string } | null>(null)
+
+// Shipping metode
+interface ShippingOption { id: number; name: string; type: string; cost: string; estimated_days: string | null }
+const shippingMethods = ref<ShippingOption[]>([])
+const selectedShippingMethod = ref<number | null>(null)
+const shippingCost = computed(() => {
+  const method = shippingMethods.value.find(m => m.id === selectedShippingMethod.value)
+  return method ? parseFloat(method.cost) : 0
+})
+
+// Totali
+const cartStore = useCartStore()
+const subtotal = computed(() => cartStore.total)
+const discountAmount = computed(() => appliedCoupon.value ? parseFloat(appliedCoupon.value.discount) : 0)
+const orderTotal = computed(() => Math.max(0, subtotal.value - discountAmount.value + shippingCost.value))
+
 // Saved addresses
 const savedAddresses = ref<SavedAddress[]>([])
 const selectedAddressId = ref<number | null>(null)
@@ -139,6 +160,51 @@ function markBillingTouched(field: string) {
   touched.value[`billing.${field}`] = true
 }
 
+// Kupon validacija
+async function applyCoupon() {
+  if (!couponCode.value.trim()) return
+  couponLoading.value = true
+  couponError.value = ''
+  try {
+    const data = await $fetch<{ data: { code: string; type: string; value: string; discount: string } }>(`${apiBase}/v1/coupon/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ code: couponCode.value, subtotal: subtotal.value }),
+    })
+    appliedCoupon.value = data.data
+  }
+  catch (e: unknown) {
+    const err = e as { data?: { message?: string } }
+    couponError.value = err.data?.message || 'Nevažeći kupon.'
+    appliedCoupon.value = null
+  }
+  finally { couponLoading.value = false }
+}
+
+function removeCoupon() {
+  appliedCoupon.value = null
+  couponCode.value = ''
+  couponError.value = ''
+}
+
+// Shipping metode — učitaj kad se promeni država
+async function fetchShippingMethods() {
+  const country = form.shipping_country || 'RS'
+  const postalCode = form.shipping_postal_code || undefined
+  try {
+    const data = await $fetch<{ data: ShippingOption[] }>(`${apiBase}/v1/shipping/methods`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ country, postal_code: postalCode, subtotal: subtotal.value }),
+    })
+    shippingMethods.value = data.data
+    if (data.data.length > 0 && !selectedShippingMethod.value) {
+      selectedShippingMethod.value = data.data[0].id
+    }
+  }
+  catch { /* silent — fallback na besplatno */ }
+}
+
 // Persistent cart — čuvaj form pri napuštanju
 function saveFormDraft() {
   if (import.meta.client) {
@@ -172,6 +238,12 @@ function restoreFormDraft() {
   catch { /* silent */ }
 }
 
+// Ponovo učitaj shipping metode kad se promeni adresa
+watch(
+  () => [form.shipping_country, form.shipping_postal_code],
+  () => { if (form.shipping_country) fetchShippingMethods() },
+)
+
 // Watch form za auto-save draft
 watch([() => ({ ...form }), billingSameAsShipping, () => ({ ...billing })], saveFormDraft, { deep: true })
 
@@ -196,6 +268,14 @@ async function handleSubmit() {
       body.billing_city = billing.city
       body.billing_postal_code = billing.postal_code
       body.billing_country = billing.country
+    }
+
+    if (selectedShippingMethod.value) {
+      body.shipping_method_id = selectedShippingMethod.value
+    }
+
+    if (appliedCoupon.value) {
+      body.coupon_code = appliedCoupon.value.code
     }
 
     const headers: Record<string, string> = {
@@ -234,6 +314,7 @@ if (import.meta.client && isEmpty.value) {
 onMounted(() => {
   restoreFormDraft()
   fetchSavedAddresses()
+  fetchShippingMethods()
 })
 
 useHead({ title: 'Kasa — eLokal' })
@@ -367,6 +448,60 @@ useHead({ title: 'Kasa — eLokal' })
             </div>
           </div>
 
+          <!-- Shipping method -->
+          <div v-if="shippingMethods.length > 0" class="border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Način dostave</h2>
+            <div class="space-y-2">
+              <label
+                v-for="method in shippingMethods"
+                :key="method.id"
+                class="flex items-center justify-between border border-gray-200 p-3 cursor-pointer transition-colors"
+                :class="selectedShippingMethod === method.id ? 'border-primary-500 bg-primary-50' : 'hover:border-gray-300'"
+              >
+                <div class="flex items-center gap-3">
+                  <input
+                    v-model="selectedShippingMethod"
+                    type="radio"
+                    :value="method.id"
+                    class="w-4 h-4 text-primary-600 border-gray-300 focus:ring-primary-500"
+                  />
+                  <div>
+                    <p class="text-sm font-medium text-gray-800">{{ method.name }}</p>
+                    <p v-if="method.estimated_days" class="text-xs text-gray-400">{{ method.estimated_days }} radnih dana</p>
+                  </div>
+                </div>
+                <span class="text-sm font-medium" :class="parseFloat(method.cost) === 0 ? 'text-green-600' : 'text-gray-800'">
+                  {{ parseFloat(method.cost) === 0 ? 'Besplatno' : `${parseFloat(method.cost).toLocaleString('sr-RS', { minimumFractionDigits: 2 })} RSD` }}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Coupon -->
+          <div class="border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Kupon</h2>
+            <div v-if="appliedCoupon" class="flex items-center justify-between bg-green-50 border border-green-200 px-4 py-3">
+              <div>
+                <p class="text-sm font-medium text-green-800">{{ appliedCoupon.code }}</p>
+                <p class="text-xs text-green-600">−{{ parseFloat(appliedCoupon.discount).toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</p>
+              </div>
+              <button class="text-sm text-red-500 hover:text-red-700" @click="removeCoupon">Ukloni</button>
+            </div>
+            <div v-else>
+              <div class="flex gap-2">
+                <input
+                  v-model="couponCode"
+                  type="text"
+                  placeholder="Unesite kod kupona"
+                  class="flex-1 px-4 py-2.5 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  @keydown.enter.prevent="applyCoupon"
+                />
+                <UiAtomsButton variant="secondary" :loading="couponLoading" @click="applyCoupon">Primeni</UiAtomsButton>
+              </div>
+              <p v-if="couponError" class="mt-1 text-sm text-red-600">{{ couponError }}</p>
+            </div>
+          </div>
+
           <!-- Notes -->
           <div class="border border-gray-200 p-6">
             <h2 class="text-lg font-bold text-gray-800 mb-4">Napomena</h2>
@@ -393,19 +528,25 @@ useHead({ title: 'Kasa — eLokal' })
             <hr class="my-4" />
 
             <div class="flex justify-between text-sm mb-2">
-              <span class="text-gray-600">Subtotal</span>
+              <span class="text-gray-600">Međuzbir</span>
               <span class="font-medium">{{ total }}</span>
             </div>
-            <div class="flex justify-between text-sm mb-4">
+            <div v-if="appliedCoupon" class="flex justify-between text-sm mb-2">
+              <span class="text-green-600">Kupon ({{ appliedCoupon.code }})</span>
+              <span class="text-green-600 font-medium">−{{ parseFloat(appliedCoupon.discount).toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
+            </div>
+            <div class="flex justify-between text-sm mb-2">
               <span class="text-gray-600">Dostava</span>
-              <span class="text-gray-400">Besplatno</span>
+              <span v-if="!selectedShippingMethod && shippingMethods.length === 0" class="text-gray-400">Unesite adresu za izračun</span>
+              <span v-else-if="shippingCost === 0" class="text-green-600 font-medium">Besplatno</span>
+              <span v-else class="font-medium">{{ shippingCost.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
             </div>
 
             <hr class="my-4" />
 
             <div class="flex justify-between text-lg font-bold mb-6">
               <span>Ukupno</span>
-              <span>{{ total }}</span>
+              <span>{{ orderTotal.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
             </div>
 
             <UiAtomsButton type="submit" :loading="loading" class="w-full" size="lg">

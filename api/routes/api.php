@@ -43,6 +43,7 @@ use App\Http\Controllers\Storefront\GiftCardController;
 use App\Http\Controllers\Storefront\PageController as StorefrontPageController;
 use App\Http\Controllers\Storefront\AbandonedCartController;
 use App\Http\Controllers\Storefront\PaymentController;
+use App\Http\Controllers\Storefront\SettingController as StorefrontSettingController;
 use App\Http\Controllers\Storefront\ShippingController as StorefrontShippingController;
 use App\Http\Controllers\Storefront\NewsletterController;
 use App\Http\Controllers\Storefront\StockNotificationController;
@@ -67,6 +68,8 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('products', [StorefrontProductController::class, 'index']);
     Route::get('products/{slug}', [StorefrontProductController::class, 'show']);
 
+    Route::get('settings', [StorefrontSettingController::class, 'index']);
+
     Route::get('categories', [StorefrontCategoryController::class, 'index']);
     Route::get('categories/{slug}', [StorefrontCategoryController::class, 'show']);
 
@@ -78,6 +81,7 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::post('callback-request', [CallbackRequestController::class, 'store']);
     Route::post('coupon/validate', [StorefrontCouponController::class, 'validate']);
     Route::post('shipping/methods', [StorefrontShippingController::class, 'methods']);
+    Route::get('shipping/config', [StorefrontShippingController::class, 'config']);
     Route::get('payment-methods', [PaymentController::class, 'methods']);
     Route::post('gift-card/check', [GiftCardController::class, 'check']);
     Route::get('pages/{slug}', [StorefrontPageController::class, 'show']);

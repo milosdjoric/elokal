@@ -1,15 +1,15 @@
 <script setup lang="ts">
 interface Props {
-  text?: string
   bgColor?: string
   textColor?: string
 }
 
 withDefaults(defineProps<Props>(), {
-  text: 'Besplatna dostava za narudžbine iznad 5.000 din',
   bgColor: '#03045e',
   textColor: '#ffffff',
 })
+
+const { hasFreeShippingThreshold, formattedThreshold } = useShippingConfig()
 </script>
 
 <template>
@@ -26,7 +26,7 @@ withDefaults(defineProps<Props>(), {
         </span>
       </div>
       <div class="hidden md:flex items-center gap-4">
-        <span>{{ text }}</span>
+        <span v-if="hasFreeShippingThreshold">Besplatna dostava za narudžbine iznad {{ formattedThreshold }} din</span>
       </div>
     </div>
   </div>

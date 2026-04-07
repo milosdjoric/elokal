@@ -2,7 +2,9 @@
 import type { Product } from '~/types'
 
 const { total, count, items } = useCart()
+const cartStore = useCartStore()
 const { get } = useApi()
+const { config: shippingConfig, isFreeShipping, remainingForFree, freeProgress, estimatedCost } = useShippingConfig()
 
 const crossSellProducts = ref<Product[]>([])
 
@@ -44,6 +46,24 @@ onMounted(fetchCrossSell)
 
 <template>
   <div class="space-y-6">
+    <!-- Free shipping progress -->
+    <div class="border border-gray-200 p-4">
+      <div v-if="isFreeShipping(cartStore.total)" class="flex items-center gap-2 text-sm text-green-600 font-medium">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        Ostvarili ste besplatnu dostavu!
+      </div>
+      <div v-else>
+        <p class="text-sm text-gray-600 mb-2">
+          Još <span class="font-semibold text-primary-600">{{ remainingForFree(cartStore.total).toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span> do besplatne dostave
+        </p>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div class="h-full bg-primary-500 rounded-full transition-all" :style="{ width: `${freeProgress(cartStore.total)}%` }" />
+        </div>
+      </div>
+    </div>
+
     <!-- Totals -->
     <div class="border border-gray-200 p-6 space-y-3">
       <h3 class="text-lg font-bold mb-4">Pregled narudžbine</h3>
@@ -54,7 +74,11 @@ onMounted(fetchCrossSell)
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-600">Dostava</span>
-        <span class="text-green-600 font-medium">Besplatno</span>
+        <span v-if="isFreeShipping(cartStore.total)" class="text-green-600 font-medium">Besplatno</span>
+        <span v-else-if="estimatedCost(cartStore.total) !== null" class="font-medium">
+          {{ estimatedCost(cartStore.total)!.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD
+        </span>
+        <span v-else class="text-gray-400">Izračunava se u sledećem koraku</span>
       </div>
       <div class="flex justify-between text-sm">
         <span class="text-gray-600">Porez</span>

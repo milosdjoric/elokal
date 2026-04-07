@@ -7,6 +7,8 @@ use App\Http\Resources\OrderResource;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ShippingMethod;
+use App\Models\ShippingZone;
 use App\Models\StockMovement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,6 +35,7 @@ class CheckoutController extends Controller
             'items.*.product_id' => 'required|exists:products,id',
             'items.*.quantity' => 'required|integer|min:1',
             'coupon_code' => 'nullable|string',
+            'shipping_method_id' => 'nullable|exists:shipping_methods,id',
         ]);
 
         return DB::transaction(function () use ($request) {
@@ -67,9 +70,29 @@ class CheckoutController extends Controller
                     'line_total' => $lineTotal,
                 ];
 
-                // Smanji stock + logiraj
                 $product->decrement('stock_quantity', $item['quantity']);
                 StockMovement::record($product->fresh(), -$item['quantity'], 'sale');
+            }
+
+            // Shipping
+            $shippingCost = 0;
+            $country = $request->input('shipping_country', 'RS');
+
+            if ($request->filled('shipping_method_id')) {
+                $shippingMethod = ShippingMethod::findOrFail($request->shipping_method_id);
+                $shippingCost = $shippingMethod->calculateCost($subtotal);
+            } else {
+                // Auto-select: nađi zonu za državu, uzmi najjeftiniju aktivnu metodu
+                $zone = ShippingZone::findForAddress($country, $request->shipping_postal_code);
+                if ($zone) {
+                    $cheapestMethod = $zone->methods()
+                        ->where('is_active', true)
+                        ->orderBy('cost')
+                        ->first();
+                    if ($cheapestMethod) {
+                        $shippingCost = $cheapestMethod->calculateCost($subtotal);
+                    }
+                }
             }
 
             // Kupon
@@ -87,7 +110,7 @@ class CheckoutController extends Controller
                 $discount = $coupon->calculateDiscount($subtotal);
             }
 
-            $total = max(0, $subtotal - $discount);
+            $total = max(0, $subtotal + $shippingCost - $discount);
 
             $order = Order::create([
                 'order_number' => Order::generateOrderNumber(),
@@ -102,8 +125,9 @@ class CheckoutController extends Controller
                 'shipping_address_line_2' => $request->shipping_address_line_2,
                 'shipping_city' => $request->shipping_city,
                 'shipping_postal_code' => $request->shipping_postal_code,
-                'shipping_country' => $request->shipping_country ?? 'RS',
+                'shipping_country' => $country,
                 'subtotal' => $subtotal,
+                'shipping_cost' => $shippingCost,
                 'discount' => $discount,
                 'total' => $total,
                 'notes' => $request->notes,
@@ -111,7 +135,6 @@ class CheckoutController extends Controller
 
             $order->items()->createMany($orderItems);
 
-            // Evidentiranje kupona
             if ($coupon && $discount > 0) {
                 $coupon->usages()->create([
                     'order_id' => $order->id,
