@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
@@ -28,6 +29,8 @@ Route::prefix('admin')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('logout', [AdminAuthController::class, 'logout']);
         Route::get('me', [AdminAuthController::class, 'me']);
+
+        Route::get('dashboard', DashboardController::class);
 
         Route::apiResource('products', ProductController::class);
 
