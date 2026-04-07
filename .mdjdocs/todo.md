@@ -65,19 +65,19 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Tree struktura response (nested children)
 
 ### v0.1.8 — API: Javne rute (storefront)
-- [ ] Public ProductController (index sa filterima, show po slug-u)
-- [ ] Public CategoryController (index tree, show sa proizvodima)
-- [ ] SearchController (full-text pretraga, logovanje u SearchLog)
-- [ ] Registracija javnih API ruta
+- [x] Public ProductController (index sa filterima, show po slug-u)
+- [x] Public CategoryController (index tree, show sa proizvodima)
+- [x] SearchController (full-text pretraga, logovanje u SearchLog)
+- [x] Registracija javnih API ruta
 
 ### v0.1.9 — API: Dashboard
-- [ ] DashboardController (ukupno proizvoda, kategorija, aktivnih proizvoda)
+- [x] DashboardController (ukupno proizvoda, kategorija, aktivnih proizvoda)
 
 ### v0.1.10 — API: Cene logika
-- [ ] Sale price scope (aktivna samo u periodu sale_price_from/to)
-- [ ] Price accessor (vraća sale_price ako je aktivan, inače price)
-- [ ] Sale percentage calculator (-X%)
-- [ ] Unit price formatting
+- [x] Sale price scope (aktivna samo u periodu sale_price_from/to)
+- [x] Price accessor (vraća sale_price ako je aktivan, inače price)
+- [x] Sale percentage calculator (-X%)
+- [x] Unit price formatting
 
 ### v0.1.11 — API: Testovi
 - [ ] Admin auth testovi (login, logout, me, invalid credentials, rate limit)
