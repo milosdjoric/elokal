@@ -127,6 +127,11 @@ class Product extends Model
         return $this->hasMany(Review::class)->where('status', 'approved');
     }
 
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+
     public function relatedProducts(): BelongsToMany
     {
         return $this->belongsToMany(self::class, 'product_relations', 'product_id', 'related_product_id')

@@ -6,8 +6,10 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CallbackRequestController as AdminCallbackController;
+use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\StockNotificationController as AdminStockNotificationController;
 use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
@@ -113,6 +115,20 @@ Route::prefix('admin')->group(function () {
 
         Route::apiResource('products', ProductController::class);
         Route::get('products/{product}/relations', [ProductController::class, 'relations']);
+
+        Route::get('products/{product}/variants', [VariantController::class, 'index']);
+        Route::post('products/{product}/variants', [VariantController::class, 'store']);
+        Route::put('products/{product}/variants/bulk', [VariantController::class, 'bulkUpdate']);
+        Route::put('variants/{variant}', [VariantController::class, 'update']);
+        Route::delete('variants/{variant}', [VariantController::class, 'destroy']);
+
+        Route::get('attributes', [AttributeController::class, 'index']);
+        Route::post('attributes', [AttributeController::class, 'store']);
+        Route::put('attributes/{attribute}', [AttributeController::class, 'update']);
+        Route::delete('attributes/{attribute}', [AttributeController::class, 'destroy']);
+        Route::post('attributes/{attribute}/values', [AttributeController::class, 'storeValue']);
+        Route::put('attribute-values/{value}', [AttributeController::class, 'updateValue']);
+        Route::delete('attribute-values/{value}', [AttributeController::class, 'destroyValue']);
         Route::put('products/{product}/relations', [ProductController::class, 'updateRelations']);
 
         Route::get('media', [ProductImageController::class, 'index']);

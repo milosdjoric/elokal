@@ -66,7 +66,7 @@ class ProductController extends Controller
 
     public function show(string $slug): ProductResource
     {
-        $product = Product::with(['categories', 'images'])
+        $product = Product::with(['categories', 'images', 'variants.attributeValues.attribute', 'variants.images'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();
