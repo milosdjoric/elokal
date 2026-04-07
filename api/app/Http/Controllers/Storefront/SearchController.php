@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Http\Controllers\Storefront;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductCollection;
+use App\Models\Product;
+use App\Models\SearchLog;
+use Illuminate\Http\Request;
+
+class SearchController extends Controller
+{
+    public function __invoke(Request $request): ProductCollection
+    {
+        $request->validate([
+            'q' => 'required|string|min:2|max:100',
+        ]);
+
+        $search = $request->q;
+
+        $query = Product::with(['categories', 'images'])
+            ->where('is_active', true)
+            ->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+            });
+
+        $perPage = min($request->input('per_page', 12), 48);
+        $results = $query->paginate($perPage);
+
+        SearchLog::create([
+            'query' => $search,
+            'results_count' => $results->total(),
+            'user_id' => $request->user()?->id,
+            'ip' => $request->ip(),
+        ]);
+
+        return new ProductCollection($results);
+    }
+}
