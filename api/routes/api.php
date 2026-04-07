@@ -10,7 +10,12 @@ use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\AbandonedCartController as AdminAbandonedCartController;
+use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\ImportController;
+use App\Http\Controllers\Admin\PaymentMethodController;
 use App\Http\Controllers\Admin\ShippingController as AdminShippingController;
+use App\Http\Controllers\Admin\TaxRateController;
 use App\Http\Controllers\Admin\CallbackRequestController as AdminCallbackController;
 use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -27,6 +32,8 @@ use App\Http\Controllers\Storefront\ProductController as StorefrontProductContro
 use App\Http\Controllers\Storefront\BlogController;
 use App\Http\Controllers\Storefront\CallbackRequestController;
 use App\Http\Controllers\Storefront\CouponController as StorefrontCouponController;
+use App\Http\Controllers\Storefront\AbandonedCartController;
+use App\Http\Controllers\Storefront\PaymentController;
 use App\Http\Controllers\Storefront\ShippingController as StorefrontShippingController;
 use App\Http\Controllers\Storefront\NewsletterController;
 use App\Http\Controllers\Storefront\StockNotificationController;
@@ -62,6 +69,10 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::post('callback-request', [CallbackRequestController::class, 'store']);
     Route::post('coupon/validate', [StorefrontCouponController::class, 'validate']);
     Route::post('shipping/methods', [StorefrontShippingController::class, 'methods']);
+    Route::get('payment-methods', [PaymentController::class, 'methods']);
+    Route::post('abandoned-cart', [AbandonedCartController::class, 'store']);
+    Route::get('abandoned-cart/recover/{token}', [AbandonedCartController::class, 'recover']);
+    Route::post('abandoned-cart/recovered/{token}', [AbandonedCartController::class, 'markRecovered']);
 
     Route::get('blog', [BlogController::class, 'index']);
     Route::get('blog/sidebar', [BlogController::class, 'sidebar']);
@@ -174,6 +185,20 @@ Route::prefix('admin')->group(function () {
         Route::get('tags', [AdminBlogController::class, 'tags']);
         Route::post('tags', [AdminBlogController::class, 'storeTag']);
         Route::delete('tags/{tag}', [AdminBlogController::class, 'destroyTag']);
+
+        Route::get('abandoned-carts', [AdminAbandonedCartController::class, 'index']);
+        Route::get('abandoned-carts/stats', [AdminAbandonedCartController::class, 'stats']);
+
+        Route::get('export/products', [ExportController::class, 'products']);
+        Route::get('export/orders', [ExportController::class, 'orders']);
+        Route::get('export/customers', [ExportController::class, 'customers']);
+        Route::get('export/product-template', [ExportController::class, 'productTemplate']);
+        Route::post('import/products', [ImportController::class, 'products']);
+
+        Route::apiResource('payment-methods', PaymentMethodController::class)->except(['show']);
+        Route::get('payments', [PaymentMethodController::class, 'transactions']);
+
+        Route::apiResource('tax-rates', TaxRateController::class)->except(['show']);
 
         Route::get('shipping-zones', [AdminShippingController::class, 'zones']);
         Route::post('shipping-zones', [AdminShippingController::class, 'storeZone']);

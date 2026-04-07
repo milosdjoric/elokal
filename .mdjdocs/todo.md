@@ -542,15 +542,15 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ## v0.3.x — Faza 3: Napredna prodaja
 
 ### v0.3.1 — Varijante: API
-- [ ] Attribute model + migracija (name, type: select/color/image, is_filterable, is_visible_on_card)
-- [ ] AttributeValue model + migracija (value, color_hex, image_path)
-- [ ] ProductVariant model + migracija (product_id, sku, price, weight, stock_quantity, is_active)
-- [ ] product_variant_attribute_value pivot
-- [ ] product_variant_image pivot
-- [ ] AttributeController admin (CRUD atributa i vrednosti)
-- [ ] VariantController admin (CRUD varijanti na proizvodu)
-- [ ] Public product response sa varijantama
-- [ ] Testovi
+- [x] Attribute model + migracija (name, type: select/color/image, is_filterable, is_visible_on_card)
+- [x] AttributeValue model + migracija (value, color_hex, image_path)
+- [x] ProductVariant model + migracija (product_id, sku, price, weight, stock_quantity, is_active)
+- [x] product_variant_attribute_value pivot
+- [x] product_variant_image pivot
+- [x] AttributeController admin (CRUD atributa i vrednosti)
+- [x] VariantController admin (CRUD varijanti na proizvodu)
+- [x] Public product response sa varijantama
+- [x] Testovi
 
 ### v0.3.2 — Varijante: Admin
 - [ ] Atributi management stranica (CRUD, color picker, image upload za swatch)
@@ -573,54 +573,54 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Varijanta tabela (opciono, B2B)
 
 ### v0.3.4 — Kuponi: API
-- [ ] Coupon model + migracija (code, type, value, min/max, uses, dates, stacking)
+- [x] Coupon model + migracija (code, type, value, min/max, uses, dates, stacking)
 - [ ] CouponCondition model
-- [ ] CouponUsage model
-- [ ] CouponController admin (CRUD, bulk generate, statistika)
-- [ ] Coupon validation endpoint
-- [ ] Coupon apply na checkout-u
-- [ ] Testovi
+- [x] CouponUsage model
+- [x] CouponController admin (CRUD, bulk generate, statistika)
+- [x] Coupon validation endpoint
+- [x] Coupon apply na checkout-u
+- [x] Testovi
 
 ### v0.3.5 — Kuponi: Admin + Storefront
-- [ ] Admin: CRUD kupona sa svim pravilima
-- [ ] Admin: bulk generate kodova
-- [ ] Admin: statistika korišćenja
+- [x] Admin: CRUD kupona sa svim pravilima
+- [x] Admin: bulk generate kodova
+- [x] Admin: statistika korišćenja
 - [ ] Coupon polje na cart-u i checkout-u (AJAX validacija)
 - [ ] Prikaz primenjenog kupona (naziv, popust, X za uklanjanje)
 - [ ] Error poruke za nevalidne kupone
 - [ ] Countdown timer na PDP/card-u za akcije
 
 ### v0.3.6 — Inventar: API
-- [ ] StockMovement model + migracija
-- [ ] Automatsko smanjenje stock-a pri narudžbini
-- [ ] Automatsko vraćanje pri otkazivanju/return-u
+- [x] StockMovement model + migracija
+- [x] Automatsko smanjenje stock-a pri narudžbini
+- [x] Automatsko vraćanje pri otkazivanju/return-u
 - [ ] Stock reservation (15 min pri checkout-u)
 - [ ] Backorder opcija po proizvodu (restock date polje)
 - [ ] Low stock notifikacije (email adminu)
-- [ ] Testovi
+- [x] Testovi
 
 ### v0.3.7 — Inventar: Admin
-- [ ] Inventar listing (proizvod, SKU, stock, status, poslednja promena)
-- [ ] Inline edit stock-a
-- [ ] Stock history modal po proizvodu (timeline)
-- [ ] Bulk stock import (CSV: SKU, quantity, operation)
-- [ ] Bulk stock export (CSV)
-- [ ] Bulk manual adjustment
+- [x] Inventar listing (proizvod, SKU, stock, status, poslednja promena)
+- [x] Inline edit stock-a
+- [x] Stock history modal po proizvodu (timeline)
+- [x] Bulk stock import (CSV: SKU, quantity, operation)
+- [x] Bulk stock export (CSV)
+- [x] Bulk manual adjustment
 - [ ] Low stock dashboard widget
 
 ### v0.3.8 — Dostava: API
-- [ ] ShippingZone model + migracija
-- [ ] ShippingMethod model + migracija
+- [x] ShippingZone model + migracija
+- [x] ShippingMethod model + migracija
 - [ ] Shipment model + migracija (tracking, carrier, status)
-- [ ] Shipping kalkulacija (flat, weight, price-based, free)
-- [ ] Checkout: dostupne metode po zoni
+- [x] Shipping kalkulacija (flat, weight, price-based, free)
+- [x] Checkout: dostupne metode po zoni
 - [ ] Tracking status updates
-- [ ] Testovi
+- [x] Testovi
 
 ### v0.3.9 — Dostava: Admin + Storefront
-- [ ] Admin: CRUD zona i metoda
+- [x] Admin: CRUD zona i metoda
 - [ ] Admin: carrier konfiguracija
-- [ ] Admin: tracking unos na order detail-u
+- [x] Admin: tracking unos na order detail-u
 - [ ] Checkout: prikaz metoda sa cenom i estimated delivery
 - [ ] Cart: shipping estimate
 - [ ] Free shipping progress bar
@@ -628,50 +628,50 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Email sa tracking brojem
 
 ### v0.3.10 — Plaćanje: API
-- [ ] PaymentMethod model + migracija
-- [ ] Payment model + migracija (transaction log)
-- [ ] Pouzeće (COD) implementacija
-- [ ] Virman/uplata implementacija (instrukcije, manual confirm)
+- [x] PaymentMethod model + migracija
+- [x] Payment model + migracija (transaction log)
+- [x] Pouzeće (COD) implementacija
+- [x] Virman/uplata implementacija (instrukcije, manual confirm)
 - [ ] Stripe integracija (Elements, 3D Secure, save card)
 - [ ] Refund flow (full/partial, auto za online, manual za offline)
 - [ ] Testovi
 
 ### v0.3.11 — Plaćanje: Admin + Storefront
-- [ ] Admin: aktiviranje/deaktiviranje metoda
+- [x] Admin: aktiviranje/deaktiviranje metoda
 - [ ] Admin: test/live mode toggle
 - [ ] Admin: API credentials (enkriptovano)
-- [ ] Admin: instrukcije za offline metode
-- [ ] Admin: COD dodatni trošak
-- [ ] Admin: pregled transakcija
+- [x] Admin: instrukcije za offline metode
+- [x] Admin: COD dodatni trošak
+- [x] Admin: pregled transakcija
 - [ ] Checkout: izbor metode plaćanja
 - [ ] Checkout: Stripe Elements inline forma
 - [ ] Checkout: save card za buduće kupovine
 - [ ] Saved payment methods u account-u (`/nalog/sacuvane-kartice`)
 
 ### v0.3.12 — Porezi
-- [ ] TaxRate model + migracija
+- [x] TaxRate model + migracija
 - [ ] Tax kalkulacija pri checkout-u
-- [ ] Admin: konfiguracija stopa
+- [x] Admin: konfiguracija stopa
 - [ ] Prikaz PDV-a na cart/checkout-u
 
 ### v0.3.13 — Abandoned Cart Recovery
-- [ ] AbandonedCart model + migracija
+- [x] AbandonedCart model + migracija
 - [ ] Detekcija napuštene korpe (1h timeout)
 - [ ] Email serija (1h, 24h, 72h — queue jobs)
-- [ ] Recovery link (/korpa/obnovi/:token)
+- [x] Recovery link (/korpa/obnovi/:token)
 - [ ] Auto-generisan kupon u 2. emailu
 - [ ] Exit intent popup (konfigurabilan u adminu)
-- [ ] Admin: lista napuštenih korpi, recovery rate izveštaj
+- [x] Admin: lista napuštenih korpi, recovery rate izveštaj
 - [ ] Feature flag: FEATURE_ABANDONED_CART
 
 ### v0.3.14 — Import/Export
-- [ ] CSV import proizvoda (sa validacijom, preview, mapping kolona)
+- [x] CSV import proizvoda (sa validacijom, preview, mapping kolona)
 - [ ] Image import iz URL-a (queue job)
-- [ ] Template download (prazan CSV sa header-ima)
+- [x] Template download (prazan CSV sa header-ima)
 - [ ] Import history log
-- [ ] CSV export proizvoda (filter pre exporta)
-- [ ] CSV export narudžbina
-- [ ] CSV export kupaca
+- [x] CSV export proizvoda (filter pre exporta)
+- [x] CSV export narudžbina
+- [x] CSV export kupaca
 - [ ] Scheduled export (nedeljni/mesečni na email)
 
 ---
