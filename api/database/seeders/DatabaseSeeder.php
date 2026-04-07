@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,6 +13,13 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
+        ]);
+
+        User::create([
+            'name' => 'Marko Marković',
+            'email' => 'marko@webshop.test',
+            'password' => 'password',
+            'phone' => '+381641234567',
         ]);
     }
 }
