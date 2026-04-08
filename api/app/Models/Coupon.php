@@ -35,6 +35,21 @@ class Coupon extends Model
         return $this->hasMany(CouponUsage::class);
     }
 
+    public function conditions(): HasMany
+    {
+        return $this->hasMany(CouponCondition::class);
+    }
+
+    public function evaluateConditions(array $context): bool|string
+    {
+        foreach ($this->conditions as $condition) {
+            if (! $condition->evaluate($context)) {
+                return "Kupon ne ispunjava uslov: {$condition->type}.";
+            }
+        }
+        return true;
+    }
+
     public function isValid(?int $userId = null): bool|string
     {
         if (! $this->is_active) {

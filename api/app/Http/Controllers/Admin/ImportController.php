@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ImportLog;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -81,10 +82,31 @@ class ImportController extends Controller
         }
         fclose($handle);
 
+        ImportLog::create([
+            'admin_id' => $request->user()->id,
+            'type' => 'products',
+            'filename' => $request->file('file')->getClientOriginalName(),
+            'rows_total' => $row - 1,
+            'rows_created' => $created,
+            'rows_updated' => $updated,
+            'rows_failed' => count($errors),
+            'errors' => $errors ?: null,
+            'status' => count($errors) === 0 ? 'completed' : ($created + $updated > 0 ? 'partial' : 'failed'),
+        ]);
+
         return response()->json([
             'created' => $created,
             'updated' => $updated,
             'errors' => $errors,
         ]);
+    }
+
+    public function history(): JsonResponse
+    {
+        $logs = ImportLog::with('admin')
+            ->orderByDesc('created_at')
+            ->paginate(15);
+
+        return response()->json($logs);
     }
 }

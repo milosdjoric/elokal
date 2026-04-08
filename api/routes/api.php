@@ -238,6 +238,7 @@ Route::prefix('admin')->group(function () {
         Route::get('export/customers', [ExportController::class, 'customers']);
         Route::get('export/product-template', [ExportController::class, 'productTemplate']);
         Route::post('import/products', [ImportController::class, 'products']);
+        Route::get('import/history', [ImportController::class, 'history']);
 
         Route::apiResource('payment-methods', PaymentMethodController::class)->except(['show']);
         Route::get('payments', [PaymentMethodController::class, 'transactions']);

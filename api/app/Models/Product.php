@@ -27,6 +27,8 @@ class Product extends Model
         'unit_label',
         'sku',
         'stock_quantity',
+        'allow_backorder',
+        'restock_date',
         'is_active',
         'featured',
         'sort_order',
@@ -45,6 +47,8 @@ class Product extends Model
             'sale_price_to' => 'datetime',
             'is_active' => 'boolean',
             'featured' => 'boolean',
+            'allow_backorder' => 'boolean',
+            'restock_date' => 'date',
         ];
     }
 
