@@ -8,6 +8,8 @@ const items = [
   { label: 'Adrese', to: '/account/addresses', icon: 'map' },
   { label: 'Narudžbine', to: '/account/orders', icon: 'package' },
   { label: 'Lista želja', to: '/account/wishlist', icon: 'heart' },
+  { label: 'Poeni', to: '/account/poeni', icon: 'star' },
+  { label: 'Krediti', to: '/account/krediti', icon: 'wallet' },
 ]
 
 function isActive(path: string): boolean {

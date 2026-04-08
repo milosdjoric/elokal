@@ -161,16 +161,16 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Category listing (tree prikaz)
 - [x] Category create/edit (inline edit ili modal)
 - [x] Category delete sa confirm
-- [ ] Drag & drop reorder
+- [x] Drag & drop reorder
 - [x] Prikaz broja proizvoda po kategoriji
-- [ ] Image upload za kategoriju
+- [x] Image upload za kategoriju
 
 ### v0.1.20 — Admin: Media Library
 - [x] Media library stranica (grid sa thumbnail-ima)
 - [x] Drag & drop upload (single + bulk)
 - [x] Alt text i title editing
 - [x] Delete sa confirm
-- [ ] Media picker komponenta (reusable u product/category formama)
+- [x] Media picker komponenta (reusable u product/category formama)
 
 ### v0.1.21 — Admin: Podešavanja
 - [x] Settings stranica sa tabovima
@@ -239,15 +239,15 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Hero slideshow (carousel sa slajdovima — slika, naslov, opis, CTA)
 - [x] Featured proizvodi (carousel)
 - [x] Kategorije grid sa slikama
-- [ ] Recently viewed (localStorage)
-- [ ] Page builder sekcije iz admin podešavanja (JSON → render komponenti)
+- [x] Recently viewed (localStorage)
+- [x] Page builder sekcije iz admin podešavanja (JSON → render komponenti)
 
 ### v0.1.29 — Storefront: PLP (Product Listing Page)
 - [x] `/prodavnica` stranica
 - [x] `/kategorija/:slug` stranica
 - [x] Toolbar: result count, per page (9/12/18/24), grid density (2/3/4), grid/list toggle, sort dropdown
 - [x] Sidebar filteri: category tree (expand/collapse + count), price range slider, stock status, rating
-- [ ] Active filters prikaz (sa X za uklanjanje, "Clear all")
+- [x] Active filters prikaz (sa X za uklanjanje, "Clear all")
 - [x] Paginacija + "Učitaj još" opcija
 - [ ] Layout varijanta iz podešavanja (A sidebar / B top / C off-canvas)
 - [x] Category header (naslov + opis + breadcrumbs)
@@ -266,8 +266,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Responsive tabovi → accordion na mobilnom
 - [ ] Sticky tabs navigacija
 - [x] Related products carousel
-- [ ] Recently viewed carousel
-- [ ] Prev/Next product navigacija
+- [x] Recently viewed carousel
+- [x] Prev/Next product navigacija
 - [x] Social share blok
 - [x] Breadcrumbs
 
@@ -302,19 +302,19 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 > Stavke koje su preskočene kao manje prioritetne ili zahtevaju dizajn iteracije.
 
 **Admin UI:**
-- [ ] Drag & drop reorder kategorija — v0.1.19
-- [ ] Image upload za kategoriju — v0.1.19
-- [ ] Media picker komponenta (reusable u formama) — v0.1.20
+- [x] Drag & drop reorder kategorija — v0.1.19
+- [x] Image upload za kategoriju — v0.1.19
+- [x] Media picker komponenta (reusable u formama) — v0.1.20
 
 **Storefront UI:**
-- [ ] Recently viewed (localStorage) — v0.1.28, v0.1.30
-- [ ] Page builder sekcije iz admin podešavanja — v0.1.28
-- [ ] Active filters prikaz (sa X, "Clear all") — v0.1.29
+- [x] Recently viewed (localStorage) — v0.1.28, v0.1.30
+- [x] Page builder sekcije iz admin podešavanja — v0.1.28
+- [x] Active filters prikaz (sa X, "Clear all") — v0.1.29
 - [ ] Layout varijanta PLP (A/B/C iz podešavanja) — v0.1.29
 - [ ] Custom tabovi po proizvodu — v0.1.30
 - [ ] Responsive tabovi → accordion na mobilnom — v0.1.30
 - [ ] Sticky tabs navigacija — v0.1.30
-- [ ] Prev/Next product navigacija — v0.1.30
+- [x] Prev/Next product navigacija — v0.1.30
 - [ ] Trending searches (admin konfiguriše) — v0.1.31
 - [ ] Search scope po kategoriji — v0.1.31
 - [ ] Cart layout varijanta (A/B iz podešavanja) — v0.1.32
@@ -371,7 +371,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### v0.2.6 — Cart (server-side upgrade)
 - [x] Cart totals breakdown: subtotal, shipping estimate, tax, discount, total
-- [ ] Coupon field na cart stranici
+- [x] Coupon field na cart stranici
 - [x] Cross-sell sekcija ispod tabele
 
 ### v0.2.7 — Checkout: API
@@ -595,7 +595,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### v0.3.4 — Kuponi: API
 - [x] Coupon model + migracija (code, type, value, min/max, uses, dates, stacking)
-- [ ] CouponCondition model
+- [x] CouponCondition model
 - [x] CouponUsage model
 - [x] CouponController admin (CRUD, bulk generate, statistika)
 - [x] Coupon validation endpoint
@@ -615,8 +615,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] StockMovement model + migracija
 - [x] Automatsko smanjenje stock-a pri narudžbini
 - [x] Automatsko vraćanje pri otkazivanju/return-u
-- [ ] Stock reservation (15 min pri checkout-u)
-- [ ] Backorder opcija po proizvodu (restock date polje)
+- [x] Stock reservation (15 min pri checkout-u)
+- [x] Backorder opcija po proizvodu (restock date polje)
 - [ ] Low stock notifikacije (email adminu)
 - [x] Testovi
 
@@ -632,7 +632,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ### v0.3.8 — Dostava: API
 - [x] ShippingZone model + migracija
 - [x] ShippingMethod model + migracija
-- [ ] Shipment model + migracija (tracking, carrier, status)
+- [x] Shipment model + migracija (tracking, carrier, status)
 - [x] Shipping kalkulacija (flat, weight, price-based, free)
 - [x] Checkout: dostupne metode po zoni
 - [ ] Tracking status updates
@@ -677,7 +677,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### v0.3.13 — Abandoned Cart Recovery
 - [x] AbandonedCart model + migracija
-- [ ] Detekcija napuštene korpe (1h timeout)
+- [x] Detekcija napuštene korpe (1h timeout)
 - [ ] Email serija (1h, 24h, 72h — queue jobs)
 - [x] Recovery link (/korpa/obnovi/:token)
 - [ ] Auto-generisan kupon u 2. emailu
@@ -689,7 +689,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] CSV import proizvoda (sa validacijom, preview, mapping kolona)
 - [ ] Image import iz URL-a (queue job)
 - [x] Template download (prazan CSV sa header-ima)
-- [ ] Import history log
+- [x] Import history log
 - [x] CSV export proizvoda (filter pre exporta)
 - [x] CSV export narudžbina
 - [x] CSV export kupaca
@@ -714,12 +714,12 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Checkout izbor metode plaćanja (UI) — v0.3.11
 
 **Backend (manja prioritetnost):**
-- [ ] CouponCondition model (napredna pravila) — v0.3.4
-- [ ] Stock reservation 15 min — v0.3.6
-- [ ] Backorder opcija — v0.3.6
-- [ ] Shipment model — v0.3.8
-- [ ] Abandoned cart detekcija (timeout job) — v0.3.13
-- [ ] Import history log — v0.3.14
+- [x] CouponCondition model (napredna pravila) — v0.3.4
+- [x] Stock reservation 15 min — v0.3.6
+- [x] Backorder opcija — v0.3.6
+- [x] Shipment model — v0.3.8
+- [x] Abandoned cart detekcija (timeout job) — v0.3.13
+- [x] Import history log — v0.3.14
 - [ ] Image import iz URL-a — v0.3.14
 
 ---
@@ -774,23 +774,23 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Feature flag: FEATURE_MULTI_CURRENCY
 
 ### v0.4.6 — Product Compare
-- [ ] Compare lista (localStorage)
-- [ ] Ikonica na product card-u (feature flag)
+- [x] Compare lista (localStorage)
+- [x] Ikonica na product card-u (feature flag)
 - [ ] Floating bar sa odabranim proizvodima
-- [ ] `/uporedi` — side-by-side tabela
+- [x] `/uporedi` — side-by-side tabela
 - [ ] Feature flag: FEATURE_COMPARE
 
 ### v0.4.7 — Social Proof
-- [ ] "Kupljeno X puta" brojač na PDP-u
+- [x] "Kupljeno X puta" brojač na PDP-u
 - [ ] "X ljudi gleda ovaj proizvod"
-- [ ] Popup notifikacije ("Marko iz Beograda je upravo kupio...")
+- [x] Popup notifikacije ("Marko iz Beograda je upravo kupio...")
 - [ ] Admin: konfiguracija, uključeno/isključeno
 - [ ] Feature flag: FEATURE_SOCIAL_PROOF
 
 ### v0.4.8 — Promo Bar
-- [ ] Top bar sa promotivnom porukom
-- [ ] Admin: tekst, boja, link, enable/disable
-- [ ] Dismiss dugme (localStorage)
+- [x] Top bar sa promotivnom porukom
+- [x] Admin: tekst, boja, link, enable/disable
+- [x] Dismiss dugme (localStorage)
 
 ### v0.4.9 — Free Shipping Indikator
 - [ ] Progress bar u korpi/mini-cart
@@ -818,7 +818,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Feature flag: FEATURE_DOWNLOADS
 
 ### v0.4.13 — Izveštaji
-- [ ] Dashboard overview kartice (prihod, narudžbine, AOV, conversion, novi vs returning)
+- [x] Dashboard overview kartice (prihod, narudžbine, AOV, conversion, novi vs returning)
 - [ ] Izveštaj: Prodaja (line chart, po periodu, po payment metodi, po zoni, refund-ovi)
 - [ ] Izveštaj: Proizvodi (top po prihodu/qty, most viewed not bought, low/out of stock, dead stock)
 - [ ] Izveštaj: Kategorije (prihod po kategoriji)
@@ -838,7 +838,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Permisije po modulu (proizvodi, narudžbine, kupci, podešavanja)
 - [x] Admin CRUD (dodaj/edituj/deaktiviraj admina)
 - [x] Activity log (ko, šta, kada)
-- [ ] Permisije UI u admin formi
+- [x] Permisije UI u admin formi
 
 ### v0.4.16 — Admin podešavanja (proširenja)
 - [ ] Email tab: sender, template boje, uključivanje/isključivanje emailova
@@ -848,7 +848,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ### v0.4.17 — Statičke stranice
 - [x] Page model + migracija (title, slug, content, meta)
 - [x] Admin: CRUD stranica (rich text editor)
-- [ ] `/o-nama`, `/kontakt`, `/uslovi-koriscenja`, `/politika-privatnosti`, `/cesta-pitanja`
+- [x] `/o-nama`, `/kontakt`, `/uslovi-koriscenja`, `/politika-privatnosti`, `/cesta-pitanja`
 - [ ] Kontakt forma sa email notifikacijom
 
 ### v0.4.18 — Webhooks

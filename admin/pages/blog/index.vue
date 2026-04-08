@@ -121,9 +121,9 @@ onMounted(fetchPosts)
     </div>
 
     <div v-if="totalPages > 1" class="flex justify-center gap-2 pt-4">
-      <UiAtomsButton variant="outline" size="sm" :disabled="page <= 1" @click="page--; fetchPosts()">← Prethodna</UiAtomsButton>
+      <UiAtomsButton variant="secondary" size="sm" :disabled="page <= 1" @click="page--; fetchPosts()">← Prethodna</UiAtomsButton>
       <span class="flex items-center text-sm text-gray-500">{{ page }} / {{ totalPages }}</span>
-      <UiAtomsButton variant="outline" size="sm" :disabled="page >= totalPages" @click="page++; fetchPosts()">Sledeća →</UiAtomsButton>
+      <UiAtomsButton variant="secondary" size="sm" :disabled="page >= totalPages" @click="page++; fetchPosts()">Sledeća →</UiAtomsButton>
     </div>
 
     <UiMoleculesConfirmDialog v-model="deleteModal" title="Brisanje posta" :message="`Obrisati '${deleteTarget?.title}'?`" confirm-text="Obriši" :loading="deleteLoading" @confirm="handleDelete" />

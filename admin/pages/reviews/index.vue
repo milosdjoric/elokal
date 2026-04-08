@@ -247,11 +247,11 @@ onMounted(fetchReviews)
 
     <!-- Pagination -->
     <div v-if="totalPages > 1" class="flex justify-center gap-2 pt-4">
-      <UiAtomsButton variant="outline" size="sm" :disabled="page <= 1" @click="handlePageChange(page - 1)">
+      <UiAtomsButton variant="secondary" size="sm" :disabled="page <= 1" @click="handlePageChange(page - 1)">
         ← Prethodna
       </UiAtomsButton>
       <span class="flex items-center text-sm text-gray-500">{{ page }} / {{ totalPages }}</span>
-      <UiAtomsButton variant="outline" size="sm" :disabled="page >= totalPages" @click="handlePageChange(page + 1)">
+      <UiAtomsButton variant="secondary" size="sm" :disabled="page >= totalPages" @click="handlePageChange(page + 1)">
         Sledeća →
       </UiAtomsButton>
     </div>

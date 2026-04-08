@@ -54,6 +54,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 // Health check
+// Sitemap & robots
+Route::get('sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index']);
+Route::get('robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots']);
+
 Route::get('health', function () {
     try {
         DB::connection()->getPdo();
@@ -83,6 +87,7 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::post('shipping/methods', [StorefrontShippingController::class, 'methods']);
     Route::get('shipping/config', [StorefrontShippingController::class, 'config']);
     Route::get('payment-methods', [PaymentController::class, 'methods']);
+    Route::get('currencies', fn () => response()->json(['data' => \App\Models\Currency::where('is_active', true)->orderBy('code')->get()]));
     Route::post('gift-card/check', [GiftCardController::class, 'check']);
     Route::get('pages/{slug}', [StorefrontPageController::class, 'show']);
     Route::post('abandoned-cart', [AbandonedCartController::class, 'store']);
@@ -230,6 +235,11 @@ Route::prefix('admin')->group(function () {
         Route::get('webhooks/{webhook}/logs', [WebhookController::class, 'logs']);
         Route::post('webhooks/{webhook}/test', [WebhookController::class, 'test']);
 
+        Route::get('reports/overview', [\App\Http\Controllers\Admin\ReportController::class, 'overview']);
+        Route::get('reports/sales-by-day', [\App\Http\Controllers\Admin\ReportController::class, 'salesByDay']);
+        Route::get('reports/top-products', [\App\Http\Controllers\Admin\ReportController::class, 'topProducts']);
+        Route::get('reports/top-customers', [\App\Http\Controllers\Admin\ReportController::class, 'topCustomers']);
+
         Route::get('abandoned-carts', [AdminAbandonedCartController::class, 'index']);
         Route::get('abandoned-carts/stats', [AdminAbandonedCartController::class, 'stats']);
 
@@ -241,6 +251,7 @@ Route::prefix('admin')->group(function () {
         Route::get('import/history', [ImportController::class, 'history']);
 
         Route::apiResource('payment-methods', PaymentMethodController::class)->except(['show']);
+        Route::apiResource('currencies', \App\Http\Controllers\Admin\CurrencyController::class)->except(['show']);
         Route::get('payments', [PaymentMethodController::class, 'transactions']);
 
         Route::apiResource('tax-rates', TaxRateController::class)->except(['show']);
