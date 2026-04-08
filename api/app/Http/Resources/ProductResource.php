@@ -33,6 +33,7 @@ class ProductResource extends JsonResource
             'sale_percentage' => $this->sale_percentage,
             'formatted_unit_price' => $this->formatted_unit_price,
             'is_on_sale' => $this->isSaleActive(),
+            'times_sold' => $this->times_sold,
             'categories' => $this->whenLoaded('categories', fn () => $this->categories->pluck('id')),
             'images' => $this->whenLoaded('images'),
             'variants' => ProductVariantResource::collection($this->whenLoaded('variants')),

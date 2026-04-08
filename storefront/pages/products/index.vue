@@ -110,6 +110,43 @@ function openQuickView(product: Product) {
   quickViewOpen.value = true
 }
 
+// Active filters
+const activeFilters = computed(() => {
+  const filters: Array<{ label: string; clear: () => void }> = []
+
+  if (categoryFilter.value) {
+    const findCat = (cats: Category[]): string | null => {
+      for (const c of cats) {
+        if (String(c.id) === categoryFilter.value) return c.name
+        if (c.children) {
+          const found = findCat(c.children)
+          if (found) return found
+        }
+      }
+      return null
+    }
+    const name = findCat(categories.value) || 'Kategorija'
+    filters.push({ label: name, clear: () => updateCategory('') })
+  }
+
+  if (route.query.search) {
+    filters.push({ label: `"${route.query.search}"`, clear: () => router.replace({ query: { ...route.query, search: undefined } }).then(fetchProducts) })
+  }
+
+  if (route.query.featured) {
+    filters.push({ label: 'Istaknuto', clear: () => router.replace({ query: { ...route.query, featured: undefined } }).then(fetchProducts) })
+  }
+
+  return filters
+})
+
+function clearAllFilters() {
+  categoryFilter.value = ''
+  page.value = 1
+  router.replace({ query: {} })
+  fetchProducts()
+}
+
 onMounted(() => {
   readQuery()
   fetchProducts()
@@ -187,6 +224,23 @@ useHead({ title: 'Proizvodi — eLokal' })
               <option :value="48">48</option>
             </select>
           </div>
+        </div>
+
+        <!-- Active filters -->
+        <div v-if="activeFilters.length > 0" class="flex flex-wrap items-center gap-2 mb-4">
+          <span
+            v-for="(filter, i) in activeFilters"
+            :key="i"
+            class="inline-flex items-center gap-1 bg-gray-100 text-sm text-gray-700 pl-3 pr-1.5 py-1 rounded-full"
+          >
+            {{ filter.label }}
+            <button class="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-200" @click="filter.clear()">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </span>
+          <button v-if="activeFilters.length > 1" class="text-xs text-red-500 hover:text-red-700 ml-1" @click="clearAllFilters">
+            Obriši sve
+          </button>
         </div>
 
         <!-- Grid -->

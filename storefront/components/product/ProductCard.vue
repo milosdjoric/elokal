@@ -59,9 +59,10 @@ const variantSwatches = computed(() => {
         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
 
-      <!-- Wishlist heart -->
-      <div class="absolute top-2 right-2 z-10">
+      <!-- Actions: wishlist + compare -->
+      <div class="absolute top-2 right-2 z-10 flex flex-col gap-1">
         <ProductWishlistButton :product-id="product.id" size="sm" />
+        <ProductCompareButton :product="product" size="sm" />
       </div>
 
       <!-- Badges -->

@@ -78,6 +78,20 @@ class ProductController extends Controller
             'relatedProducts' => fn ($q) => $q->where('is_active', true)->with('images'),
         ]);
 
-        return new ProductResource($product);
+        // Prev/Next u istoj kategoriji
+        $categoryId = $product->categories->first()?->id;
+        $prevNext = ['prev' => null, 'next' => null];
+        if ($categoryId) {
+            $baseQuery = Product::where('is_active', true)
+                ->whereHas('categories', fn ($q) => $q->where('categories.id', $categoryId));
+
+            $prev = (clone $baseQuery)->where('id', '<', $product->id)->orderByDesc('id')->first(['id', 'slug', 'name']);
+            $next = (clone $baseQuery)->where('id', '>', $product->id)->orderBy('id')->first(['id', 'slug', 'name']);
+
+            if ($prev) $prevNext['prev'] = ['slug' => $prev->slug, 'name' => $prev->name];
+            if ($next) $prevNext['next'] = ['slug' => $next->slug, 'name' => $next->name];
+        }
+
+        return (new ProductResource($product))->additional(['prev_next' => $prevNext]);
     }
 }

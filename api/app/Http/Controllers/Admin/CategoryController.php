@@ -7,6 +7,7 @@ use App\Http\Requests\CategoryFormRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -40,6 +41,25 @@ class CategoryController extends Controller
         $category->load(['children' => fn ($q) => $q->orderBy('sort_order')]);
 
         return new CategoryResource($category);
+    }
+
+    public function reorder(Request $request): JsonResponse
+    {
+        $request->validate([
+            'order' => 'required|array',
+            'order.*.id' => 'required|exists:categories,id',
+            'order.*.sort_order' => 'required|integer|min:0',
+            'order.*.parent_id' => 'nullable|exists:categories,id',
+        ]);
+
+        foreach ($request->order as $item) {
+            Category::where('id', $item['id'])->update([
+                'sort_order' => $item['sort_order'],
+                'parent_id' => $item['parent_id'] ?? null,
+            ]);
+        }
+
+        return response()->json(['message' => 'Redosled sačuvan.']);
     }
 
     public function destroy(Category $category): JsonResponse

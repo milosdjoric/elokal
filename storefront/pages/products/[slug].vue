@@ -4,11 +4,15 @@ import type { Product, ProductVariant, PaginatedResponse } from '~/types'
 const route = useRoute()
 const { get } = useApi()
 const { addToCart } = useCart()
+const { add: trackView, getExcluding: getRecentlyViewed } = useRecentlyViewed()
 
 const authStore = useAuthStore()
 
 const product = ref<Product | null>(null)
+const recentlyViewed = ref<Product[]>([])
 const related = ref<Product[]>([])
+const prevProduct = ref<{ slug: string; name: string } | null>(null)
+const nextProduct = ref<{ slug: string; name: string } | null>(null)
 const loading = ref(true)
 const qty = ref(1)
 const activeTab = ref('description')
@@ -57,8 +61,14 @@ const faqItems = [
 async function fetchProduct() {
   loading.value = true
   try {
-    const data = await get<{ data: Product }>(`/v1/products/${route.params.slug}`)
+    const data = await get<{ data: Product; prev_next?: { prev: { slug: string; name: string } | null; next: { slug: string; name: string } | null } }>(`/v1/products/${route.params.slug}`)
     product.value = data.data
+    prevProduct.value = data.prev_next?.prev ?? null
+    nextProduct.value = data.prev_next?.next ?? null
+
+    // Track recently viewed
+    trackView(data.data)
+    recentlyViewed.value = getRecentlyViewed(data.data.id)
 
     // Ručne relacije imaju prioritet, fallback na istu kategoriju
     if (data.data.related_products?.length) {
@@ -140,10 +150,21 @@ useSeoMeta({
 
     <template v-else-if="product">
       <div class="max-w-7xl mx-auto px-4 py-6">
-        <LayoutBreadcrumbs :items="[
-          { label: 'Proizvodi', to: '/products' },
-          { label: product.name },
-        ]" />
+        <div class="flex items-center justify-between mb-2">
+          <LayoutBreadcrumbs :items="[
+            { label: 'Proizvodi', to: '/products' },
+            { label: product.name },
+          ]" />
+          <div v-if="prevProduct || nextProduct" class="flex items-center gap-2 text-sm">
+            <NuxtLink v-if="prevProduct" :to="`/products/${prevProduct.slug}`" class="text-gray-400 hover:text-gray-700" :title="prevProduct.name">
+              ← Prethodni
+            </NuxtLink>
+            <span v-if="prevProduct && nextProduct" class="text-gray-300">|</span>
+            <NuxtLink v-if="nextProduct" :to="`/products/${nextProduct.slug}`" class="text-gray-400 hover:text-gray-700" :title="nextProduct.name">
+              Sledeći →
+            </NuxtLink>
+          </div>
+        </div>
 
         <!-- Main section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
@@ -167,6 +188,11 @@ useSeoMeta({
                 size="lg"
               />
             </div>
+
+            <!-- Social proof -->
+            <p v-if="product.times_sold" class="text-xs text-gray-500 mb-1">
+              Kupljeno {{ product.times_sold }} puta
+            </p>
 
             <ProductSaleCountdown v-if="product.is_on_sale && product.sale_price_to" :ends-at="product.sale_price_to" />
 
@@ -299,6 +325,11 @@ useSeoMeta({
         <!-- Related products -->
         <section v-if="related.length" class="mb-12">
           <ProductCarousel title="Slični proizvodi" :products="related" />
+        </section>
+
+        <!-- Recently viewed -->
+        <section v-if="recentlyViewed.length > 0" class="mb-12">
+          <ProductCarousel title="Nedavno pregledano" :products="recentlyViewed" />
         </section>
       </div>
 

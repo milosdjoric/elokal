@@ -110,6 +110,11 @@ class Product extends Model
             && (! $this->sale_price_to || $this->sale_price_to >= $now);
     }
 
+    public function getTimesSoldAttribute(): int
+    {
+        return (int) OrderItem::where('product_id', $this->id)->sum('quantity');
+    }
+
     // --- Relations ---
 
     public function categories(): BelongsToMany

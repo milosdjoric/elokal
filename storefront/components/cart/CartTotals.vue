@@ -8,6 +8,39 @@ const { config: shippingConfig, isFreeShipping, remainingForFree, freeProgress, 
 
 const crossSellProducts = ref<Product[]>([])
 
+// Coupon
+const { apiBase } = useApi()
+const couponCode = ref('')
+const couponLoading = ref(false)
+const couponError = ref('')
+const appliedCoupon = ref<{ code: string; discount: string } | null>(null)
+
+async function applyCoupon() {
+  if (!couponCode.value.trim()) return
+  couponLoading.value = true
+  couponError.value = ''
+  try {
+    const data = await $fetch<{ data: { code: string; discount: string } }>(`${apiBase}/v1/coupon/validate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ code: couponCode.value, subtotal: cartStore.total }),
+    })
+    appliedCoupon.value = data.data
+  }
+  catch (e: unknown) {
+    const err = e as { data?: { message?: string } }
+    couponError.value = err.data?.message || 'Nevažeći kupon.'
+    appliedCoupon.value = null
+  }
+  finally { couponLoading.value = false }
+}
+
+function removeCoupon() {
+  appliedCoupon.value = null
+  couponCode.value = ''
+  couponError.value = ''
+}
+
 async function fetchCrossSell() {
   try {
     // Probaj cross-sell iz prvog proizvoda u korpi
@@ -88,6 +121,30 @@ onMounted(fetchCrossSell)
       <div class="flex justify-between text-lg font-bold">
         <span>Ukupno</span>
         <span>{{ total }}</span>
+      </div>
+
+      <!-- Coupon -->
+      <div class="mt-3 pt-3 border-t border-gray-100">
+        <div v-if="appliedCoupon" class="flex items-center justify-between bg-green-50 border border-green-200 px-3 py-2 mb-3">
+          <div>
+            <p class="text-sm font-medium text-green-800">{{ appliedCoupon.code }}</p>
+            <p class="text-xs text-green-600">−{{ parseFloat(appliedCoupon.discount).toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</p>
+          </div>
+          <button class="text-xs text-red-500 hover:text-red-700" @click="removeCoupon">×</button>
+        </div>
+        <div v-else>
+          <div class="flex gap-1.5">
+            <input
+              v-model="couponCode"
+              type="text"
+              placeholder="Kod kupona"
+              class="flex-1 px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              @keydown.enter.prevent="applyCoupon"
+            />
+            <UiAtomsButton variant="secondary" size="sm" :loading="couponLoading" @click="applyCoupon">Primeni</UiAtomsButton>
+          </div>
+          <p v-if="couponError" class="mt-1 text-xs text-red-600">{{ couponError }}</p>
+        </div>
       </div>
 
       <NuxtLink to="/checkout">

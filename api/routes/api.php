@@ -172,6 +172,7 @@ Route::prefix('admin')->group(function () {
         Route::patch('products/{product}/images/reorder', [ProductImageController::class, 'reorder']);
 
         Route::apiResource('categories', CategoryController::class)->except(['show']);
+        Route::post('categories/reorder', [CategoryController::class, 'reorder']);
 
         Route::get('settings', [SettingController::class, 'index']);
         Route::put('settings', [SettingController::class, 'update']);
