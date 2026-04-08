@@ -24,7 +24,7 @@ function toggle() {
   >
     <svg
       :class="[
-        size === 'sm' ? 'w-4 h-4' : 'w-5 h-5',
+        size === 'sm' ? 'w-5 h-5' : 'w-6 h-6',
         isActive ? 'text-primary-600' : 'text-gray-400 group-hover:text-primary-400',
       ]"
       fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
