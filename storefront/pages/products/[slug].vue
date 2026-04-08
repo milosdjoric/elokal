@@ -7,6 +7,7 @@ const { addToCart } = useCart()
 const { add: trackView, getExcluding: getRecentlyViewed } = useRecentlyViewed()
 
 const authStore = useAuthStore()
+const { setProductSchema, setBreadcrumbSchema } = useSchemaOrg()
 
 const product = ref<Product | null>(null)
 const recentlyViewed = ref<Product[]>([])
@@ -40,6 +41,12 @@ function onVariantSelect(variant: ProductVariant | null) {
   selectedVariant.value = variant
 }
 
+// Slike galerije — prioritet varijantine slike, fallback na sve product slike
+const galleryImages = computed(() => {
+  if (selectedVariant.value?.images?.length) return selectedVariant.value.images
+  return product.value?.images || []
+})
+
 // Deep link — prosleđuj query params u VariantSelector i ažuriraj URL
 const router = useRouter()
 const variantInitialSelection = computed(() => {
@@ -53,6 +60,14 @@ const variantInitialSelection = computed(() => {
 
 function onVariantSelectionChange(params: Record<string, string>) {
   router.replace({ query: { ...params } })
+}
+
+// Prikaz varijanti — swatch/table/both
+const { getValue: getFeatureValue } = useFeature()
+const variantDisplayMode = ref('swatch')
+
+async function loadVariantDisplayMode() {
+  variantDisplayMode.value = await getFeatureValue('storefront_variant_display_mode', 'swatch')
 }
 
 const notifyEmail = ref('')
@@ -98,6 +113,28 @@ async function fetchProduct() {
     // Track recently viewed
     trackView(data.data)
     recentlyViewed.value = getRecentlyViewed(data.data.id)
+
+    // Schema.org — Product
+    const p = data.data
+    const primaryImg = p.images?.find(i => i.is_primary) || p.images?.[0]
+    const imgUrl = primaryImg ? `${useApi().apiBase.replace('/api', '')}/storage/${primaryImg.image_path}` : undefined
+    setProductSchema({
+      name: p.name,
+      description: p.short_description || p.description || undefined,
+      image: imgUrl ? [imgUrl] : undefined,
+      sku: p.sku || undefined,
+      url: `${window.location.origin}/products/${p.slug}`,
+      price: p.price,
+      salePrice: p.is_on_sale && p.sale_price ? p.sale_price : undefined,
+      availability: p.stock_quantity > 0 ? 'InStock' : 'OutOfStock',
+    })
+
+    // Schema.org — BreadcrumbList
+    const breadcrumbs = [
+      { name: 'Početna', url: window.location.origin },
+      { name: p.name, url: `${window.location.origin}/products/${p.slug}` },
+    ]
+    setBreadcrumbSchema(breadcrumbs)
 
     // Ručne relacije imaju prioritet, fallback na istu kategoriju
     if (data.data.related_products?.length) {
@@ -149,6 +186,7 @@ const showStickyBar = ref(false)
 function onScroll() { showStickyBar.value = window.scrollY > 500 }
 onMounted(() => {
   fetchProduct()
+  loadVariantDisplayMode()
   window.addEventListener('scroll', onScroll)
   if (authStore.user?.email) notifyEmail.value = authStore.user.email
 })
@@ -198,7 +236,7 @@ useSeoMeta({
         <!-- Main section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <!-- Gallery -->
-          <ProductGallery :images="product.images || []" />
+          <ProductGallery :images="galleryImages" />
 
           <!-- Info -->
           <div>
@@ -230,10 +268,18 @@ useSeoMeta({
             <!-- Varijante -->
             <div v-if="hasVariants" class="mb-6">
               <ProductVariantSelector
+                v-if="variantDisplayMode === 'swatch' || variantDisplayMode === 'both'"
                 :variants="product.variants!"
                 :initial-selection="variantInitialSelection"
                 @select="onVariantSelect"
                 @selection-change="onVariantSelectionChange"
+              />
+              <ProductVariantTable
+                v-if="variantDisplayMode === 'table' || variantDisplayMode === 'both'"
+                :variants="product.variants!"
+                :product="product"
+                :class="{ 'mt-4': variantDisplayMode === 'both' }"
+                @select="onVariantSelect"
               />
             </div>
 

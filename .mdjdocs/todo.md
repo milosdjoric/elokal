@@ -456,7 +456,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] localStorage za neulogovane, sync pri loginu
 - [x] `/nalog/lista-zelja` stranica
 - [x] Wishlist badge u headeru
-- [ ] Feature flag: FEATURE_WISHLIST
+- [x] Feature flag: FEATURE_WISHLIST
 
 ### v0.2.16 — Cross-sell / Up-sell
 - [x] Related products (ista kategorija — već u Fazi 1)
@@ -470,7 +470,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Double opt-in flow
 - [ ] Newsletter popup (modal, exit intent, jednom po sesiji)
 - [x] Admin: pregled pretplatnika, export CSV
-- [ ] Feature flag: FEATURE_NEWSLETTER
+- [x] Feature flag: FEATURE_NEWSLETTER
 
 ### v0.2.18 — Notify Me (Back in Stock)
 - [x] NotifyMe model (product_id, email)
@@ -555,8 +555,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Nova recenzija email adminu — v0.2.14
 
 **Feature flagovi:**
-- [ ] FEATURE_WISHLIST — v0.2.15
-- [ ] FEATURE_NEWSLETTER — v0.2.17
+- [x] FEATURE_WISHLIST — v0.2.15
+- [x] FEATURE_NEWSLETTER — v0.2.17
 
 ---
 
@@ -578,8 +578,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Varijante matrica na product formi (auto-generisanje kombinacija)
 - [x] Bulk edit cena/stock/SKU
 - [x] Disable pojedinačnih varijanti
-- [ ] Image mapping po varijanti
-- [ ] Quick duplicate varijante
+- [x] Image mapping po varijanti
+- [x] Quick duplicate varijante
 
 ### v0.3.3 — Varijante: Storefront
 - [x] PDP: izbor varijante (dropdown/swatch zavisno od type-a)
@@ -591,7 +591,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Color/Size swatches na product card-u (PLP)
 - [x] Visual filters na PLP-u (slike/swatch umesto teksta)
 - [x] Size guide popup (konfigurabilan po kategoriji)
-- [ ] Varijanta tabela (opciono, B2B)
+- [x] Varijanta tabela (opciono, B2B)
 
 ### v0.3.4 — Kuponi: API
 - [x] Coupon model + migracija (code, type, value, min/max, uses, dates, stacking)
@@ -671,9 +671,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### v0.3.12 — Porezi
 - [x] TaxRate model + migracija
-- [ ] Tax kalkulacija pri checkout-u
+- [x] Tax kalkulacija pri checkout-u
 - [x] Admin: konfiguracija stopa
-- [ ] Prikaz PDV-a na cart/checkout-u
+- [x] Prikaz PDV-a na cart/checkout-u
 
 ### v0.3.13 — Abandoned Cart Recovery
 - [x] AbandonedCart model + migracija
@@ -681,13 +681,13 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Email serija (1h, 24h, 72h — queue jobs)
 - [x] Recovery link (/korpa/obnovi/:token)
 - [ ] Auto-generisan kupon u 2. emailu
-- [ ] Exit intent popup (konfigurabilan u adminu)
+- [x] Exit intent popup (konfigurabilan u adminu)
 - [x] Admin: lista napuštenih korpi, recovery rate izveštaj
-- [ ] Feature flag: FEATURE_ABANDONED_CART
+- [x] Feature flag: FEATURE_ABANDONED_CART
 
 ### v0.3.14 — Import/Export
 - [x] CSV import proizvoda (sa validacijom, preview, mapping kolona)
-- [ ] Image import iz URL-a (queue job)
+- [x] Image import iz URL-a (queue job)
 - [x] Template download (prazan CSV sa header-ima)
 - [x] Import history log
 - [x] CSV export proizvoda (filter pre exporta)
@@ -720,7 +720,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Shipment model — v0.3.8
 - [x] Abandoned cart detekcija (timeout job) — v0.3.13
 - [x] Import history log — v0.3.14
-- [ ] Image import iz URL-a — v0.3.14
+- [x] Image import iz URL-a — v0.3.14
 
 ---
 
@@ -734,7 +734,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Korišćenje na checkout-u (polje za kod, parcijalno korišćenje)
 - [x] `/poklon-kartica/provera` — balance check
 - [x] Admin: pregled, ručno kreiranje, disable, istorija
-- [ ] Feature flag: FEATURE_GIFT_CARDS
+- [x] Feature flag: FEATURE_GIFT_CARDS
 
 ### v0.4.2 — Loyalty / Reward Points
 - [x] LoyaltyAccount model + migracija
@@ -745,7 +745,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] `/nalog/poeni` — balance, tier, progress, istorija
 - [x] Admin: konfiguracija pravila, pregled po korisniku, ručno dodavanje
 - [ ] Expiry pravila
-- [ ] Feature flag: FEATURE_LOYALTY
+- [x] Feature flag: FEATURE_LOYALTY
 
 ### v0.4.3 — Store Credits
 - [x] StoreCreditAccount model + migracija
@@ -753,7 +753,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Automatska primena na checkout-u
 - [x] `/nalog/krediti` — balance + istorija
 - [x] Admin: dodela/oduzimanje sa razlogom
-- [ ] Feature flag: FEATURE_STORE_CREDITS
+- [x] Feature flag: FEATURE_STORE_CREDITS
 
 ### v0.4.4 — Multi-language (i18n)
 - [ ] Nuxt i18n modul setup
@@ -771,21 +771,21 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Prekidač valuta u headeru
 - [x] Frontend konverzija cena
 - [x] Admin: valute i kursevi
-- [ ] Feature flag: FEATURE_MULTI_CURRENCY
+- [x] Feature flag: FEATURE_MULTI_CURRENCY
 
 ### v0.4.6 — Product Compare
 - [x] Compare lista (localStorage)
 - [x] Ikonica na product card-u (feature flag)
 - [x] Floating bar sa odabranim proizvodima
 - [x] `/uporedi` — side-by-side tabela
-- [ ] Feature flag: FEATURE_COMPARE
+- [x] Feature flag: FEATURE_COMPARE
 
 ### v0.4.7 — Social Proof
 - [x] "Kupljeno X puta" brojač na PDP-u
 - [ ] "X ljudi gleda ovaj proizvod"
 - [x] Popup notifikacije ("Marko iz Beograda je upravo kupio...")
 - [ ] Admin: konfiguracija, uključeno/isključeno
-- [ ] Feature flag: FEATURE_SOCIAL_PROOF
+- [x] Feature flag: FEATURE_SOCIAL_PROOF
 
 ### v0.4.8 — Promo Bar
 - [x] Top bar sa promotivnom porukom
@@ -798,11 +798,11 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Poruka pre/posle dostizanja
 
 ### v0.4.10 — Shop the Look
-- [ ] Look model (slika + hotspots sa product linkovima)
-- [ ] Admin: upload slike, postavljanje hotspot-ova
-- [ ] `/izgled` stranica + homepage sekcija
-- [ ] "Add all to cart" dugme
-- [ ] Feature flag: FEATURE_SHOP_THE_LOOK
+- [x] Look model (slika + hotspots sa product linkovima)
+- [x] Admin: upload slike, postavljanje hotspot-ova
+- [x] `/izgled` stranica + homepage sekcija
+- [x] "Add all to cart" dugme
+- [x] Feature flag: FEATURE_SHOP_THE_LOOK
 
 ### v0.4.11 — Store Locator
 - [ ] StoreLocation model
@@ -819,20 +819,20 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### v0.4.13 — Izveštaji
 - [x] Dashboard overview kartice (prihod, narudžbine, AOV, conversion, novi vs returning)
-- [ ] Izveštaj: Prodaja (line chart, po periodu, po payment metodi, po zoni, refund-ovi)
-- [ ] Izveštaj: Proizvodi (top po prihodu/qty, most viewed not bought, low/out of stock, dead stock)
-- [ ] Izveštaj: Kategorije (prihod po kategoriji)
-- [ ] Izveštaj: Kupci (top po potrošnji, novi po periodu, CLV, abandoned cart)
-- [ ] Izveštaj: Kuponi (korišćenost, prihod sa/bez)
-- [ ] Search analytics UI (top pretrage, pretrage bez rezultata, CTR)
+- [x] Izveštaj: Prodaja (line chart, po periodu, po payment metodi, po zoni, refund-ovi)
+- [x] Izveštaj: Proizvodi (top po prihodu/qty, most viewed not bought, low/out of stock, dead stock)
+- [x] Izveštaj: Kategorije (prihod po kategoriji)
+- [x] Izveštaj: Kupci (top po potrošnji, novi po periodu, CLV, abandoned cart)
+- [x] Izveštaj: Kuponi (korišćenost, prihod sa/bez)
+- [x] Search analytics UI (top pretrage, pretrage bez rezultata, CTR)
 - [ ] Export CSV/PDF
 - [ ] Scheduled export na email
 
 ### v0.4.14 — Media Library (proširenja)
 - [x] Folder organizacija ili tag sistem
-- [ ] Prikaz gde je slika korišćena (linked entities)
-- [ ] Bulk delete sa upozorenjem
-- [ ] Search i filter po tipu, datumu, veličini
+- [x] Prikaz gde je slika korišćena (linked entities)
+- [x] Bulk delete sa upozorenjem
+- [x] Search i filter po tipu, datumu, veličini
 
 ### v0.4.15 — Admin korisnici & Permisije
 - [x] Permisije po modulu (proizvodi, narudžbine, kupci, podešavanja)
@@ -857,7 +857,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Retry logika (3 pokušaja, exponential backoff)
 - [x] HMAC signature
 - [x] Admin: CRUD, event selekcija, log, test dugme
-- [ ] Feature flag: FEATURE_WEBHOOKS
+- [x] Feature flag: FEATURE_WEBHOOKS
 
 ### v0.4.19 — API Rate Limiting (proširenja)
 - [ ] Per-route limiti (search 120, checkout 10, auth 5)
@@ -867,7 +867,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ### v0.4.20 — Performanse & Tehničko
 - [x] sitemap.xml (auto-generisan, po jeziku)
 - [x] robots.txt
-- [ ] Schema.org markup (Product, BreadcrumbList, Organization, FAQPage)
+- [x] Schema.org markup (Product, BreadcrumbList, Organization, FAQPage)
 - [ ] Core Web Vitals optimizacija (LCP < 2.5s, FID < 100ms, CLS < 0.1)
 - [ ] API response caching (homepage, categories tree)
 - [ ] Database indexi optimizacija
@@ -903,8 +903,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Mesečni test restore na staging-u
 
 ### D.4 — Template kloniranje
-- [ ] Feature flags config fajl (config/features.php)
-- [ ] useFeature() composable
-- [ ] Backend feature() helper + middleware
-- [ ] Admin sidebar filtriranje po feature flags
+- [x] Feature flags config fajl (config/features.php)
+- [x] useFeature() composable
+- [x] Backend feature() helper + middleware
+- [x] Admin sidebar filtriranje po feature flags
 - [ ] Setup checklist dokumentacija za novog klijenta

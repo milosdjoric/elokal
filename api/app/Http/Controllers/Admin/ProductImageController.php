@@ -32,9 +32,73 @@ class ProductImageController extends Controller
             $query->whereNull('folder_id');
         }
 
+        // Filteri
+        if ($request->filled('type')) {
+            $ext = $request->type;
+            $query->where('image_path', 'like', "%.{$ext}");
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
         $perPage = min($request->input('per_page', 24), 48);
 
         return response()->json($query->paginate($perPage));
+    }
+
+    public function usage(ProductImage $image): JsonResponse
+    {
+        // Proizvod
+        $product = $image->product;
+
+        // Varijante koje koriste ovu sliku
+        $variants = $image->variants()
+            ->with('attributeValues:id,value')
+            ->get(['product_variants.id', 'product_variants.sku'])
+            ->map(fn ($v) => [
+                'id' => $v->id,
+                'sku' => $v->sku,
+                'label' => $v->attributeValues->pluck('value')->join(' / '),
+            ]);
+
+        return response()->json([
+            'product' => $product ? ['id' => $product->id, 'name' => $product->name, 'slug' => $product->slug] : null,
+            'variants' => $variants,
+        ]);
+    }
+
+    public function bulkDestroy(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'exists:product_images,id',
+        ]);
+
+        $images = ProductImage::whereIn('id', $request->ids)->get();
+        $disk = Storage::disk('public');
+        $deleted = 0;
+
+        foreach ($images as $image) {
+            $pathInfo = pathinfo($image->image_path);
+            $dir = $pathInfo['dirname'];
+            $baseName = $pathInfo['filename'];
+
+            $disk->delete($image->image_path);
+            foreach (['thumbnail', 'medium', 'large'] as $size) {
+                $disk->delete("{$dir}/{$baseName}_{$size}.webp");
+            }
+            $disk->delete("{$dir}/{$baseName}.webp");
+
+            $image->delete();
+            $deleted++;
+        }
+
+        return response()->json(['message' => "{$deleted} slika obrisano.", 'deleted' => $deleted]);
     }
 
     public function update(Request $request, ProductImage $image): JsonResponse

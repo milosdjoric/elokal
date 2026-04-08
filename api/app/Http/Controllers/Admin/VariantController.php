@@ -85,6 +85,29 @@ class VariantController extends Controller
         return response()->json(['message' => 'Varijanta obrisana.']);
     }
 
+    public function duplicate(ProductVariant $variant): JsonResponse
+    {
+        $newSku = $variant->sku ? $variant->sku . '-copy' : null;
+
+        $newVariant = $variant->product->variants()->create([
+            'sku' => $newSku,
+            'price' => $variant->price,
+            'sale_price' => $variant->sale_price,
+            'weight' => $variant->weight,
+            'stock_quantity' => $variant->stock_quantity,
+            'is_active' => $variant->is_active,
+        ]);
+
+        $newVariant->attributeValues()->sync($variant->attributeValues->pluck('id'));
+        $newVariant->images()->sync($variant->images->pluck('id'));
+
+        $newVariant->load(['attributeValues.attribute', 'images']);
+
+        return (new ProductVariantResource($newVariant))
+            ->response()
+            ->setStatusCode(201);
+    }
+
     public function bulkUpdate(Request $request, Product $product): JsonResponse
     {
         $request->validate([
@@ -94,11 +117,16 @@ class VariantController extends Controller
             'variants.*.stock_quantity' => 'integer|min:0',
             'variants.*.sku' => 'nullable|string|max:100',
             'variants.*.is_active' => 'boolean',
+            'variants.*.image_ids' => 'nullable|array',
+            'variants.*.image_ids.*' => 'exists:product_images,id',
         ]);
 
         foreach ($request->variants as $data) {
             $variant = $product->variants()->findOrFail($data['id']);
-            $variant->update(collect($data)->except('id')->toArray());
+            $variant->update(collect($data)->except(['id', 'image_ids'])->toArray());
+            if (array_key_exists('image_ids', $data)) {
+                $variant->images()->sync($data['image_ids'] ?? []);
+            }
         }
 
         $variants = $product->variants()->with(['attributeValues.attribute', 'images'])->get();

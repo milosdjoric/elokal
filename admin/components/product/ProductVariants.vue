@@ -25,6 +25,24 @@ interface VariantAttribute {
   color_hex: string | null
 }
 
+interface ProductImage {
+  id: number
+  image_path: string
+  alt_text: string | null
+  is_primary: boolean
+}
+
+interface VariantApiResponse {
+  id: number
+  sku: string | null
+  price: string | null
+  sale_price: string | null
+  stock_quantity: number
+  is_active: boolean
+  attributes: VariantAttribute[]
+  images?: ProductImage[]
+}
+
 interface Variant {
   id: number
   sku: string | null
@@ -33,9 +51,10 @@ interface Variant {
   stock_quantity: number
   is_active: boolean
   attributes: VariantAttribute[]
+  image_ids: number[]
 }
 
-const props = defineProps<{ productId: number }>()
+const props = defineProps<{ productId: number; productImages?: ProductImage[] }>()
 
 const { get, post, patch, put, del, getErrorMessage } = useApi()
 const { success, error: toastError } = useToast()
@@ -59,7 +78,10 @@ async function fetchData() {
       get<{ data: Variant[] }>(`/admin/products/${props.productId}/variants`),
     ])
     attributes.value = attrRes.data
-    variants.value = varRes.data
+    variants.value = (varRes.data as VariantApiResponse[]).map(v => ({
+      ...v,
+      image_ids: v.images?.map(img => img.id) || [],
+    }))
 
     // Preselektuj atribute koji su već u upotrebi
     const usedAttrIds = new Set<number>()
@@ -189,12 +211,16 @@ async function bulkSave() {
       stock_quantity: v.stock_quantity,
       sku: v.sku || null,
       is_active: v.is_active,
+      image_ids: v.image_ids,
     }))
     const res = await put<{ data: Variant[] }>(
       `/admin/products/${props.productId}/variants/bulk`,
       { variants: payload }
     )
-    variants.value = res.data
+    variants.value = (res.data as VariantApiResponse[]).map(v => ({
+      ...v,
+      image_ids: v.images?.map(img => img.id) || [],
+    }))
     success('Varijante sačuvane.')
   }
   catch (e) { toastError(getErrorMessage(e)) }
@@ -209,6 +235,23 @@ async function deleteVariant(id: number) {
     success('Varijanta obrisana.')
   }
   catch (e) { toastError(getErrorMessage(e)) }
+}
+
+// Duplicate varijante
+async function duplicateVariant(id: number) {
+  try {
+    await post(`/admin/variants/${id}/duplicate`, {})
+    success('Varijanta duplirana.')
+    await fetchData()
+  }
+  catch (e) { toastError(getErrorMessage(e)) }
+}
+
+// Image toggle za varijantu
+function toggleVariantImage(variant: Variant, imageId: number) {
+  const idx = variant.image_ids.indexOf(imageId)
+  if (idx >= 0) variant.image_ids.splice(idx, 1)
+  else variant.image_ids.push(imageId)
 }
 
 // Bulk set — postavi vrednost za sve varijante
@@ -341,7 +384,8 @@ onMounted(fetchData)
               <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Cena</th>
               <th class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Količina</th>
               <th class="px-3 py-2 text-center text-xs font-semibold text-gray-500 uppercase">Aktivan</th>
-              <th class="px-3 py-2 text-center text-xs font-semibold text-gray-500 uppercase w-16" />
+              <th v-if="props.productImages?.length" class="px-3 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Slike</th>
+              <th class="px-3 py-2 text-center text-xs font-semibold text-gray-500 uppercase w-24" />
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-100">
@@ -396,16 +440,42 @@ onMounted(fetchData)
                   class="w-4 h-4 text-primary-600 border-gray-300 rounded"
                 />
               </td>
-              <!-- Obriši -->
+              <!-- Slike -->
+              <td v-if="props.productImages?.length" class="px-3 py-2">
+                <div class="flex flex-wrap gap-1">
+                  <button
+                    v-for="img in props.productImages"
+                    :key="img.id"
+                    type="button"
+                    class="w-8 h-8 border-2 rounded overflow-hidden flex-shrink-0 transition-colors"
+                    :class="variant.image_ids.includes(img.id) ? 'border-primary-500 ring-1 ring-primary-300' : 'border-gray-200 opacity-40 hover:opacity-70'"
+                    :title="img.alt_text || 'Slika'"
+                    @click="toggleVariantImage(variant, img.id)"
+                  >
+                    <img :src="resolveImageUrl(img.image_path)" class="w-full h-full object-cover" alt="" />
+                  </button>
+                </div>
+              </td>
+              <!-- Akcije -->
               <td class="px-3 py-2 text-center">
-                <button
-                  type="button"
-                  class="text-red-400 hover:text-red-600 text-xs"
-                  title="Obriši"
-                  @click="deleteVariant(variant.id)"
-                >
-                  ✕
-                </button>
+                <div class="flex items-center justify-center gap-1">
+                  <button
+                    type="button"
+                    class="text-gray-400 hover:text-primary-600 text-xs"
+                    title="Dupliciraj"
+                    @click="duplicateVariant(variant.id)"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" /></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="text-red-400 hover:text-red-600 text-xs"
+                    title="Obriši"
+                    @click="deleteVariant(variant.id)"
+                  >
+                    ✕
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>

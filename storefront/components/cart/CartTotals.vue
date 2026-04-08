@@ -8,6 +8,26 @@ const { config: shippingConfig, isFreeShipping, remainingForFree, freeProgress, 
 
 const crossSellProducts = ref<Product[]>([])
 
+// Porez
+const taxAmount = ref(0)
+const taxRate = ref(0)
+
+async function fetchTaxEstimate() {
+  if (cartStore.total <= 0) { taxAmount.value = 0; return }
+  try {
+    const data = await $fetch<{ data: { tax: number; rate: number } }>(`${apiBase}/v1/tax/calculate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ subtotal: cartStore.total, country: 'RS' }),
+    })
+    taxAmount.value = data.data.tax
+    taxRate.value = data.data.rate
+  }
+  catch { taxAmount.value = 0 }
+}
+
+watch(() => cartStore.total, fetchTaxEstimate)
+
 // Coupon
 const { apiBase } = useApi()
 const couponCode = ref('')
@@ -74,7 +94,10 @@ function primaryImage(product: Product): string | null {
   return `${apiBase.replace('/api', '')}/storage/${path}`
 }
 
-onMounted(fetchCrossSell)
+onMounted(() => {
+  fetchCrossSell()
+  fetchTaxEstimate()
+})
 </script>
 
 <template>
@@ -114,13 +137,14 @@ onMounted(fetchCrossSell)
         <span v-else class="text-gray-400">Izračunava se u sledećem koraku</span>
       </div>
       <div class="flex justify-between text-sm">
-        <span class="text-gray-600">Porez</span>
-        <span class="text-gray-400">Uračunat u cenu</span>
+        <span class="text-gray-600">Porez (PDV {{ taxRate }}%)</span>
+        <span v-if="taxAmount > 0" class="font-medium">~{{ taxAmount.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
+        <span v-else class="text-gray-400">—</span>
       </div>
       <hr class="my-2" />
       <div class="flex justify-between text-lg font-bold">
         <span>Ukupno</span>
-        <span>{{ total }}</span>
+        <span>{{ (cartStore.total + taxAmount + (isFreeShipping(cartStore.total) ? 0 : (estimatedCost(cartStore.total) ?? 0))).toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
       </div>
 
       <!-- Coupon -->

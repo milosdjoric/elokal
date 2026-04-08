@@ -11,6 +11,10 @@ class AbandonedCartController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
+        if (! feature('feature_abandoned_cart')) {
+            return response()->json(['message' => 'Feature disabled.'], 403);
+        }
+
         $request->validate([
             'email' => 'required|email',
             'items' => 'required|array|min:1',

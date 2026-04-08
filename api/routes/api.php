@@ -92,6 +92,8 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::post('gift-card/check', [GiftCardController::class, 'check']);
     Route::get('gift-cards/{code}/check', [GiftCardController::class, 'checkByCode']);
     Route::get('pages/{slug}', [StorefrontPageController::class, 'show']);
+    Route::get('looks', [\App\Http\Controllers\Storefront\LookController::class, 'index']);
+    Route::get('looks/{look}', [\App\Http\Controllers\Storefront\LookController::class, 'show']);
     Route::post('abandoned-cart', [AbandonedCartController::class, 'store']);
     Route::get('abandoned-cart/recover/{token}', [AbandonedCartController::class, 'recover']);
     Route::post('abandoned-cart/recovered/{token}', [AbandonedCartController::class, 'markRecovered']);
@@ -147,6 +149,8 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
         });
     });
 
+    Route::post('tax/calculate', [CheckoutController::class, 'calculateTax']);
+
     // Checkout (guest ili auth)
     Route::post('checkout', [CheckoutController::class, 'store']);
 });
@@ -170,6 +174,7 @@ Route::prefix('admin')->group(function () {
         Route::post('products/{product}/variants', [VariantController::class, 'store']);
         Route::put('products/{product}/variants/bulk', [VariantController::class, 'bulkUpdate']);
         Route::put('variants/{variant}', [VariantController::class, 'update']);
+        Route::post('variants/{variant}/duplicate', [VariantController::class, 'duplicate']);
         Route::delete('variants/{variant}', [VariantController::class, 'destroy']);
 
         Route::get('attributes', [AttributeController::class, 'index']);
@@ -183,6 +188,8 @@ Route::prefix('admin')->group(function () {
 
         Route::get('media', [ProductImageController::class, 'index']);
         Route::patch('media/{image}', [ProductImageController::class, 'update']);
+        Route::get('media/{image}/usage', [ProductImageController::class, 'usage']);
+        Route::post('media/bulk-delete', [ProductImageController::class, 'bulkDestroy']);
 
         Route::get('media-folders', [\App\Http\Controllers\Admin\MediaFolderController::class, 'index']);
         Route::post('media-folders', [\App\Http\Controllers\Admin\MediaFolderController::class, 'store']);
@@ -257,6 +264,9 @@ Route::prefix('admin')->group(function () {
         Route::get('reports/sales-by-day', [\App\Http\Controllers\Admin\ReportController::class, 'salesByDay']);
         Route::get('reports/top-products', [\App\Http\Controllers\Admin\ReportController::class, 'topProducts']);
         Route::get('reports/top-customers', [\App\Http\Controllers\Admin\ReportController::class, 'topCustomers']);
+        Route::get('reports/categories', [\App\Http\Controllers\Admin\ReportController::class, 'categories']);
+        Route::get('reports/coupons', [\App\Http\Controllers\Admin\ReportController::class, 'coupons']);
+        Route::get('reports/search', [\App\Http\Controllers\Admin\ReportController::class, 'search']);
 
         Route::get('abandoned-carts', [AdminAbandonedCartController::class, 'index']);
         Route::get('abandoned-carts/stats', [AdminAbandonedCartController::class, 'stats']);
@@ -303,6 +313,8 @@ Route::prefix('admin')->group(function () {
         Route::get('newsletter/stats', [AdminNewsletterController::class, 'stats']);
         Route::get('newsletter/export', [AdminNewsletterController::class, 'export']);
         Route::delete('newsletter/{subscriber}', [AdminNewsletterController::class, 'destroy']);
+
+        Route::apiResource('looks', \App\Http\Controllers\Admin\LookController::class)->except(['show']);
 
         Route::get('reviews', [AdminReviewController::class, 'index']);
         Route::patch('reviews/{review}/approve', [AdminReviewController::class, 'approve']);

@@ -10,7 +10,7 @@ class SettingController extends Controller
 {
     public function index(): JsonResponse
     {
-        $publicGroups = ['general', 'storefront', 'topbar', 'trust', 'cart_checkout', 'badges', 'seo', 'gdpr', 'shipping'];
+        $publicGroups = ['general', 'storefront', 'topbar', 'trust', 'cart_checkout', 'cart', 'badges', 'seo', 'gdpr', 'shipping', 'features'];
 
         $settings = Setting::whereIn('group', $publicGroups)
             ->get()

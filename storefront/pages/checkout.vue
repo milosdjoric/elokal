@@ -81,7 +81,28 @@ const cartStore = useCartStore()
 const subtotal = computed(() => cartStore.total)
 const discountAmount = computed(() => appliedCoupon.value ? parseFloat(appliedCoupon.value.discount) : 0)
 const giftCardAmount = computed(() => appliedGiftCard.value ? Math.min(appliedGiftCard.value.amount, appliedGiftCard.value.balance) : 0)
-const orderTotal = computed(() => Math.max(0, subtotal.value - discountAmount.value + shippingCost.value - giftCardAmount.value - loyaltySpend.value - creditsSpend.value))
+
+// Porez
+const taxAmount = ref(0)
+const taxRateName = ref('')
+
+async function fetchTax() {
+  if (subtotal.value <= 0) { taxAmount.value = 0; return }
+  try {
+    const data = await $fetch<{ data: { tax: number; rate: number; name: string } }>(`${apiBase}/v1/tax/calculate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ subtotal: subtotal.value, country: form.shipping_country || 'RS' }),
+    })
+    taxAmount.value = data.data.tax
+    taxRateName.value = data.data.name
+  }
+  catch { taxAmount.value = 0 }
+}
+
+watch([subtotal, () => form.shipping_country], fetchTax)
+
+const orderTotal = computed(() => Math.max(0, subtotal.value + taxAmount.value - discountAmount.value + shippingCost.value - giftCardAmount.value - loyaltySpend.value - creditsSpend.value))
 
 // Saved addresses
 const savedAddresses = ref<SavedAddress[]>([])
@@ -418,6 +439,7 @@ onMounted(() => {
   fetchPaymentMethods()
   fetchLoyaltyBalance()
   fetchCreditsBalance()
+  fetchTax()
 })
 
 useHead({ title: 'Kasa — eLokal' })
@@ -765,6 +787,10 @@ useHead({ title: 'Kasa — eLokal' })
               <span v-if="!selectedShippingMethod && shippingMethods.length === 0" class="text-gray-400">Unesite adresu za izračun</span>
               <span v-else-if="shippingCost === 0" class="text-green-600 font-medium">Besplatno</span>
               <span v-else class="font-medium">{{ shippingCost.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
+            </div>
+            <div v-if="taxAmount > 0" class="flex justify-between text-sm mb-2">
+              <span class="text-gray-600">{{ taxRateName || 'Porez' }}</span>
+              <span class="font-medium">{{ taxAmount.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
             </div>
 
             <hr class="my-4" />

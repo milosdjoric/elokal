@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\ImportProductImages;
 use App\Models\ImportLog;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,7 @@ class ImportController extends Controller
         $updated = 0;
         $errors = [];
         $row = 1;
+        $imageImportQueue = [];
 
         while (($data = fgetcsv($handle)) !== false) {
             $row++;
@@ -64,6 +66,7 @@ class ImportController extends Controller
 
                 if ($existing) {
                     $existing->update($productData);
+                    $targetProduct = $existing;
                     $updated++;
                 } else {
                     // Unique slug
@@ -73,8 +76,22 @@ class ImportController extends Controller
                         $productData['slug'] = "{$baseSlug}-{$counter}";
                         $counter++;
                     }
-                    Product::create($productData);
+                    $targetProduct = Product::create($productData);
                     $created++;
+                }
+
+                // Slike iz URL-ova (comma-separated)
+                if (isset($map['image_urls'])) {
+                    $imageUrlsRaw = $data[$map['image_urls']] ?? '';
+                    if ($imageUrlsRaw) {
+                        $imageUrls = array_filter(array_map('trim', explode(',', $imageUrlsRaw)));
+                        if (count($imageUrls) > 0) {
+                            $imageImportQueue[] = [
+                                'product_id' => $targetProduct->id,
+                                'urls' => $imageUrls,
+                            ];
+                        }
+                    }
                 }
             } catch (\Exception $e) {
                 $errors[] = "Red {$row}: {$e->getMessage()}";
@@ -82,7 +99,7 @@ class ImportController extends Controller
         }
         fclose($handle);
 
-        ImportLog::create([
+        $importLog = ImportLog::create([
             'admin_id' => $request->user()->id,
             'type' => 'products',
             'filename' => $request->file('file')->getClientOriginalName(),
@@ -93,6 +110,15 @@ class ImportController extends Controller
             'errors' => $errors ?: null,
             'status' => count($errors) === 0 ? 'completed' : ($created + $updated > 0 ? 'partial' : 'failed'),
         ]);
+
+        // Dispatch image import jobs
+        foreach ($imageImportQueue as $imageJob) {
+            ImportProductImages::dispatch(
+                $imageJob['product_id'],
+                $imageJob['urls'],
+                $importLog->id,
+            );
+        }
 
         return response()->json([
             'created' => $created,

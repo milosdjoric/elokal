@@ -15,6 +15,10 @@ class DetectAbandonedCarts implements ShouldQueue
 
     public function handle(): void
     {
+        if (! feature('feature_abandoned_cart')) {
+            return;
+        }
+
         // Markuj korpe starije od 1h kao expired ako su i dalje abandoned
         AbandonedCart::where('status', 'abandoned')
             ->where('updated_at', '<', now()->subDays(30))

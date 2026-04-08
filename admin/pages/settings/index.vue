@@ -18,6 +18,7 @@ const tabs = [
   { key: 'badges', label: 'Bedževi' },
   { key: 'seo', label: 'SEO' },
   { key: 'gdpr', label: 'GDPR' },
+  { key: 'features', label: 'Feature Flags' },
 ]
 
 // Settings per group
@@ -39,6 +40,7 @@ const storefront = reactive({
   pdp_variant: 'A',
   cart_variant: 'A',
   products_per_page: '12',
+  variant_display_mode: 'swatch',
 })
 
 const topbar = reactive({
@@ -63,6 +65,7 @@ const cart = reactive({
   add_to_cart_feedback: 'drawer',
   free_shipping_threshold: '5000',
   guest_checkout: 'true',
+  feature_abandoned_cart: 'true',
 })
 
 const badges = reactive({
@@ -84,6 +87,34 @@ const gdpr = reactive({
   terms_url: '',
 })
 
+const features = reactive({
+  wishlist: 'true',
+  newsletter: 'true',
+  compare: 'true',
+  social_proof: 'false',
+  store_credits: 'true',
+  multi_currency: 'false',
+  gift_cards: 'true',
+  loyalty: 'true',
+  webhooks: 'false',
+  abandoned_cart: 'true',
+  shop_the_look: 'false',
+})
+
+const featureLabels: Record<string, string> = {
+  wishlist: 'Lista želja (Wishlist)',
+  newsletter: 'Newsletter',
+  compare: 'Uporedi proizvode',
+  social_proof: 'Social Proof popup-ovi',
+  store_credits: 'Store Credits',
+  multi_currency: 'Više valuta',
+  gift_cards: 'Poklon kartice',
+  loyalty: 'Loyalty program (poeni)',
+  webhooks: 'Webhooks',
+  abandoned_cart: 'Napuštene korpe',
+  shop_the_look: 'Shop the Look',
+}
+
 const groups: Record<string, Record<string, unknown>> = {
   general,
   storefront,
@@ -93,6 +124,7 @@ const groups: Record<string, Record<string, unknown>> = {
   badges,
   seo,
   gdpr,
+  features,
 }
 
 async function fetchSettings() {
@@ -192,6 +224,20 @@ onMounted(fetchSettings)
               </div>
             </div>
             <UiAtomsInput v-model="storefront.products_per_page" label="Proizvoda po stranici" type="number" />
+
+            <div class="flex items-center gap-4">
+              <label class="text-sm font-medium text-gray-700 w-40">Prikaz varijanti</label>
+              <div class="flex gap-3">
+                <UiAtomsRadio
+                  v-for="v in [{ val: 'swatch', label: 'Swatch/Dropdown' }, { val: 'table', label: 'Tabela (B2B)' }, { val: 'both', label: 'Oba' }]"
+                  :key="v.val"
+                  v-model="storefront.variant_display_mode"
+                  :value="v.val"
+                  name="variant_display_mode"
+                  :label="v.label"
+                />
+              </div>
+            </div>
           </div>
 
           <!-- Top Bar -->
@@ -234,6 +280,7 @@ onMounted(fetchSettings)
             </div>
             <UiAtomsInput v-model="cart.free_shipping_threshold" label="Prag za besplatnu dostavu (RSD)" type="number" />
             <UiAtomsSwitch :model-value="toBool(cart.guest_checkout)" label="Guest checkout" @update:model-value="cart.guest_checkout = fromBool($event)" />
+            <UiAtomsSwitch :model-value="toBool(cart.feature_abandoned_cart)" label="Napuštene korpe (abandoned cart)" @update:model-value="cart.feature_abandoned_cart = fromBool($event)" />
           </div>
 
           <!-- Badges -->
@@ -272,6 +319,24 @@ onMounted(fetchSettings)
             </div>
             <UiAtomsInput v-model="gdpr.privacy_policy_url" label="Politika privatnosti URL" />
             <UiAtomsInput v-model="gdpr.terms_url" label="Uslovi korišćenja URL" />
+          </div>
+
+          <!-- Feature Flags -->
+          <div v-show="active === 'features'" class="space-y-4">
+            <p class="text-sm text-gray-500 mb-2">Uključite ili isključite funkcionalnosti webshopa.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                v-for="(label, key) in featureLabels"
+                :key="key"
+                class="flex items-center justify-between border border-gray-200 rounded-lg px-4 py-3"
+              >
+                <span class="text-sm font-medium text-gray-700">{{ label }}</span>
+                <UiAtomsSwitch
+                  :model-value="toBool((features as Record<string, string>)[key])"
+                  @update:model-value="(features as Record<string, string>)[key] = fromBool($event)"
+                />
+              </div>
+            </div>
           </div>
 
         </template>

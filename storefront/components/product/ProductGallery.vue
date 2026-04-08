@@ -22,6 +22,9 @@ function openLightbox(index: number) {
 function closeLightbox() { lightboxOpen.value = false }
 function nextImage() { activeIndex.value = (activeIndex.value + 1) % sortedImages.value.length }
 function prevImage() { activeIndex.value = (activeIndex.value - 1 + sortedImages.value.length) % sortedImages.value.length }
+
+// Reset na prvu sliku kad se promene slike (npr. izbor varijante)
+watch(() => props.images, () => { activeIndex.value = 0 })
 </script>
 
 <template>

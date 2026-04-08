@@ -13,6 +13,7 @@ use App\Models\ShippingMethod;
 use App\Models\ShippingZone;
 use App\Models\StockMovement;
 use App\Models\StoreCreditAccount;
+use App\Models\TaxRate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -154,7 +155,11 @@ class CheckoutController extends Controller
                 $storeCreditDiscount = min($requestedCredits, $subtotal + $shippingCost - $discount - $giftCardDiscount - $loyaltyDiscount);
             }
 
-            $total = max(0, $subtotal + $shippingCost - $discount - $giftCardDiscount - $loyaltyDiscount - $storeCreditDiscount);
+            // Porez
+            $taxRate = TaxRate::getForCountry($country);
+            $tax = $taxRate ? $taxRate->calculateTax($subtotal) : 0;
+
+            $total = max(0, $subtotal + $shippingCost + $tax - $discount - $giftCardDiscount - $loyaltyDiscount - $storeCreditDiscount);
 
             $order = Order::create([
                 'order_number' => Order::generateOrderNumber(),
@@ -172,6 +177,7 @@ class CheckoutController extends Controller
                 'shipping_country' => $country,
                 'subtotal' => $subtotal,
                 'shipping_cost' => $shippingCost,
+                'tax' => $tax,
                 'discount' => $discount,
                 'total' => $total,
                 'notes' => $request->notes,
@@ -230,5 +236,25 @@ class CheckoutController extends Controller
                 ->response()
                 ->setStatusCode(201);
         });
+    }
+
+    public function calculateTax(Request $request): JsonResponse
+    {
+        $request->validate([
+            'subtotal' => 'required|numeric|min:0',
+            'country' => 'nullable|string|max:2',
+        ]);
+
+        $country = $request->input('country', 'RS');
+        $taxRate = TaxRate::getForCountry($country);
+        $tax = $taxRate ? $taxRate->calculateTax((float) $request->subtotal) : 0;
+
+        return response()->json([
+            'data' => [
+                'tax' => $tax,
+                'rate' => $taxRate?->rate ?? 0,
+                'name' => $taxRate?->name ?? '',
+            ],
+        ]);
     }
 }
