@@ -249,7 +249,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Sidebar filteri: category tree (expand/collapse + count), price range slider, stock status, rating
 - [x] Active filters prikaz (sa X za uklanjanje, "Clear all")
 - [x] Paginacija + "Učitaj još" opcija
-- [ ] Layout varijanta iz podešavanja (A sidebar / B top / C off-canvas)
+- [x] Layout varijanta iz podešavanja (A sidebar / B top / C off-canvas)
 - [x] Category header (naslov + opis + breadcrumbs)
 - [x] Empty state (0 rezultata, resetuj filtere)
 - [x] Skeleton loaderi dok se učitava
@@ -262,9 +262,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Sticky Add to Cart bar (pojavi se na scroll, thumbnail + naziv + rating + cena + dugme)
 - [x] PDP Tabs (opis, specifikacije, shipping & returns — recenzije placeholder za Fazu 2)
 - [x] FAQ tab (accordion Q&A)
-- [ ] Custom tabovi po proizvodu (iz admin-a)
-- [ ] Responsive tabovi → accordion na mobilnom
-- [ ] Sticky tabs navigacija
+- [x] Custom tabovi po proizvodu (iz admin-a)
+- [x] Responsive tabovi → accordion na mobilnom
+- [x] Sticky tabs navigacija
 - [x] Related products carousel
 - [x] Recently viewed carousel
 - [x] Prev/Next product navigacija
@@ -275,8 +275,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] `/pretraga?q=` stranica (isti layout kao PLP)
 - [x] AJAX autocomplete u headeru (debounced 300ms)
 - [x] Recent searches (localStorage)
-- [ ] Trending searches (admin konfiguriše)
-- [ ] Search scope po kategoriji (dropdown)
+- [x] Trending searches (admin konfiguriše)
+- [x] Search scope po kategoriji (dropdown)
 - [x] No results state + predlozi
 
 ### v0.1.32 — Storefront: Korpa
@@ -285,7 +285,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Cart totals (subtotal, placeholder shipping/tax, total)
 - [x] "Checkout" dugme → placeholder stranica
 - [x] Empty cart state (poruka, continue shopping, featured proizvodi)
-- [ ] Cart layout varijanta (A klasičan / B dve kolone — iz podešavanja)
+- [x] Cart layout varijanta (A klasičan / B dve kolone — iz podešavanja)
 
 ### v0.1.33 — Storefront: SEO
 - [x] useHead() i useSeoMeta() na svakoj stranici
@@ -310,14 +310,14 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Recently viewed (localStorage) — v0.1.28, v0.1.30
 - [x] Page builder sekcije iz admin podešavanja — v0.1.28
 - [x] Active filters prikaz (sa X, "Clear all") — v0.1.29
-- [ ] Layout varijanta PLP (A/B/C iz podešavanja) — v0.1.29
-- [ ] Custom tabovi po proizvodu — v0.1.30
-- [ ] Responsive tabovi → accordion na mobilnom — v0.1.30
-- [ ] Sticky tabs navigacija — v0.1.30
+- [x] Layout varijanta PLP (A/B/C iz podešavanja) — v0.1.29
+- [x] Custom tabovi po proizvodu — v0.1.30
+- [x] Responsive tabovi → accordion na mobilnom — v0.1.30
+- [x] Sticky tabs navigacija — v0.1.30
 - [x] Prev/Next product navigacija — v0.1.30
-- [ ] Trending searches (admin konfiguriše) — v0.1.31
-- [ ] Search scope po kategoriji — v0.1.31
-- [ ] Cart layout varijanta (A/B iz podešavanja) — v0.1.32
+- [x] Trending searches (admin konfiguriše) — v0.1.31
+- [x] Search scope po kategoriji — v0.1.31
+- [x] Cart layout varijanta (A/B iz podešavanja) — v0.1.32
 
 ---
 
@@ -575,9 +575,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### v0.3.2 — Varijante: Admin
 - [x] Atributi management stranica (CRUD, color picker, image upload za swatch)
-- [ ] Varijante matrica na product formi (auto-generisanje kombinacija)
-- [ ] Bulk edit cena/stock/SKU
-- [ ] Disable pojedinačnih varijanti
+- [x] Varijante matrica na product formi (auto-generisanje kombinacija)
+- [x] Bulk edit cena/stock/SKU
+- [x] Disable pojedinačnih varijanti
 - [ ] Image mapping po varijanti
 - [ ] Quick duplicate varijante
 
@@ -586,11 +586,11 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Promena slike/cene/stock-a pri izboru
 - [x] Nedostupne kombinacije disabled
 - [x] Auto-select jedine dostupne varijante
-- [ ] Deep link (/proizvod/majica?color=red&size=xl)
-- [ ] Price range na card-u i pre selekcije
+- [x] Deep link (/proizvod/majica?color=red&size=xl)
+- [x] Price range na card-u i pre selekcije
 - [x] Color/Size swatches na product card-u (PLP)
-- [ ] Visual filters na PLP-u (slike/swatch umesto teksta)
-- [ ] Size guide popup (konfigurabilan po kategoriji)
+- [x] Visual filters na PLP-u (slike/swatch umesto teksta)
+- [x] Size guide popup (konfigurabilan po kategoriji)
 - [ ] Varijanta tabela (opciono, B2B)
 
 ### v0.3.4 — Kuponi: API
@@ -627,7 +627,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Bulk stock import (CSV: SKU, quantity, operation)
 - [x] Bulk stock export (CSV)
 - [x] Bulk manual adjustment
-- [ ] Low stock dashboard widget
+- [x] Low stock dashboard widget
 
 ### v0.3.8 — Dostava: API
 - [x] ShippingZone model + migracija
@@ -705,13 +705,13 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Scheduled export na email — v0.3.14
 
 **UI-heavy (iterativno sa dizajnom):**
-- [ ] Varijante matrica + bulk edit na product formi — v0.3.2
-- [ ] PDP varijante (swatch/dropdown, promena slike/cene) — v0.3.3
-- [ ] Color/Size swatches na PLP card-u — v0.3.3
-- [ ] Visual filters (slike/swatch) — v0.3.3
-- [ ] Size guide popup — v0.3.3
-- [ ] Countdown timer na PDP/card-u — v0.3.5
-- [ ] Checkout izbor metode plaćanja (UI) — v0.3.11
+- [x] Varijante matrica + bulk edit na product formi — v0.3.2
+- [x] PDP varijante (swatch/dropdown, promena slike/cene) — v0.3.3
+- [x] Color/Size swatches na PLP card-u — v0.3.3
+- [x] Visual filters (slike/swatch) — v0.3.3
+- [x] Size guide popup — v0.3.3
+- [x] Countdown timer na PDP/card-u — v0.3.5
+- [x] Checkout izbor metode plaćanja (UI) — v0.3.11
 
 **Backend (manja prioritetnost):**
 - [x] CouponCondition model (napredna pravila) — v0.3.4
@@ -731,7 +731,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] GiftCardTransaction model
 - [ ] Kupovina (poseban proizvod, izbor iznosa, recipient forma)
 - [ ] Email primaocu sa kodom
-- [ ] Korišćenje na checkout-u (polje za kod, parcijalno korišćenje)
+- [x] Korišćenje na checkout-u (polje za kod, parcijalno korišćenje)
 - [x] `/poklon-kartica/provera` — balance check
 - [x] Admin: pregled, ručno kreiranje, disable, istorija
 - [ ] Feature flag: FEATURE_GIFT_CARDS
@@ -740,9 +740,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] LoyaltyAccount model + migracija
 - [x] LoyaltyTransaction model
 - [x] Pravila za zarađivanje (kupovina, registracija, recenzija, birthday, referral)
-- [ ] Korišćenje na checkout-u (slider/input za poene)
+- [x] Korišćenje na checkout-u (slider/input za poene)
 - [x] Tier sistem (bronze/silver/gold/platinum)
-- [ ] `/nalog/poeni` — balance, tier, progress, istorija
+- [x] `/nalog/poeni` — balance, tier, progress, istorija
 - [x] Admin: konfiguracija pravila, pregled po korisniku, ručno dodavanje
 - [ ] Expiry pravila
 - [ ] Feature flag: FEATURE_LOYALTY
@@ -750,8 +750,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ### v0.4.3 — Store Credits
 - [x] StoreCreditAccount model + migracija
 - [x] StoreCreditTransaction model
-- [ ] Automatska primena na checkout-u
-- [ ] `/nalog/krediti` — balance + istorija
+- [x] Automatska primena na checkout-u
+- [x] `/nalog/krediti` — balance + istorija
 - [x] Admin: dodela/oduzimanje sa razlogom
 - [ ] Feature flag: FEATURE_STORE_CREDITS
 
@@ -767,16 +767,16 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Feature flag: FEATURE_MULTI_LANGUAGE
 
 ### v0.4.5 — Multi-valuta
-- [ ] Kursna lista (ručno ili API)
-- [ ] Prekidač valuta u headeru
-- [ ] Frontend konverzija cena
-- [ ] Admin: valute i kursevi
+- [x] Kursna lista (ručno ili API)
+- [x] Prekidač valuta u headeru
+- [x] Frontend konverzija cena
+- [x] Admin: valute i kursevi
 - [ ] Feature flag: FEATURE_MULTI_CURRENCY
 
 ### v0.4.6 — Product Compare
 - [x] Compare lista (localStorage)
 - [x] Ikonica na product card-u (feature flag)
-- [ ] Floating bar sa odabranim proizvodima
+- [x] Floating bar sa odabranim proizvodima
 - [x] `/uporedi` — side-by-side tabela
 - [ ] Feature flag: FEATURE_COMPARE
 
@@ -793,9 +793,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Dismiss dugme (localStorage)
 
 ### v0.4.9 — Free Shipping Indikator
-- [ ] Progress bar u korpi/mini-cart
-- [ ] Admin: threshold konfig
-- [ ] Poruka pre/posle dostizanja
+- [x] Progress bar u korpi/mini-cart
+- [x] Admin: threshold konfig
+- [x] Poruka pre/posle dostizanja
 
 ### v0.4.10 — Shop the Look
 - [ ] Look model (slika + hotspots sa product linkovima)
@@ -829,7 +829,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Scheduled export na email
 
 ### v0.4.14 — Media Library (proširenja)
-- [ ] Folder organizacija ili tag sistem
+- [x] Folder organizacija ili tag sistem
 - [ ] Prikaz gde je slika korišćena (linked entities)
 - [ ] Bulk delete sa upozorenjem
 - [ ] Search i filter po tipu, datumu, veličini
@@ -865,8 +865,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Admin IP whitelist
 
 ### v0.4.20 — Performanse & Tehničko
-- [ ] sitemap.xml (auto-generisan, po jeziku)
-- [ ] robots.txt
+- [x] sitemap.xml (auto-generisan, po jeziku)
+- [x] robots.txt
 - [ ] Schema.org markup (Product, BreadcrumbList, Organization, FAQPage)
 - [ ] Core Web Vitals optimizacija (LCP < 2.5s, FID < 100ms, CLS < 0.1)
 - [ ] API response caching (homepage, categories tree)
