@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Storefront;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Coupon;
+use App\Models\GiftCard;
+use App\Models\LoyaltyAccount;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ShippingMethod;
 use App\Models\ShippingZone;
 use App\Models\StockMovement;
+use App\Models\StoreCreditAccount;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +39,10 @@ class CheckoutController extends Controller
             'items.*.quantity' => 'required|integer|min:1',
             'coupon_code' => 'nullable|string',
             'shipping_method_id' => 'nullable|exists:shipping_methods,id',
+            'gift_card_code' => 'nullable|string',
+            'gift_card_amount' => 'nullable|numeric|min:0',
+            'loyalty_points' => 'nullable|integer|min:0',
+            'store_credits' => 'nullable|numeric|min:0',
         ]);
 
         return DB::transaction(function () use ($request) {
@@ -110,7 +117,44 @@ class CheckoutController extends Controller
                 $discount = $coupon->calculateDiscount($subtotal);
             }
 
-            $total = max(0, $subtotal + $shippingCost - $discount);
+            // Gift card
+            $giftCardDiscount = 0;
+            $giftCard = null;
+            if ($request->filled('gift_card_code')) {
+                $giftCard = GiftCard::where('code', strtoupper($request->gift_card_code))
+                    ->where('is_active', true)
+                    ->first();
+                if (! $giftCard || ! $giftCard->isValid()) {
+                    throw ValidationException::withMessages(['gift_card_code' => ['Poklon kartica nije validna.']]);
+                }
+                $maxGiftAmount = (float) ($request->gift_card_amount ?? $giftCard->balance);
+                $giftCardDiscount = min($maxGiftAmount, (float) $giftCard->balance, $subtotal + $shippingCost - $discount);
+            }
+
+            // Loyalty points
+            $loyaltyDiscount = 0;
+            if ($request->filled('loyalty_points') && $request->user()) {
+                $loyaltyAccount = LoyaltyAccount::firstOrCreate(['user_id' => $request->user()->id]);
+                $requestedPoints = (int) $request->loyalty_points;
+                if ($requestedPoints > $loyaltyAccount->points_balance) {
+                    throw ValidationException::withMessages(['loyalty_points' => ['Nemate dovoljno poena.']]);
+                }
+                // 1 poen = 1 RSD (konfigurisano)
+                $loyaltyDiscount = min($requestedPoints, $subtotal + $shippingCost - $discount - $giftCardDiscount);
+            }
+
+            // Store credits
+            $storeCreditDiscount = 0;
+            if ($request->filled('store_credits') && $request->user()) {
+                $creditAccount = StoreCreditAccount::firstOrCreate(['user_id' => $request->user()->id]);
+                $requestedCredits = (float) $request->store_credits;
+                if ($requestedCredits > (float) $creditAccount->balance) {
+                    throw ValidationException::withMessages(['store_credits' => ['Nemate dovoljno kredita.']]);
+                }
+                $storeCreditDiscount = min($requestedCredits, $subtotal + $shippingCost - $discount - $giftCardDiscount - $loyaltyDiscount);
+            }
+
+            $total = max(0, $subtotal + $shippingCost - $discount - $giftCardDiscount - $loyaltyDiscount - $storeCreditDiscount);
 
             $order = Order::create([
                 'order_number' => Order::generateOrderNumber(),
@@ -134,6 +178,36 @@ class CheckoutController extends Controller
             ]);
 
             $order->items()->createMany($orderItems);
+
+            // Dedukcija gift card
+            if ($giftCard && $giftCardDiscount > 0) {
+                $giftCard->transactions()->create([
+                    'type' => 'debit',
+                    'amount' => $giftCardDiscount,
+                    'description' => "Narudžbina #{$order->order_number}",
+                ]);
+                $giftCard->decrement('balance', $giftCardDiscount);
+            }
+
+            // Dedukcija loyalty
+            if ($loyaltyDiscount > 0 && $request->user()) {
+                $loyaltyAccount->decrement('points_balance', (int) $loyaltyDiscount);
+                $loyaltyAccount->transactions()->create([
+                    'type' => 'redeem',
+                    'points' => -(int) $loyaltyDiscount,
+                    'description' => "Narudžbina #{$order->order_number}",
+                ]);
+            }
+
+            // Dedukcija store credits
+            if ($storeCreditDiscount > 0 && $request->user()) {
+                $creditAccount->decrement('balance', $storeCreditDiscount);
+                $creditAccount->transactions()->create([
+                    'type' => 'debit',
+                    'amount' => $storeCreditDiscount,
+                    'description' => "Narudžbina #{$order->order_number}",
+                ]);
+            }
 
             if ($coupon && $discount > 0) {
                 $coupon->usages()->create([

@@ -95,6 +95,11 @@ onMounted(fetchProduct)
           />
         </div>
       </div>
+
+      <!-- Varijante -->
+      <div class="mt-6 bg-white border border-gray-200 p-6">
+        <ProductVariants :product-id="product.id" />
+      </div>
     </template>
   </div>
 </template>

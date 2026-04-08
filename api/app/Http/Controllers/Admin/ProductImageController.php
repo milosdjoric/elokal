@@ -26,6 +26,12 @@ class ProductImageController extends Controller
             });
         }
 
+        if ($request->filled('folder_id')) {
+            $query->where('folder_id', $request->folder_id);
+        } elseif ($request->has('folder_id') && $request->folder_id === null) {
+            $query->whereNull('folder_id');
+        }
+
         $perPage = min($request->input('per_page', 24), 48);
 
         return response()->json($query->paginate($perPage));

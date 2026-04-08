@@ -70,6 +70,7 @@ Route::get('health', function () {
 // Storefront (public)
 Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('products', [StorefrontProductController::class, 'index']);
+    Route::get('products/filters', [StorefrontProductController::class, 'filters']);
     Route::get('products/{slug}', [StorefrontProductController::class, 'show']);
 
     Route::get('settings', [StorefrontSettingController::class, 'index']);
@@ -89,6 +90,7 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('payment-methods', [PaymentController::class, 'methods']);
     Route::get('currencies', fn () => response()->json(['data' => \App\Models\Currency::where('is_active', true)->orderBy('code')->get()]));
     Route::post('gift-card/check', [GiftCardController::class, 'check']);
+    Route::get('gift-cards/{code}/check', [GiftCardController::class, 'checkByCode']);
     Route::get('pages/{slug}', [StorefrontPageController::class, 'show']);
     Route::post('abandoned-cart', [AbandonedCartController::class, 'store']);
     Route::get('abandoned-cart/recover/{token}', [AbandonedCartController::class, 'recover']);
@@ -134,6 +136,15 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
 
         Route::get('orders', [AuthController::class, 'orders']);
         Route::get('orders/{orderNumber}', [AuthController::class, 'showOrder']);
+
+        Route::get('loyalty/balance', function (\Illuminate\Http\Request $request) {
+            $account = \App\Models\LoyaltyAccount::firstOrCreate(['user_id' => $request->user()->id]);
+            return response()->json(['data' => ['points_balance' => $account->points_balance, 'tier' => $account->tier]]);
+        });
+        Route::get('store-credits/balance', function (\Illuminate\Http\Request $request) {
+            $account = \App\Models\StoreCreditAccount::firstOrCreate(['user_id' => $request->user()->id]);
+            return response()->json(['data' => ['balance' => $account->balance]]);
+        });
     });
 
     // Checkout (guest ili auth)
@@ -150,6 +161,7 @@ Route::prefix('admin')->group(function () {
         Route::get('me', [AdminAuthController::class, 'me']);
 
         Route::get('dashboard', DashboardController::class);
+        Route::get('dashboard/low-stock', [DashboardController::class, 'lowStock']);
 
         Route::apiResource('products', ProductController::class);
         Route::get('products/{product}/relations', [ProductController::class, 'relations']);
@@ -171,6 +183,12 @@ Route::prefix('admin')->group(function () {
 
         Route::get('media', [ProductImageController::class, 'index']);
         Route::patch('media/{image}', [ProductImageController::class, 'update']);
+
+        Route::get('media-folders', [\App\Http\Controllers\Admin\MediaFolderController::class, 'index']);
+        Route::post('media-folders', [\App\Http\Controllers\Admin\MediaFolderController::class, 'store']);
+        Route::put('media-folders/{folder}', [\App\Http\Controllers\Admin\MediaFolderController::class, 'update']);
+        Route::delete('media-folders/{folder}', [\App\Http\Controllers\Admin\MediaFolderController::class, 'destroy']);
+        Route::post('media/move', [\App\Http\Controllers\Admin\MediaFolderController::class, 'moveImage']);
 
         Route::post('products/{product}/images', [ProductImageController::class, 'store']);
         Route::delete('products/{product}/images/{image}', [ProductImageController::class, 'destroy']);

@@ -43,6 +43,8 @@ export interface Product {
   times_sold?: number
   meta_title: string | null
   meta_description: string | null
+  size_guide: { headers: string[]; rows: string[][] } | null
+  custom_tabs: Array<{ title: string; content: string }> | null
   categories: number[]
   images: ProductImage[]
   variants?: ProductVariant[]

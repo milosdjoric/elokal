@@ -29,6 +29,8 @@ class ProductResource extends JsonResource
             'sort_order' => $this->sort_order,
             'meta_title' => $this->meta_title,
             'meta_description' => $this->meta_description,
+            'size_guide' => $this->size_guide,
+            'custom_tabs' => $this->custom_tabs,
             'effective_price' => $this->effective_price,
             'sale_percentage' => $this->sale_percentage,
             'formatted_unit_price' => $this->formatted_unit_price,

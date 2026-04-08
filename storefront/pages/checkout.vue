@@ -80,7 +80,8 @@ const shippingCost = computed(() => {
 const cartStore = useCartStore()
 const subtotal = computed(() => cartStore.total)
 const discountAmount = computed(() => appliedCoupon.value ? parseFloat(appliedCoupon.value.discount) : 0)
-const orderTotal = computed(() => Math.max(0, subtotal.value - discountAmount.value + shippingCost.value))
+const giftCardAmount = computed(() => appliedGiftCard.value ? Math.min(appliedGiftCard.value.amount, appliedGiftCard.value.balance) : 0)
+const orderTotal = computed(() => Math.max(0, subtotal.value - discountAmount.value + shippingCost.value - giftCardAmount.value - loyaltySpend.value - creditsSpend.value))
 
 // Saved addresses
 const savedAddresses = ref<SavedAddress[]>([])
@@ -209,6 +210,70 @@ function removeCoupon() {
   couponError.value = ''
 }
 
+// Gift card
+const giftCardCode = ref('')
+const giftCardLoading = ref(false)
+const giftCardError = ref('')
+const appliedGiftCard = ref<{ code: string; balance: number; amount: number } | null>(null)
+
+async function applyGiftCard() {
+  if (!giftCardCode.value.trim()) return
+  giftCardLoading.value = true
+  giftCardError.value = ''
+  try {
+    const data = await $fetch<{ data: { code: string; balance: string } }>(`${apiBase}/v1/gift-cards/${giftCardCode.value.toUpperCase()}/check`, {
+      headers: { Accept: 'application/json' },
+    })
+    const balance = parseFloat(data.data.balance)
+    if (balance <= 0) {
+      giftCardError.value = 'Poklon kartica nema raspoloživ saldo.'
+      return
+    }
+    appliedGiftCard.value = { code: data.data.code, balance, amount: balance }
+  }
+  catch (e: unknown) {
+    const err = e as { data?: { message?: string } }
+    giftCardError.value = err.data?.message || 'Nevažeća poklon kartica.'
+  }
+  finally { giftCardLoading.value = false }
+}
+
+function removeGiftCard() {
+  appliedGiftCard.value = null
+  giftCardCode.value = ''
+  giftCardError.value = ''
+}
+
+// Loyalty points
+const loyaltyBalance = ref(0)
+const loyaltySpend = ref(0)
+
+async function fetchLoyaltyBalance() {
+  if (!authStore.isLoggedIn || !authStore.token) return
+  try {
+    const data = await $fetch<{ data: { points_balance: number } }>(`${apiBase}/v1/loyalty/balance`, {
+      headers: { Authorization: `Bearer ${authStore.token}`, Accept: 'application/json' },
+    })
+    loyaltyBalance.value = data.data.points_balance
+  }
+  catch { /* silent */ }
+}
+
+// Store credits
+const creditsBalance = ref(0)
+const creditsSpend = ref(0)
+
+async function fetchCreditsBalance() {
+  if (!authStore.isLoggedIn || !authStore.token) return
+  try {
+    const data = await $fetch<{ data: { balance: string } }>(`${apiBase}/v1/store-credits/balance`, {
+      headers: { Authorization: `Bearer ${authStore.token}`, Accept: 'application/json' },
+    })
+    creditsBalance.value = parseFloat(data.data.balance)
+  }
+  catch { /* silent */ }
+}
+
 // Shipping metode — učitaj kad se promeni država
 async function fetchShippingMethods() {
   const country = form.shipping_country || 'RS'
@@ -300,6 +365,19 @@ async function handleSubmit() {
       body.coupon_code = appliedCoupon.value.code
     }
 
+    if (appliedGiftCard.value && giftCardAmount.value > 0) {
+      body.gift_card_code = appliedGiftCard.value.code
+      body.gift_card_amount = giftCardAmount.value
+    }
+
+    if (loyaltySpend.value > 0) {
+      body.loyalty_points = loyaltySpend.value
+    }
+
+    if (creditsSpend.value > 0) {
+      body.store_credits = creditsSpend.value
+    }
+
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -338,6 +416,8 @@ onMounted(() => {
   fetchSavedAddresses()
   fetchShippingMethods()
   fetchPaymentMethods()
+  fetchLoyaltyBalance()
+  fetchCreditsBalance()
 })
 
 useHead({ title: 'Kasa — eLokal' })
@@ -525,6 +605,83 @@ useHead({ title: 'Kasa — eLokal' })
             </div>
           </div>
 
+          <!-- Gift card -->
+          <div class="border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Poklon kartica</h2>
+            <div v-if="appliedGiftCard" class="space-y-3">
+              <div class="flex items-center justify-between bg-green-50 border border-green-200 px-4 py-3">
+                <div>
+                  <p class="text-sm font-medium text-green-800">{{ appliedGiftCard.code }}</p>
+                  <p class="text-xs text-green-600">Saldo: {{ appliedGiftCard.balance.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</p>
+                </div>
+                <button class="text-sm text-red-500 hover:text-red-700" @click="removeGiftCard">Ukloni</button>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Iznos za korišćenje</label>
+                <input
+                  v-model.number="appliedGiftCard.amount"
+                  type="number"
+                  :max="appliedGiftCard.balance"
+                  min="0"
+                  step="0.01"
+                  class="w-40 px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+              </div>
+            </div>
+            <div v-else>
+              <div class="flex gap-2">
+                <input
+                  v-model="giftCardCode"
+                  type="text"
+                  placeholder="Unesite kod poklon kartice"
+                  class="flex-1 px-4 py-2.5 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  @keydown.enter.prevent="applyGiftCard"
+                />
+                <UiAtomsButton variant="secondary" :loading="giftCardLoading" @click="applyGiftCard">Primeni</UiAtomsButton>
+              </div>
+              <p v-if="giftCardError" class="mt-1 text-sm text-red-600">{{ giftCardError }}</p>
+            </div>
+          </div>
+
+          <!-- Loyalty points -->
+          <div v-if="authStore.isLoggedIn && loyaltyBalance > 0" class="border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Poeni lojalnosti</h2>
+            <p class="text-sm text-gray-600 mb-3">
+              Raspoloživo: <span class="font-semibold text-primary-600">{{ loyaltyBalance }}</span> poena (1 poen = 1 RSD)
+            </p>
+            <div class="flex items-center gap-3">
+              <input
+                v-model.number="loyaltySpend"
+                type="number"
+                :max="loyaltyBalance"
+                min="0"
+                placeholder="Broj poena"
+                class="w-40 px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <span class="text-sm text-gray-500">= {{ loyaltySpend.toLocaleString('sr-RS') }} RSD popusta</span>
+            </div>
+          </div>
+
+          <!-- Store credits -->
+          <div v-if="authStore.isLoggedIn && creditsBalance > 0" class="border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Krediti prodavnice</h2>
+            <p class="text-sm text-gray-600 mb-3">
+              Raspoloživo: <span class="font-semibold text-primary-600">{{ creditsBalance.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
+            </p>
+            <div class="flex items-center gap-3">
+              <input
+                v-model.number="creditsSpend"
+                type="number"
+                :max="creditsBalance"
+                min="0"
+                step="0.01"
+                placeholder="Iznos"
+                class="w-40 px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <span class="text-sm text-gray-500">RSD</span>
+            </div>
+          </div>
+
           <!-- Payment method -->
           <div v-if="paymentMethods.length > 0" class="border border-gray-200 p-6">
             <h2 class="text-lg font-bold text-gray-800 mb-4">Način plaćanja</h2>
@@ -590,6 +747,18 @@ useHead({ title: 'Kasa — eLokal' })
             <div v-if="appliedCoupon" class="flex justify-between text-sm mb-2">
               <span class="text-green-600">Kupon ({{ appliedCoupon.code }})</span>
               <span class="text-green-600 font-medium">−{{ parseFloat(appliedCoupon.discount).toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
+            </div>
+            <div v-if="giftCardAmount > 0" class="flex justify-between text-sm mb-2">
+              <span class="text-green-600">Poklon kartica</span>
+              <span class="text-green-600 font-medium">−{{ giftCardAmount.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
+            </div>
+            <div v-if="loyaltySpend > 0" class="flex justify-between text-sm mb-2">
+              <span class="text-green-600">Poeni ({{ loyaltySpend }})</span>
+              <span class="text-green-600 font-medium">−{{ loyaltySpend.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
+            </div>
+            <div v-if="creditsSpend > 0" class="flex justify-between text-sm mb-2">
+              <span class="text-green-600">Krediti</span>
+              <span class="text-green-600 font-medium">−{{ creditsSpend.toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD</span>
             </div>
             <div class="flex justify-between text-sm mb-2">
               <span class="text-gray-600">Dostava</span>

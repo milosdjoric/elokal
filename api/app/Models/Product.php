@@ -34,6 +34,8 @@ class Product extends Model
         'sort_order',
         'meta_title',
         'meta_description',
+        'size_guide',
+        'custom_tabs',
     ];
 
     protected function casts(): array
@@ -49,6 +51,8 @@ class Product extends Model
             'featured' => 'boolean',
             'allow_backorder' => 'boolean',
             'restock_date' => 'date',
+            'size_guide' => 'array',
+            'custom_tabs' => 'array',
         ];
     }
 

@@ -5,6 +5,14 @@ const { get } = useApi()
 const route = useRoute()
 const router = useRouter()
 
+interface FilterAttribute {
+  id: number
+  name: string
+  slug: string
+  type: 'select' | 'color' | 'image'
+  values: Array<{ id: number; value: string; color_hex: string | null; image_path: string | null }>
+}
+
 const products = ref<Product[]>([])
 const categories = ref<Category[]>([])
 const loading = ref(true)
@@ -17,6 +25,16 @@ const direction = ref('desc')
 const categoryFilter = ref('')
 const quickViewProduct = ref<Product | null>(null)
 const quickViewOpen = ref(false)
+const layout = ref<'grid' | 'list' | 'compact'>('grid')
+
+// Price range
+const priceRange = ref({ min: 0, max: 100000 })
+const minPrice = ref('')
+const maxPrice = ref('')
+
+// Attribute filters
+const filterAttributes = ref<FilterAttribute[]>([])
+const selectedAttributes = reactive<Record<string, Set<number>>>({})
 
 // Read initial params from URL
 function readQuery() {
@@ -27,6 +45,16 @@ function readQuery() {
   if (q.direction) direction.value = String(q.direction)
   if (q.category) categoryFilter.value = String(q.category)
   if (q.featured) categoryFilter.value = '' // handled separately
+  if (q.min_price) minPrice.value = String(q.min_price)
+  if (q.max_price) maxPrice.value = String(q.max_price)
+
+  // Attribute filters from URL: attr_color=1,3
+  for (const [key, val] of Object.entries(q)) {
+    if (key.startsWith('attr_') && typeof val === 'string') {
+      const slug = key.replace('attr_', '')
+      selectedAttributes[slug] = new Set(val.split(',').map(Number).filter(Boolean))
+    }
+  }
 }
 
 async function fetchProducts() {
@@ -40,6 +68,15 @@ async function fetchProducts() {
   if (categoryFilter.value) params.category = categoryFilter.value
   if (route.query.featured) params.featured = 1
   if (route.query.search) params.search = String(route.query.search)
+  if (minPrice.value) params.min_price = minPrice.value
+  if (maxPrice.value) params.max_price = maxPrice.value
+
+  // Attribute filters
+  for (const [slug, ids] of Object.entries(selectedAttributes)) {
+    if (ids.size > 0) {
+      params[`attributes[${slug}]`] = Array.from(ids).join(',')
+    }
+  }
 
   try {
     const data = await get<PaginatedResponse<Product>>('/v1/products', params)
@@ -58,6 +95,38 @@ async function fetchCategories() {
     categories.value = data.data
   }
   catch { /* silent */ }
+}
+
+async function fetchFilters() {
+  try {
+    const data = await get<{ price_range: { min: number; max: number }; attributes: FilterAttribute[] }>('/v1/products/filters')
+    priceRange.value = data.price_range
+    filterAttributes.value = data.attributes
+  }
+  catch { /* silent */ }
+}
+
+function toggleAttributeFilter(slug: string, valueId: number) {
+  if (!selectedAttributes[slug]) selectedAttributes[slug] = new Set()
+  if (selectedAttributes[slug].has(valueId)) selectedAttributes[slug].delete(valueId)
+  else selectedAttributes[slug].add(valueId)
+  page.value = 1
+  syncUrl()
+  fetchProducts()
+}
+
+function applyPriceRange() {
+  page.value = 1
+  syncUrl()
+  fetchProducts()
+}
+
+function clearPriceRange() {
+  minPrice.value = ''
+  maxPrice.value = ''
+  page.value = 1
+  syncUrl()
+  fetchProducts()
 }
 
 function updateSort(newSort: string) {
@@ -102,6 +171,13 @@ function syncUrl() {
   if (categoryFilter.value) query.category = categoryFilter.value
   if (route.query.search) query.search = String(route.query.search)
   if (route.query.featured) query.featured = '1'
+  if (minPrice.value) query.min_price = minPrice.value
+  if (maxPrice.value) query.max_price = maxPrice.value
+
+  for (const [slug, ids] of Object.entries(selectedAttributes)) {
+    if (ids.size > 0) query[`attr_${slug}`] = Array.from(ids).join(',')
+  }
+
   router.replace({ query })
 }
 
@@ -137,11 +213,36 @@ const activeFilters = computed(() => {
     filters.push({ label: 'Istaknuto', clear: () => router.replace({ query: { ...route.query, featured: undefined } }).then(fetchProducts) })
   }
 
+  if (minPrice.value || maxPrice.value) {
+    const label = `${minPrice.value || '0'} — ${maxPrice.value || '∞'} RSD`
+    filters.push({ label, clear: clearPriceRange })
+  }
+
+  for (const [slug, ids] of Object.entries(selectedAttributes)) {
+    if (ids.size === 0) continue
+    const attr = filterAttributes.value.find(a => a.slug === slug)
+    if (!attr) continue
+    for (const id of ids) {
+      const val = attr.values.find(v => v.id === id)
+      if (val) {
+        filters.push({
+          label: `${attr.name}: ${val.value}`,
+          clear: () => toggleAttributeFilter(slug, id),
+        })
+      }
+    }
+  }
+
   return filters
 })
 
 function clearAllFilters() {
   categoryFilter.value = ''
+  minPrice.value = ''
+  maxPrice.value = ''
+  for (const slug of Object.keys(selectedAttributes)) {
+    selectedAttributes[slug].clear()
+  }
   page.value = 1
   router.replace({ query: {} })
   fetchProducts()
@@ -151,6 +252,7 @@ onMounted(() => {
   readQuery()
   fetchProducts()
   fetchCategories()
+  fetchFilters()
 })
 
 useHead({ title: 'Proizvodi — eLokal' })
@@ -195,6 +297,83 @@ useHead({ title: 'Proizvodi — eLokal' })
             </ul>
           </li>
         </ul>
+
+        <!-- Price range -->
+        <div class="mt-6">
+          <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">Cena</h3>
+          <div class="flex items-center gap-2">
+            <input
+              v-model="minPrice"
+              type="number"
+              :placeholder="String(Math.floor(priceRange.min))"
+              class="w-full px-2 py-1.5 text-sm border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              @keyup.enter="applyPriceRange"
+            />
+            <span class="text-gray-400 text-sm">—</span>
+            <input
+              v-model="maxPrice"
+              type="number"
+              :placeholder="String(Math.ceil(priceRange.max))"
+              class="w-full px-2 py-1.5 text-sm border border-gray-300 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              @keyup.enter="applyPriceRange"
+            />
+          </div>
+          <button class="text-xs text-primary-600 hover:text-primary-700 mt-2" @click="applyPriceRange">
+            Primeni
+          </button>
+        </div>
+
+        <!-- Attribute filters -->
+        <div v-for="attr in filterAttributes" :key="attr.id" class="mt-6">
+          <h3 class="text-sm font-bold text-gray-800 uppercase tracking-wider mb-3">{{ attr.name }}</h3>
+
+          <!-- Color swatches -->
+          <div v-if="attr.type === 'color'" class="flex flex-wrap gap-2">
+            <button
+              v-for="val in attr.values"
+              :key="val.id"
+              type="button"
+              :title="val.value"
+              class="w-8 h-8 rounded-full border-2 transition-all"
+              :class="selectedAttributes[attr.slug]?.has(val.id) ? 'border-primary-600 ring-2 ring-primary-200' : 'border-gray-300 hover:border-gray-400'"
+              :style="{ backgroundColor: val.color_hex || '#ccc' }"
+              @click="toggleAttributeFilter(attr.slug, val.id)"
+            />
+          </div>
+
+          <!-- Image swatches -->
+          <div v-else-if="attr.type === 'image'" class="flex flex-wrap gap-2">
+            <button
+              v-for="val in attr.values"
+              :key="val.id"
+              type="button"
+              :title="val.value"
+              class="w-10 h-10 border-2 rounded overflow-hidden transition-all"
+              :class="selectedAttributes[attr.slug]?.has(val.id) ? 'border-primary-600 ring-2 ring-primary-200' : 'border-gray-300 hover:border-gray-400'"
+              @click="toggleAttributeFilter(attr.slug, val.id)"
+            >
+              <img v-if="val.image_path" :src="val.image_path" :alt="val.value" class="w-full h-full object-cover" />
+              <span v-else class="flex items-center justify-center text-xs text-gray-400 h-full">{{ val.value }}</span>
+            </button>
+          </div>
+
+          <!-- Checkboxes (select type) -->
+          <div v-else class="space-y-1">
+            <label
+              v-for="val in attr.values"
+              :key="val.id"
+              class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                :checked="selectedAttributes[attr.slug]?.has(val.id)"
+                class="w-4 h-4 text-primary-600 border-gray-300 rounded"
+                @change="toggleAttributeFilter(attr.slug, val.id)"
+              />
+              {{ val.value }}
+            </label>
+          </div>
+        </div>
       </aside>
 
       <!-- Main -->
@@ -205,6 +384,36 @@ useHead({ title: 'Proizvodi — eLokal' })
             <span class="font-medium text-gray-800">{{ total }}</span> proizvoda
           </p>
           <div class="flex items-center gap-3">
+            <!-- Layout switcher -->
+            <div class="flex border border-gray-300 divide-x divide-gray-300">
+              <button
+                type="button"
+                class="p-1.5 transition-colors"
+                :class="layout === 'grid' ? 'bg-primary-50 text-primary-600' : 'text-gray-400 hover:text-gray-600'"
+                title="Grid"
+                @click="layout = 'grid'"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1" /><rect x="9" y="1" width="6" height="6" rx="1" /><rect x="1" y="9" width="6" height="6" rx="1" /><rect x="9" y="9" width="6" height="6" rx="1" /></svg>
+              </button>
+              <button
+                type="button"
+                class="p-1.5 transition-colors"
+                :class="layout === 'list' ? 'bg-primary-50 text-primary-600' : 'text-gray-400 hover:text-gray-600'"
+                title="Lista"
+                @click="layout = 'list'"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="3" rx="1" /><rect x="1" y="6" width="14" height="3" rx="1" /><rect x="1" y="11" width="14" height="3" rx="1" /></svg>
+              </button>
+              <button
+                type="button"
+                class="p-1.5 transition-colors"
+                :class="layout === 'compact' ? 'bg-primary-50 text-primary-600' : 'text-gray-400 hover:text-gray-600'"
+                title="Kompaktno"
+                @click="layout = 'compact'"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16"><rect x="1" y="1" width="3" height="3" rx="0.5" /><rect x="5.5" y="1" width="3" height="3" rx="0.5" /><rect x="10" y="1" width="3" height="3" rx="0.5" /><rect x="1" y="5.5" width="3" height="3" rx="0.5" /><rect x="5.5" y="5.5" width="3" height="3" rx="0.5" /><rect x="10" y="5.5" width="3" height="3" rx="0.5" /><rect x="1" y="10" width="3" height="3" rx="0.5" /><rect x="5.5" y="10" width="3" height="3" rx="0.5" /><rect x="10" y="10" width="3" height="3" rx="0.5" /></svg>
+              </button>
+            </div>
             <select
               :value="sort"
               class="text-sm border border-gray-300 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500"
@@ -244,7 +453,7 @@ useHead({ title: 'Proizvodi — eLokal' })
         </div>
 
         <!-- Grid -->
-        <ProductGrid :products="products" :loading="loading" :columns="3" @quick-view="openQuickView" />
+        <ProductGrid :products="products" :loading="loading" :columns="3" :layout="layout" @quick-view="openQuickView" />
 
         <!-- Pagination -->
         <div v-if="totalPages > 1" class="flex justify-center gap-2 mt-8">

@@ -72,6 +72,8 @@ export interface Product {
   sort_order: number
   meta_title: string | null
   meta_description: string | null
+  size_guide: { headers: string[]; rows: string[][] } | null
+  custom_tabs: Array<{ title: string; content: string }> | null
   effective_price: string
   sale_percentage: number | null
   formatted_unit_price: string | null

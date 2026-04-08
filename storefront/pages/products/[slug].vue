@@ -40,17 +40,46 @@ function onVariantSelect(variant: ProductVariant | null) {
   selectedVariant.value = variant
 }
 
+// Deep link — prosleđuj query params u VariantSelector i ažuriraj URL
+const router = useRouter()
+const variantInitialSelection = computed(() => {
+  const query = route.query
+  const result: Record<string, string> = {}
+  for (const [key, val] of Object.entries(query)) {
+    if (typeof val === 'string') result[key] = val
+  }
+  return result
+})
+
+function onVariantSelectionChange(params: Record<string, string>) {
+  router.replace({ query: { ...params } })
+}
+
 const notifyEmail = ref('')
 const notifyLoading = ref(false)
 const notifySuccess = ref('')
 const notifyError = ref('')
 
-const tabs = [
-  { key: 'description', label: 'Opis' },
-  { key: 'reviews', label: 'Recenzije' },
-  { key: 'shipping', label: 'Dostava i povrat' },
-  { key: 'faq', label: 'FAQ' },
-]
+const hasSizeGuide = computed(() => !!product.value?.size_guide?.headers?.length)
+const customTabs = computed(() => product.value?.custom_tabs?.filter(t => t.title && t.content) || [])
+
+const tabs = computed(() => {
+  const list = [
+    { key: 'description', label: 'Opis' },
+    { key: 'reviews', label: 'Recenzije' },
+  ]
+  if (hasSizeGuide.value) {
+    list.push({ key: 'size_guide', label: 'Vodič za veličine' })
+  }
+  for (let i = 0; i < customTabs.value.length; i++) {
+    list.push({ key: `custom_${i}`, label: customTabs.value[i].title })
+  }
+  list.push(
+    { key: 'shipping', label: 'Dostava i povrat' },
+    { key: 'faq', label: 'FAQ' },
+  )
+  return list
+})
 
 const faqItems = [
   { key: 'faq1', title: 'Koliko traje dostava?' },
@@ -200,7 +229,12 @@ useSeoMeta({
 
             <!-- Varijante -->
             <div v-if="hasVariants" class="mb-6">
-              <ProductVariantSelector :variants="product.variants!" @select="onVariantSelect" />
+              <ProductVariantSelector
+                :variants="product.variants!"
+                :initial-selection="variantInitialSelection"
+                @select="onVariantSelect"
+                @selection-change="onVariantSelectionChange"
+              />
             </div>
 
             <!-- Stock status (bez varijanti — varijante prikazuju svoj stock) -->
@@ -274,12 +308,12 @@ useSeoMeta({
 
         <!-- Tabs -->
         <div class="mb-12">
-          <div class="border-b border-gray-200 mb-6">
-            <nav class="flex gap-6 -mb-px">
+          <div class="border-b border-gray-200 mb-6 sticky top-0 bg-white z-20">
+            <nav class="flex gap-6 -mb-px overflow-x-auto scrollbar-hide">
               <button
                 v-for="tab in tabs"
                 :key="tab.key"
-                class="py-3 text-sm font-medium border-b-2 transition-colors"
+                class="py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0"
                 :class="activeTab === tab.key ? 'border-primary-600 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
                 @click="activeTab = tab.key"
               >
@@ -295,6 +329,46 @@ useSeoMeta({
 
           <div v-show="activeTab === 'reviews'">
             <ProductReviews :product-id="product.id" />
+          </div>
+
+          <div v-if="hasSizeGuide" v-show="activeTab === 'size_guide'">
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm border border-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th
+                      v-for="(header, i) in product!.size_guide!.headers"
+                      :key="i"
+                      class="px-4 py-2.5 text-left text-xs font-semibold text-gray-600 uppercase border-b border-gray-200"
+                    >
+                      {{ header }}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr v-for="(row, ri) in product!.size_guide!.rows" :key="ri" class="hover:bg-gray-50">
+                    <td
+                      v-for="(cell, ci) in row"
+                      :key="ci"
+                      class="px-4 py-2 text-gray-700"
+                      :class="{ 'font-medium': ci === 0 }"
+                    >
+                      {{ cell }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Custom tabs -->
+          <div
+            v-for="(ct, ci) in customTabs"
+            :key="`custom_${ci}`"
+            v-show="activeTab === `custom_${ci}`"
+            class="prose prose-sm max-w-none text-gray-600"
+          >
+            <div v-html="ct.content.replace(/\n/g, '<br>')" />
           </div>
 
           <div v-show="activeTab === 'shipping'" class="text-sm text-gray-600 space-y-4">

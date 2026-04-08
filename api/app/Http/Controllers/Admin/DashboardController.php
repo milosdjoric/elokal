@@ -19,4 +19,17 @@ class DashboardController extends Controller
             'out_of_stock' => Product::where('stock_quantity', 0)->count(),
         ]);
     }
+
+    public function lowStock(): JsonResponse
+    {
+        $products = Product::where('is_active', true)
+            ->where('stock_quantity', '>', 0)
+            ->where('stock_quantity', '<=', 10)
+            ->orderBy('stock_quantity')
+            ->limit(15)
+            ->select('id', 'name', 'sku', 'stock_quantity')
+            ->get();
+
+        return response()->json(['data' => $products]);
+    }
 }

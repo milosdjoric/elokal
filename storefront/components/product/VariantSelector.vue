@@ -3,10 +3,12 @@ import type { ProductVariant, VariantAttribute } from '~/types'
 
 const props = defineProps<{
   variants: ProductVariant[]
+  initialSelection?: Record<string, string>
 }>()
 
 const emit = defineEmits<{
   select: [variant: ProductVariant | null]
+  selectionChange: [params: Record<string, string>]
 }>()
 
 // Izvuci unikatne atribute iz svih varijanti
@@ -56,11 +58,24 @@ const attributes = computed<AttributeOption[]>(() => {
 // Selekcija po atributu: { attribute_id: value_id }
 const selected = reactive<Record<number, number>>({})
 
-// Auto-select jedine dostupne varijante
+// Auto-select: jedine dostupne varijante + deep link iz URL query params
 onMounted(() => {
   for (const attr of attributes.value) {
     if (attr.values.length === 1) {
       selected[attr.attribute_id] = attr.values[0].value_id
+    }
+  }
+
+  // Deep link — preselektuj iz initialSelection (slug → value name)
+  if (props.initialSelection) {
+    for (const attr of attributes.value) {
+      const queryValue = props.initialSelection[attr.attribute_slug]
+      if (queryValue) {
+        const match = attr.values.find(v => v.value.toLowerCase() === queryValue.toLowerCase())
+        if (match) {
+          selected[attr.attribute_id] = match.value_id
+        }
+      }
     }
   }
 })
@@ -98,8 +113,20 @@ function selectValue(attributeId: number, valueId: number) {
   selected[attributeId] = valueId
 }
 
-// Emit kad se varijanta promeni
+// Emit kad se varijanta promeni + ažuriraj URL parametre
 watch(selectedVariant, (v) => emit('select', v), { immediate: true })
+
+watch(selected, () => {
+  const params: Record<string, string> = {}
+  for (const attr of attributes.value) {
+    const valueId = selected[attr.attribute_id]
+    if (valueId) {
+      const val = attr.values.find(v => v.value_id === valueId)
+      if (val) params[attr.attribute_slug] = val.value
+    }
+  }
+  emit('selectionChange', params)
+}, { deep: true })
 </script>
 
 <template>

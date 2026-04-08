@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { Product, Category } from '~/types'
 
+interface SizeGuide {
+  headers: string[]
+  rows: string[][]
+}
+
 interface Props {
   product?: Product | null
   loading?: boolean
@@ -43,6 +48,8 @@ const form = reactive({
   meta_title: '',
   meta_description: '',
   categories: [] as number[],
+  size_guide: null as SizeGuide | null,
+  custom_tabs: [] as Array<{ title: string; content: string }>,
 })
 
 // Prefill za edit
@@ -67,6 +74,8 @@ if (props.product) {
     meta_title: props.product.meta_title || '',
     meta_description: props.product.meta_description || '',
     categories: props.product.categories || [],
+    size_guide: props.product.size_guide || null,
+    custom_tabs: props.product.custom_tabs || [],
   })
   slugManual.value = true
 }
@@ -112,8 +121,35 @@ function handleSubmit() {
   if (!data.sku) data.sku = null
   if (!data.meta_title) data.meta_title = null
   if (!data.meta_description) data.meta_description = null
+  if ((data.custom_tabs as Array<{ title: string; content: string }>).length === 0) data.custom_tabs = null
 
   emit('submit', data)
+}
+
+// Size guide helpers
+function initSizeGuide() {
+  form.size_guide = { headers: ['Veličina', 'Grudi (cm)', 'Struk (cm)'], rows: [['S', '', ''], ['M', '', ''], ['L', '', '']] }
+}
+function removeSizeGuide() {
+  form.size_guide = null
+}
+function addSizeGuideColumn() {
+  if (!form.size_guide) return
+  form.size_guide.headers.push('')
+  form.size_guide.rows.forEach(row => row.push(''))
+}
+function removeSizeGuideColumn(idx: number) {
+  if (!form.size_guide || form.size_guide.headers.length <= 1) return
+  form.size_guide.headers.splice(idx, 1)
+  form.size_guide.rows.forEach(row => row.splice(idx, 1))
+}
+function addSizeGuideRow() {
+  if (!form.size_guide) return
+  form.size_guide.rows.push(new Array(form.size_guide.headers.length).fill(''))
+}
+function removeSizeGuideRow(idx: number) {
+  if (!form.size_guide) return
+  form.size_guide.rows.splice(idx, 1)
 }
 
 const activeTab = ref('general')
@@ -121,6 +157,8 @@ const tabs = [
   { key: 'general', label: 'Osnovno' },
   { key: 'pricing', label: 'Cene' },
   { key: 'categories', label: 'Kategorije' },
+  { key: 'size_guide', label: 'Vodič za veličine' },
+  { key: 'custom_tabs', label: 'Custom tabovi' },
   { key: 'seo', label: 'SEO' },
 ]
 </script>
@@ -302,6 +340,106 @@ const tabs = [
                   @update:model-value="toggleCategory(parent.id)"
                 />
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Size guide -->
+        <div v-show="activeTab === 'size_guide'">
+          <div v-if="!form.size_guide" class="text-center py-8">
+            <p class="text-sm text-gray-400 mb-3">Nema vodiča za veličine.</p>
+            <UiAtomsButton size="sm" variant="secondary" @click="initSizeGuide">Dodaj vodič</UiAtomsButton>
+          </div>
+
+          <div v-else class="space-y-4">
+            <div class="flex items-center justify-between">
+              <p class="text-sm text-gray-500">Definišite tabelu sa dimenzijama.</p>
+              <div class="flex gap-2">
+                <UiAtomsButton size="sm" variant="secondary" @click="addSizeGuideColumn">+ Kolona</UiAtomsButton>
+                <UiAtomsButton size="sm" variant="secondary" @click="addSizeGuideRow">+ Red</UiAtomsButton>
+                <UiAtomsButton size="sm" variant="danger" @click="removeSizeGuide">Ukloni vodič</UiAtomsButton>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto border border-gray-200">
+              <table class="w-full text-sm">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th v-for="(header, hi) in form.size_guide.headers" :key="hi" class="px-2 py-1.5">
+                      <div class="flex items-center gap-1">
+                        <input
+                          v-model="form.size_guide.headers[hi]"
+                          type="text"
+                          class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500 font-semibold"
+                          placeholder="Zaglavlje"
+                        />
+                        <button
+                          v-if="form.size_guide.headers.length > 1"
+                          type="button"
+                          class="text-red-400 hover:text-red-600 text-xs flex-shrink-0"
+                          @click="removeSizeGuideColumn(hi)"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </th>
+                    <th class="w-8" />
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr v-for="(row, ri) in form.size_guide.rows" :key="ri">
+                    <td v-for="(cell, ci) in row" :key="ci" class="px-2 py-1">
+                      <input
+                        v-model="form.size_guide.rows[ri][ci]"
+                        type="text"
+                        class="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary-500"
+                      />
+                    </td>
+                    <td class="px-2 py-1 text-center">
+                      <button
+                        type="button"
+                        class="text-red-400 hover:text-red-600 text-xs"
+                        @click="removeSizeGuideRow(ri)"
+                      >
+                        ✕
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom tabs -->
+        <div v-show="activeTab === 'custom_tabs'" class="space-y-4">
+          <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-500">Dodajte prilagođene tabove koji se prikazuju na stranici proizvoda.</p>
+            <UiAtomsButton size="sm" variant="secondary" @click="form.custom_tabs.push({ title: '', content: '' })">+ Novi tab</UiAtomsButton>
+          </div>
+
+          <div v-if="form.custom_tabs.length === 0" class="text-center py-8 text-sm text-gray-400">
+            Nema custom tabova.
+          </div>
+
+          <div v-for="(tab, idx) in form.custom_tabs" :key="idx" class="p-4 border border-gray-200 space-y-3">
+            <div class="flex items-center justify-between">
+              <UiAtomsInput v-model="tab.title" label="Naslov taba" class="flex-1 mr-3" />
+              <button
+                type="button"
+                class="text-red-400 hover:text-red-600 text-sm mt-5"
+                @click="form.custom_tabs.splice(idx, 1)"
+              >
+                Ukloni
+              </button>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Sadržaj</label>
+              <textarea
+                v-model="tab.content"
+                rows="4"
+                class="w-full px-3 py-2 border border-gray-300 shadow-sm text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              />
             </div>
           </div>
         </div>
