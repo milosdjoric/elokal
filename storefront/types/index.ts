@@ -44,6 +44,7 @@ export interface Product {
   meta_description: string | null
   categories: number[]
   images: ProductImage[]
+  variants?: ProductVariant[]
   related_products?: Product[]
   cross_sell_products?: Product[]
   up_sell_products?: Product[]
@@ -58,6 +59,32 @@ export interface ProductImage {
   alt_text: string | null
   sort_order: number
   is_primary: boolean
+}
+
+// --- Variant ---
+
+export interface VariantAttribute {
+  attribute_id: number
+  attribute_name: string
+  attribute_slug: string
+  attribute_type: 'select' | 'color' | 'image'
+  value_id: number
+  value: string
+  color_hex: string | null
+  image_path: string | null
+}
+
+export interface ProductVariant {
+  id: number
+  sku: string | null
+  price: string | null
+  sale_price: string | null
+  effective_price: string
+  weight: string | null
+  stock_quantity: number
+  is_active: boolean
+  attributes: VariantAttribute[]
+  images?: ProductImage[]
 }
 
 // --- Category ---

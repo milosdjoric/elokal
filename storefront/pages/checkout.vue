@@ -39,6 +39,28 @@ const error = ref('')
 const errors = ref<Record<string, string[]>>({})
 const touched = ref<Record<string, boolean>>({})
 
+// Payment metode
+interface PaymentMethodOption { id: number; code: string; name: string; description: string | null; instructions: string | null; additional_cost: string }
+const paymentMethods = ref<PaymentMethodOption[]>([])
+const selectedPaymentMethod = ref<number | null>(null)
+
+async function fetchPaymentMethods() {
+  try {
+    const data = await $fetch<{ data: PaymentMethodOption[] }>(`${apiBase}/v1/payment-methods`, {
+      headers: { Accept: 'application/json' },
+    })
+    paymentMethods.value = data.data
+    if (data.data.length > 0) {
+      selectedPaymentMethod.value = data.data[0].id
+    }
+  }
+  catch { /* silent */ }
+}
+
+const selectedPaymentInfo = computed(() =>
+  paymentMethods.value.find(m => m.id === selectedPaymentMethod.value),
+)
+
 // Kupon
 const couponCode = ref('')
 const couponLoading = ref(false)
@@ -315,6 +337,7 @@ onMounted(() => {
   restoreFormDraft()
   fetchSavedAddresses()
   fetchShippingMethods()
+  fetchPaymentMethods()
 })
 
 useHead({ title: 'Kasa — eLokal' })
@@ -502,6 +525,39 @@ useHead({ title: 'Kasa — eLokal' })
             </div>
           </div>
 
+          <!-- Payment method -->
+          <div v-if="paymentMethods.length > 0" class="border border-gray-200 p-6">
+            <h2 class="text-lg font-bold text-gray-800 mb-4">Način plaćanja</h2>
+            <div class="space-y-2">
+              <label
+                v-for="method in paymentMethods"
+                :key="method.id"
+                class="flex items-start gap-3 border border-gray-200 p-3 cursor-pointer transition-colors"
+                :class="selectedPaymentMethod === method.id ? 'border-primary-500 bg-primary-50' : 'hover:border-gray-300'"
+              >
+                <input
+                  v-model="selectedPaymentMethod"
+                  type="radio"
+                  :value="method.id"
+                  class="w-4 h-4 mt-0.5 text-primary-600 border-gray-300 focus:ring-primary-500"
+                />
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm font-medium text-gray-800">{{ method.name }}</p>
+                    <span v-if="parseFloat(method.additional_cost) > 0" class="text-xs text-gray-500">
+                      +{{ parseFloat(method.additional_cost).toLocaleString('sr-RS', { minimumFractionDigits: 2 }) }} RSD
+                    </span>
+                  </div>
+                  <p v-if="method.description" class="text-xs text-gray-500 mt-0.5">{{ method.description }}</p>
+                </div>
+              </label>
+            </div>
+            <!-- Instrukcije za izabranu metodu -->
+            <div v-if="selectedPaymentInfo?.instructions" class="mt-3 bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-800">
+              {{ selectedPaymentInfo.instructions }}
+            </div>
+          </div>
+
           <!-- Notes -->
           <div class="border border-gray-200 p-6">
             <h2 class="text-lg font-bold text-gray-800 mb-4">Napomena</h2>
@@ -553,7 +609,7 @@ useHead({ title: 'Kasa — eLokal' })
               Poruči
             </UiAtomsButton>
 
-            <p class="text-xs text-gray-400 text-center mt-3">Plaćanje pouzećem</p>
+            <p v-if="selectedPaymentInfo" class="text-xs text-gray-400 text-center mt-3">{{ selectedPaymentInfo.name }}</p>
 
             <!-- Trust badges -->
             <div class="mt-6 pt-4 border-t border-gray-100 space-y-3">

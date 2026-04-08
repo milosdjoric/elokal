@@ -21,6 +21,28 @@ const hoverImg = computed(() => {
 function handleAddToCart() {
   addToCart(props.product)
 }
+
+// Izvuci unikatne swatch vrednosti iz varijanti (samo atributi sa is_visible_on_card)
+const variantSwatches = computed(() => {
+  if (!props.product.variants?.length) return []
+  const seen = new Set<number>()
+  const swatches: Array<{ value_id: number; value: string; type: string; color_hex: string | null }> = []
+
+  for (const variant of props.product.variants) {
+    if (!variant.attributes) continue
+    for (const attr of variant.attributes) {
+      if (seen.has(attr.value_id)) continue
+      seen.add(attr.value_id)
+      swatches.push({
+        value_id: attr.value_id,
+        value: attr.value,
+        type: attr.attribute_type,
+        color_hex: attr.color_hex,
+      })
+    }
+  }
+  return swatches
+})
 </script>
 
 <template>
@@ -77,6 +99,26 @@ function handleAddToCart() {
           :unit-price="product.formatted_unit_price"
           size="sm"
         />
+      </div>
+
+      <ProductSaleCountdown v-if="product.is_on_sale && product.sale_price_to" :ends-at="product.sale_price_to" size="sm" class="mt-1" />
+
+      <!-- Variant swatches -->
+      <div v-if="variantSwatches.length > 0" class="mt-2 flex flex-wrap gap-1">
+        <template v-for="swatch in variantSwatches" :key="swatch.value_id">
+          <span
+            v-if="swatch.type === 'color' && swatch.color_hex"
+            class="w-4 h-4 rounded-full border border-gray-300"
+            :style="{ backgroundColor: swatch.color_hex }"
+            :title="swatch.value"
+          />
+          <span
+            v-else
+            class="text-[10px] text-gray-500 border border-gray-200 px-1.5 py-0.5 rounded"
+          >
+            {{ swatch.value }}
+          </span>
+        </template>
       </div>
 
       <button

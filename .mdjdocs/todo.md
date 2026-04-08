@@ -582,13 +582,13 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Quick duplicate varijante
 
 ### v0.3.3 — Varijante: Storefront
-- [ ] PDP: izbor varijante (dropdown/swatch zavisno od type-a)
-- [ ] Promena slike/cene/stock-a pri izboru
-- [ ] Nedostupne kombinacije disabled
-- [ ] Auto-select jedine dostupne varijante
+- [x] PDP: izbor varijante (dropdown/swatch zavisno od type-a)
+- [x] Promena slike/cene/stock-a pri izboru
+- [x] Nedostupne kombinacije disabled
+- [x] Auto-select jedine dostupne varijante
 - [ ] Deep link (/proizvod/majica?color=red&size=xl)
 - [ ] Price range na card-u i pre selekcije
-- [ ] Color/Size swatches na product card-u (PLP)
+- [x] Color/Size swatches na product card-u (PLP)
 - [ ] Visual filters na PLP-u (slike/swatch umesto teksta)
 - [ ] Size guide popup (konfigurabilan po kategoriji)
 - [ ] Varijanta tabela (opciono, B2B)
@@ -609,7 +609,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Coupon polje na cart-u i checkout-u (AJAX validacija)
 - [x] Prikaz primenjenog kupona (naziv, popust, X za uklanjanje)
 - [x] Error poruke za nevalidne kupone
-- [ ] Countdown timer na PDP/card-u za akcije
+- [x] Countdown timer na PDP/card-u za akcije
 
 ### v0.3.6 — Inventar: API
 - [x] StockMovement model + migracija
@@ -664,7 +664,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Admin: instrukcije za offline metode
 - [x] Admin: COD dodatni trošak
 - [x] Admin: pregled transakcija
-- [ ] Checkout: izbor metode plaćanja
+- [x] Checkout: izbor metode plaćanja
 - [ ] Checkout: Stripe Elements inline forma
 - [ ] Checkout: save card za buduće kupovine
 - [ ] Saved payment methods u account-u (`/nalog/sacuvane-kartice`)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product, PaginatedResponse } from '~/types'
+import type { Product, ProductVariant, PaginatedResponse } from '~/types'
 
 const route = useRoute()
 const { get } = useApi()
@@ -12,6 +12,29 @@ const related = ref<Product[]>([])
 const loading = ref(true)
 const qty = ref(1)
 const activeTab = ref('description')
+
+// Varijante
+const selectedVariant = ref<ProductVariant | null>(null)
+const hasVariants = computed(() => (product.value?.variants?.length ?? 0) > 0)
+
+const displayPrice = computed(() => {
+  if (selectedVariant.value) return selectedVariant.value.effective_price
+  return product.value?.effective_price ?? '0'
+})
+
+const displayStock = computed(() => {
+  if (selectedVariant.value) return selectedVariant.value.stock_quantity
+  return product.value?.stock_quantity ?? 0
+})
+
+const canAddToCart = computed(() => {
+  if (hasVariants.value && !selectedVariant.value) return false
+  return displayStock.value > 0
+})
+
+function onVariantSelect(variant: ProductVariant | null) {
+  selectedVariant.value = variant
+}
 
 const notifyEmail = ref('')
 const notifyLoading = ref(false)
@@ -145,19 +168,31 @@ useSeoMeta({
               />
             </div>
 
+            <ProductSaleCountdown v-if="product.is_on_sale && product.sale_price_to" :ends-at="product.sale_price_to" />
+
             <p v-if="product.short_description" class="text-gray-600 mb-6">{{ product.short_description }}</p>
 
-            <!-- Stock status -->
-            <div class="mb-4">
-              <span v-if="product.stock_quantity > 0" class="text-sm text-green-600 font-medium flex items-center gap-1">
+            <!-- Varijante -->
+            <div v-if="hasVariants" class="mb-6">
+              <ProductVariantSelector :variants="product.variants!" @select="onVariantSelect" />
+            </div>
+
+            <!-- Stock status (bez varijanti — varijante prikazuju svoj stock) -->
+            <div v-if="!hasVariants" class="mb-4">
+              <span v-if="displayStock > 0" class="text-sm text-green-600 font-medium flex items-center gap-1">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
-                Na stanju ({{ product.stock_quantity }} kom)
+                Na stanju ({{ displayStock }} kom)
               </span>
               <span v-else class="text-sm text-red-500 font-medium">Nema na stanju</span>
             </div>
 
+            <!-- Upozorenje: izaberite varijantu -->
+            <p v-if="hasVariants && !selectedVariant" class="text-sm text-amber-600 mb-4">
+              Izaberite opcije iznad da biste dodali u korpu.
+            </p>
+
             <!-- Add to cart -->
-            <div v-if="product.stock_quantity > 0" class="flex items-center gap-4 mb-6">
+            <div v-if="canAddToCart" class="flex items-center gap-4 mb-6">
               <UiMoleculesQuantitySelector v-model="qty" />
               <UiAtomsButton size="lg" @click="handleAddToCart">Dodaj u korpu</UiAtomsButton>
             </div>
