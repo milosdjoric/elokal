@@ -18,6 +18,7 @@ async function handleSubmit() {
     })
     message.value = data.message
     email.value = ''
+    localStorage.setItem('newsletter_subscribed', '1')
   }
   catch (e: unknown) {
     const err = e as { data?: { message?: string } }

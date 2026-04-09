@@ -160,7 +160,7 @@ onMounted(() => fetchReviews())
         Napiši recenziju
       </UiAtomsButton>
       <p v-else-if="!authStore.isLoggedIn" class="text-sm text-gray-500">
-        <NuxtLink to="/account/login" class="text-primary-600 hover:underline">Prijavite se</NuxtLink> da biste ostavili recenziju.
+        <NuxtLink to="/nalog/login" class="text-primary-600 hover:underline">Prijavite se</NuxtLink> da biste ostavili recenziju.
       </p>
     </div>
 

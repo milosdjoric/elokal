@@ -12,4 +12,7 @@ return [
     'feature_webhooks' => false,
     'feature_abandoned_cart' => true,
     'feature_shop_the_look' => false,
+    'feature_store_locator' => false,
+    'feature_downloads' => false,
+    'feature_multi_language' => false,
 ];

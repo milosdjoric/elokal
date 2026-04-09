@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\Refund;
+use App\Models\StoreCreditAccount;
 use App\Models\StockMovement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,7 +42,7 @@ class OrderController extends Controller
 
     public function show(Order $order): OrderResource
     {
-        $order->load(['items', 'timeline']);
+        $order->load(['items', 'timeline', 'refunds.creator', 'shipments']);
         return new OrderResource($order);
     }
 
@@ -88,22 +90,50 @@ class OrderController extends Controller
         $request->validate([
             'amount' => "required|numeric|min:0.01|max:{$maxRefundable}",
             'reason' => 'nullable|string|max:1000',
+            'method' => 'required|in:original,store_credit',
         ]);
 
-        $newRefundedAmount = bcadd($order->refunded_amount, $request->amount, 2);
+        $amount = $request->amount;
+        $newRefundedAmount = bcadd($order->refunded_amount, $amount, 2);
         $isFullRefund = bccomp($newRefundedAmount, $order->total, 2) === 0;
 
+        // Kreiraj Refund zapis
+        Refund::create([
+            'order_id' => $order->id,
+            'amount' => $amount,
+            'method' => $request->method,
+            'reason' => $request->reason,
+            'created_by' => $request->user()->id,
+        ]);
+
+        // Ažuriraj order
+        $oldStatus = $order->status;
         $order->update([
             'refunded_amount' => $newRefundedAmount,
             'refund_reason' => $request->reason ?? $order->refund_reason,
             'status' => $isFullRefund ? 'refunded' : $order->status,
         ]);
 
+        // Ažuriraj Payment status pri full refundu
+        if ($isFullRefund) {
+            $order->payments()->where('status', 'completed')->update(['status' => 'refunded']);
+        }
+
+        // Store credit: uplati na korisnikov račun
+        if ($request->method === 'store_credit' && $order->user_id) {
+            $account = StoreCreditAccount::firstOrCreate(
+                ['user_id' => $order->user_id],
+                ['balance' => 0],
+            );
+            $account->credit($amount, "Refund za narudžbinu #{$order->order_number}", $order->id);
+        }
+
         // Timeline log
+        $methodLabel = $request->method === 'store_credit' ? 'store credit' : 'original';
         $order->timeline()->create([
             'status' => $order->status,
-            'old_status' => $isFullRefund ? $order->getOriginal('status') : $order->status,
-            'note' => "Refund: {$request->amount} RSD" . ($request->reason ? " — {$request->reason}" : ''),
+            'old_status' => $isFullRefund ? $oldStatus : $order->status,
+            'note' => "Refund: {$amount} RSD ({$methodLabel})" . ($request->reason ? " — {$request->reason}" : ''),
             'actor_type' => 'admin',
             'actor_id' => $request->user()->id,
         ]);
@@ -117,7 +147,7 @@ class OrderController extends Controller
             }
         }
 
-        $order->load(['items', 'timeline']);
+        $order->load(['items', 'timeline', 'refunds']);
         return new OrderResource($order);
     }
 

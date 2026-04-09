@@ -28,6 +28,8 @@ use App\Http\Controllers\Admin\VariantController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\StockNotificationController as AdminStockNotificationController;
 use App\Http\Controllers\Admin\NewsletterController as AdminNewsletterController;
+use App\Http\Controllers\Admin\ShipmentController;
+use App\Http\Controllers\Admin\CarrierController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Storefront\AddressController;
@@ -58,25 +60,19 @@ use Illuminate\Support\Facades\Route;
 Route::get('sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index']);
 Route::get('robots.txt', [\App\Http\Controllers\SitemapController::class, 'robots']);
 
-Route::get('health', function () {
-    try {
-        DB::connection()->getPdo();
-        return response()->json(['status' => 'ok', 'timestamp' => now()->toIso8601String()]);
-    } catch (\Exception $e) {
-        return response()->json(['status' => 'error', 'message' => 'Database unavailable'], 503);
-    }
-});
+Route::get('health', \App\Http\Controllers\HealthController::class);
 
 // Storefront (public)
 Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('products', [StorefrontProductController::class, 'index']);
     Route::get('products/filters', [StorefrontProductController::class, 'filters']);
     Route::get('products/{slug}', [StorefrontProductController::class, 'show']);
+    Route::post('products/{productId}/view', [StorefrontProductController::class, 'trackView']);
+    Route::get('products/{productId}/viewers', [StorefrontProductController::class, 'viewerCount']);
 
     Route::get('settings', [StorefrontSettingController::class, 'index']);
 
     Route::get('categories', [StorefrontCategoryController::class, 'index']);
-    Route::get('categories/{slug}', [StorefrontCategoryController::class, 'show']);
 
     Route::get('search', SearchController::class);
 
@@ -90,8 +86,12 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('payment-methods', [PaymentController::class, 'methods']);
     Route::get('currencies', fn () => response()->json(['data' => \App\Models\Currency::where('is_active', true)->orderBy('code')->get()]));
     Route::post('gift-card/check', [GiftCardController::class, 'check']);
+    Route::post('gift-card/purchase', [GiftCardController::class, 'purchase']);
     Route::get('gift-cards/{code}/check', [GiftCardController::class, 'checkByCode']);
     Route::get('pages/{slug}', [StorefrontPageController::class, 'show']);
+    Route::get('page-sections/{pageKey?}', [\App\Http\Controllers\Storefront\PageSectionController::class, '__invoke']);
+    Route::post('contact', [\App\Http\Controllers\Storefront\ContactController::class, 'store'])->middleware('throttle:contact');
+    Route::get('store-locations', [\App\Http\Controllers\Storefront\StoreLocationController::class, 'index']);
     Route::get('looks', [\App\Http\Controllers\Storefront\LookController::class, 'index']);
     Route::get('looks/{look}', [\App\Http\Controllers\Storefront\LookController::class, 'show']);
     Route::post('abandoned-cart', [AbandonedCartController::class, 'store']);
@@ -147,6 +147,9 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
             $account = \App\Models\StoreCreditAccount::firstOrCreate(['user_id' => $request->user()->id]);
             return response()->json(['data' => ['balance' => $account->balance]]);
         });
+
+        Route::get('downloads', [\App\Http\Controllers\Storefront\DownloadController::class, 'index']);
+        Route::get('downloads/{token}', [\App\Http\Controllers\Storefront\DownloadController::class, 'download']);
     });
 
     Route::post('tax/calculate', [CheckoutController::class, 'calculateTax']);
@@ -214,6 +217,17 @@ Route::prefix('admin')->group(function () {
         Route::patch('orders/{order}/tracking', [OrderController::class, 'updateTracking']);
         Route::post('orders/{order}/refund', [OrderController::class, 'refund']);
 
+        Route::get('orders/{order}/shipments', [ShipmentController::class, 'index']);
+        Route::post('orders/{order}/shipments', [ShipmentController::class, 'store']);
+        Route::put('shipments/{shipment}', [ShipmentController::class, 'update']);
+        Route::patch('shipments/{shipment}/status', [ShipmentController::class, 'updateStatus']);
+        Route::delete('shipments/{shipment}', [ShipmentController::class, 'destroy']);
+
+        Route::get('carriers', [CarrierController::class, 'index']);
+        Route::post('carriers', [CarrierController::class, 'store']);
+        Route::put('carriers/{carrier}', [CarrierController::class, 'update']);
+        Route::delete('carriers/{carrier}', [CarrierController::class, 'destroy']);
+
         Route::get('customers', [CustomerController::class, 'index']);
         Route::get('customers/{customer}', [CustomerController::class, 'show']);
 
@@ -267,6 +281,7 @@ Route::prefix('admin')->group(function () {
         Route::get('reports/categories', [\App\Http\Controllers\Admin\ReportController::class, 'categories']);
         Route::get('reports/coupons', [\App\Http\Controllers\Admin\ReportController::class, 'coupons']);
         Route::get('reports/search', [\App\Http\Controllers\Admin\ReportController::class, 'search']);
+        Route::get('reports/export/{type}', [\App\Http\Controllers\Admin\ReportController::class, 'exportCsv']);
 
         Route::get('abandoned-carts', [AdminAbandonedCartController::class, 'index']);
         Route::get('abandoned-carts/stats', [AdminAbandonedCartController::class, 'stats']);
@@ -315,6 +330,33 @@ Route::prefix('admin')->group(function () {
         Route::delete('newsletter/{subscriber}', [AdminNewsletterController::class, 'destroy']);
 
         Route::apiResource('looks', \App\Http\Controllers\Admin\LookController::class)->except(['show']);
+
+        Route::get('store-locations', [\App\Http\Controllers\Admin\StoreLocationController::class, 'index']);
+        Route::post('store-locations', [\App\Http\Controllers\Admin\StoreLocationController::class, 'store']);
+        Route::put('store-locations/{storeLocation}', [\App\Http\Controllers\Admin\StoreLocationController::class, 'update']);
+        Route::delete('store-locations/{storeLocation}', [\App\Http\Controllers\Admin\StoreLocationController::class, 'destroy']);
+
+        Route::get('products/{product}/downloads', [\App\Http\Controllers\Admin\DownloadableFileController::class, 'index']);
+        Route::post('products/{product}/downloads', [\App\Http\Controllers\Admin\DownloadableFileController::class, 'store']);
+        Route::put('downloads/{downloadableFile}', [\App\Http\Controllers\Admin\DownloadableFileController::class, 'update']);
+        Route::delete('downloads/{downloadableFile}', [\App\Http\Controllers\Admin\DownloadableFileController::class, 'destroy']);
+
+        Route::get('contact-messages', [\App\Http\Controllers\Admin\ContactMessageController::class, 'index']);
+        Route::get('contact-messages/{contactMessage}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'show']);
+        Route::patch('contact-messages/{contactMessage}/status', [\App\Http\Controllers\Admin\ContactMessageController::class, 'updateStatus']);
+        Route::delete('contact-messages/{contactMessage}', [\App\Http\Controllers\Admin\ContactMessageController::class, 'destroy']);
+
+        Route::get('page-sections', [\App\Http\Controllers\Admin\PageSectionController::class, 'index']);
+        Route::post('page-sections', [\App\Http\Controllers\Admin\PageSectionController::class, 'store']);
+        Route::put('page-sections/{pageSection}', [\App\Http\Controllers\Admin\PageSectionController::class, 'update']);
+        Route::delete('page-sections/{pageSection}', [\App\Http\Controllers\Admin\PageSectionController::class, 'destroy']);
+        Route::post('page-sections/reorder', [\App\Http\Controllers\Admin\PageSectionController::class, 'reorder']);
+
+        Route::get('translations', [\App\Http\Controllers\Admin\TranslationController::class, 'index']);
+        Route::put('translations', [\App\Http\Controllers\Admin\TranslationController::class, 'update']);
+        Route::get('translations/export', [\App\Http\Controllers\Admin\TranslationController::class, 'export']);
+        Route::post('translations/import', [\App\Http\Controllers\Admin\TranslationController::class, 'import']);
+        Route::get('translations/languages', [\App\Http\Controllers\Admin\TranslationController::class, 'languages']);
 
         Route::get('reviews', [AdminReviewController::class, 'index']);
         Route::patch('reviews/{review}/approve', [AdminReviewController::class, 'approve']);

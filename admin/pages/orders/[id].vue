@@ -212,6 +212,15 @@ onMounted(fetchOrder)
           <p class="text-sm text-gray-500">{{ formatDate(order.created_at) }}</p>
         </div>
         <div class="flex items-center gap-3">
+          <NuxtLink :to="`/orders/${orderId}/invoice`" target="_blank">
+            <UiAtomsButton variant="secondary" size="sm">Faktura</UiAtomsButton>
+          </NuxtLink>
+          <NuxtLink :to="`/orders/${orderId}/packing-slip`" target="_blank">
+            <UiAtomsButton variant="secondary" size="sm">Otpremnica</UiAtomsButton>
+          </NuxtLink>
+          <NuxtLink v-if="parseFloat(order.refunded_amount) > 0" :to="`/orders/${orderId}/credit-note`" target="_blank">
+            <UiAtomsButton variant="secondary" size="sm">Knjižno odobrenje</UiAtomsButton>
+          </NuxtLink>
           <UiAtomsButton v-if="isEditable" variant="secondary" size="sm" @click="openEditModal">
             Izmeni
           </UiAtomsButton>

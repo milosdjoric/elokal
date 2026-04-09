@@ -4,9 +4,9 @@ const { count } = useCart()
 
 const items = [
   { label: 'Početna', to: '/', icon: 'home' },
-  { label: 'Kategorije', to: '/categories', icon: 'grid' },
-  { label: 'Pretraga', to: '/search', icon: 'search' },
-  { label: 'Korpa', to: '/cart', icon: 'cart' },
+  { label: 'Kategorije', to: '/kategorije', icon: 'grid' },
+  { label: 'Pretraga', to: '/pretraga', icon: 'search' },
+  { label: 'Korpa', to: '/korpa', icon: 'cart' },
 ]
 
 function isActive(path: string): boolean {

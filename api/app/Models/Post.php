@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
-    use HasFactory;
+    use HasFactory, \App\Traits\HasTranslations;
+
+    public array $translatableFields = ['title', 'slug', 'excerpt', 'content', 'meta_title', 'meta_description'];
 
     protected $fillable = [
         'admin_id', 'title', 'slug', 'excerpt', 'content',

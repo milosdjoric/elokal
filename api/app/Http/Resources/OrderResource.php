@@ -41,6 +41,8 @@ class OrderResource extends JsonResource
             'admin_notes' => $this->when($request->routeIs('admin.*') || $request->is('api/admin/*'), $this->admin_notes),
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
             'timeline' => OrderTimelineResource::collection($this->whenLoaded('timeline')),
+            'refunds' => RefundResource::collection($this->whenLoaded('refunds')),
+            'shipments' => ShipmentResource::collection($this->whenLoaded('shipments')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

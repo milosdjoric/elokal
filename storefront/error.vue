@@ -28,7 +28,7 @@ function handleError() {
           <p class="text-gray-500 mb-8">Stranica koju tražite ne postoji ili je premeštena.</p>
           <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
             <UiAtomsButton @click="handleError">Nazad na početnu</UiAtomsButton>
-            <NuxtLink to="/products">
+            <NuxtLink to="/proizvodi">
               <UiAtomsButton variant="outline">Pogledaj proizvode</UiAtomsButton>
             </NuxtLink>
           </div>

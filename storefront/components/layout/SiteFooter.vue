@@ -14,9 +14,9 @@
         <div>
           <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">Kupovina</h4>
           <ul class="space-y-2 text-sm text-gray-300">
-            <li><NuxtLink to="/categories" class="hover:text-white">Sve kategorije</NuxtLink></li>
-            <li><NuxtLink to="/products?featured=1" class="hover:text-white">Istaknuto</NuxtLink></li>
-            <li><NuxtLink to="/products?sort=created_at" class="hover:text-white">Novo</NuxtLink></li>
+            <li><NuxtLink to="/kategorije" class="hover:text-white">Sve kategorije</NuxtLink></li>
+            <li><NuxtLink to="/proizvodi?featured=1" class="hover:text-white">Istaknuto</NuxtLink></li>
+            <li><NuxtLink to="/proizvodi?sort=created_at" class="hover:text-white">Novo</NuxtLink></li>
           </ul>
         </div>
 

@@ -171,11 +171,11 @@ onMounted(() => {
         </div>
       </div>
 
-      <NuxtLink to="/checkout">
+      <NuxtLink to="/porudzbina">
         <UiAtomsButton class="w-full mt-4" size="lg">Nastavi ka plaćanju</UiAtomsButton>
       </NuxtLink>
 
-      <NuxtLink to="/products" class="block text-center text-sm text-primary-600 hover:text-primary-800 mt-2">
+      <NuxtLink to="/proizvodi" class="block text-center text-sm text-primary-600 hover:text-primary-800 mt-2">
         ← Nastavi kupovinu
       </NuxtLink>
     </div>
@@ -187,7 +187,7 @@ onMounted(() => {
         <NuxtLink
           v-for="product in crossSellProducts"
           :key="product.id"
-          :to="`/products/${product.slug}`"
+          :to="`/proizvodi/${product.slug}`"
           class="flex items-center gap-3 hover:bg-gray-50 -mx-2 px-2 py-1 rounded transition-colors"
         >
           <img

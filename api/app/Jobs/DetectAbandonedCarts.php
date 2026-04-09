@@ -19,20 +19,30 @@ class DetectAbandonedCarts implements ShouldQueue
             return;
         }
 
-        // Markuj korpe starije od 1h kao expired ako su i dalje abandoned
+        // Korpe starije od 30 dana → expired
         AbandonedCart::where('status', 'abandoned')
             ->where('updated_at', '<', now()->subDays(30))
             ->update(['status' => 'expired']);
 
-        // Korpe starije od 1h a novije od 30 dana su target za email (buduća implementacija)
-        // Za sad samo logujemo koliko ih ima
-        $count = AbandonedCart::where('status', 'abandoned')
-            ->where('updated_at', '<', now()->subHour())
+        // Step 1: 1h posle napuštanja, još nema emailova
+        AbandonedCart::where('status', 'abandoned')
             ->where('emails_sent', 0)
-            ->count();
+            ->where('created_at', '<', now()->subHour())
+            ->where('created_at', '>', now()->subDays(30))
+            ->each(fn (AbandonedCart $cart) => SendAbandonedCartReminder::dispatch($cart, 1));
 
-        if ($count > 0) {
-            \Illuminate\Support\Facades\Log::info("DetectAbandonedCarts: {$count} napuštenih korpi čeka email.");
-        }
+        // Step 2: 24h posle napuštanja, poslat 1 email
+        AbandonedCart::where('status', 'abandoned')
+            ->where('emails_sent', 1)
+            ->where('created_at', '<', now()->subHours(24))
+            ->where('created_at', '>', now()->subDays(30))
+            ->each(fn (AbandonedCart $cart) => SendAbandonedCartReminder::dispatch($cart, 2));
+
+        // Step 3: 72h posle napuštanja, poslata 2 emaila
+        AbandonedCart::where('status', 'abandoned')
+            ->where('emails_sent', 2)
+            ->where('created_at', '<', now()->subHours(72))
+            ->where('created_at', '>', now()->subDays(30))
+            ->each(fn (AbandonedCart $cart) => SendAbandonedCartReminder::dispatch($cart, 3));
     }
 }

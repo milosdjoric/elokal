@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasTranslations;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasTranslations, SoftDeletes;
+
+    public array $translatableFields = ['name', 'slug', 'short_description', 'description', 'meta_title', 'meta_description'];
 
     protected $fillable = [
         'name',
@@ -174,5 +177,10 @@ class Product extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
+    }
+
+    public function downloadableFiles(): HasMany
+    {
+        return $this->hasMany(DownloadableFile::class)->orderBy('sort_order');
     }
 }

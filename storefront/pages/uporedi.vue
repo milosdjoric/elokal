@@ -25,7 +25,7 @@ useHead({ title: 'Poređenje proizvoda — eLokal' })
 
     <div v-if="store.count === 0" class="text-center py-16 text-gray-500">
       <p class="mb-4">Nema proizvoda za poređenje. Dodajte proizvode sa ikonicom vage.</p>
-      <NuxtLink to="/products">
+      <NuxtLink to="/proizvodi">
         <UiAtomsButton variant="outline">Pogledaj proizvode</UiAtomsButton>
       </NuxtLink>
     </div>
@@ -36,7 +36,7 @@ useHead({ title: 'Poređenje proizvoda — eLokal' })
         <tr class="border-b border-gray-200">
           <td class="py-4 pr-4 text-sm font-medium text-gray-500 align-top w-32" />
           <td v-for="product in store.items" :key="product.id" class="py-4 px-4 text-center min-w-[200px]">
-            <NuxtLink :to="`/products/${product.slug}`">
+            <NuxtLink :to="`/proizvodi/${product.slug}`">
               <img
                 v-if="primaryImage(product)"
                 :src="primaryImage(product)!"
@@ -53,7 +53,7 @@ useHead({ title: 'Poređenje proizvoda — eLokal' })
         <tr class="border-b border-gray-100">
           <td class="py-3 pr-4 text-sm font-medium text-gray-500">Naziv</td>
           <td v-for="product in store.items" :key="product.id" class="py-3 px-4">
-            <NuxtLink :to="`/products/${product.slug}`" class="text-sm font-semibold text-gray-800 hover:text-primary-600">
+            <NuxtLink :to="`/proizvodi/${product.slug}`" class="text-sm font-semibold text-gray-800 hover:text-primary-600">
               {{ product.name }}
             </NuxtLink>
           </td>
@@ -98,7 +98,7 @@ useHead({ title: 'Poređenje proizvoda — eLokal' })
         <tr>
           <td class="py-4 pr-4" />
           <td v-for="product in store.items" :key="product.id" class="py-4 px-4 text-center">
-            <NuxtLink :to="`/products/${product.slug}`">
+            <NuxtLink :to="`/proizvodi/${product.slug}`">
               <UiAtomsButton size="sm">Pogledaj</UiAtomsButton>
             </NuxtLink>
           </td>

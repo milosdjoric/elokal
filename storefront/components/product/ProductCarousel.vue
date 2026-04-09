@@ -1,11 +1,42 @@
 <script setup lang="ts">
 import type { Product } from '~/types'
 
-defineProps<{ title: string; products: Product[] }>()
+const props = withDefaults(defineProps<{
+  title: string
+  products: Product[]
+  itemsPerRow?: number
+  mobileItemsPerRow?: number
+}>(), {
+  itemsPerRow: 5,
+  mobileItemsPerRow: 2,
+})
+
+const emit = defineEmits<{ quickView: [product: Product] }>()
 const scrollRef = ref<HTMLElement>()
 
 function scrollLeft() { scrollRef.value?.scrollBy({ left: -300, behavior: 'smooth' }) }
 function scrollRight() { scrollRef.value?.scrollBy({ left: 300, behavior: 'smooth' }) }
+
+// Računa širinu kartice: 100% / items - gap
+const itemClass = computed(() => {
+  const mobile = props.mobileItemsPerRow
+  const desktop = props.itemsPerRow
+
+  const mobileMap: Record<number, string> = {
+    1: 'w-full',
+    2: 'w-[calc(50%-8px)]',
+    3: 'w-[calc(33.333%-11px)]',
+  }
+
+  const desktopMap: Record<number, string> = {
+    3: 'lg:w-[calc(33.333%-11px)]',
+    4: 'lg:w-[calc(25%-12px)]',
+    5: 'lg:w-[calc(20%-13px)]',
+    6: 'lg:w-[calc(16.666%-14px)]',
+  }
+
+  return `${mobileMap[mobile] || mobileMap[2]} ${desktopMap[desktop] || desktopMap[5]} flex-shrink-0 snap-start`
+})
 </script>
 
 <template>
@@ -22,8 +53,8 @@ function scrollRight() { scrollRef.value?.scrollBy({ left: 300, behavior: 'smoot
       </div>
     </div>
     <div ref="scrollRef" class="flex gap-4 overflow-x-auto scrollbar-hide pb-2 -mx-1 px-1 snap-x">
-      <div v-for="product in products" :key="product.id" class="w-56 flex-shrink-0 snap-start">
-        <ProductCard :product="product" />
+      <div v-for="product in products" :key="product.id" :class="itemClass">
+        <ProductCard :product="product" :show-swatches="false" @quick-view="emit('quickView', $event)" />
       </div>
     </div>
   </section>

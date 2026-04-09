@@ -14,10 +14,13 @@ const primaryImg = computed(() => {
 <template>
   <div class="group flex bg-white border border-gray-200 transition-shadow hover:shadow-md overflow-hidden">
     <!-- Image -->
-    <NuxtLink :to="`/products/${product.slug}`" class="flex-shrink-0 w-40 md:w-52 aspect-square overflow-hidden">
+    <NuxtLink :to="`/proizvodi/${product.slug}`" class="flex-shrink-0 w-40 md:w-52 aspect-square overflow-hidden">
       <img
         :src="primaryImg || ''"
         :alt="product.name"
+        loading="lazy"
+        width="400"
+        height="400"
         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
     </NuxtLink>
@@ -26,7 +29,7 @@ const primaryImg = computed(() => {
     <div class="flex-1 p-4 flex flex-col justify-between min-w-0">
       <div>
         <div class="flex items-start justify-between gap-3">
-          <NuxtLink :to="`/products/${product.slug}`" class="block">
+          <NuxtLink :to="`/proizvodi/${product.slug}`" class="block">
             <h3 class="text-sm md:text-base font-medium text-gray-800 hover:text-primary-600 transition-colors line-clamp-2">
               {{ product.name }}
             </h3>

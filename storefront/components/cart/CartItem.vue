@@ -19,7 +19,7 @@ const lineTotal = computed(() => {
   <div class="flex gap-3">
     <img v-if="img" :src="img" :alt="item.product.name" class="w-20 h-20 object-cover flex-shrink-0 border border-gray-200" />
     <div class="flex-1 min-w-0">
-      <NuxtLink :to="`/products/${item.product.slug}`" class="text-sm font-medium text-gray-800 hover:text-primary-600 line-clamp-2">
+      <NuxtLink :to="`/proizvodi/${item.product.slug}`" class="text-sm font-medium text-gray-800 hover:text-primary-600 line-clamp-2">
         {{ item.product.name }}
       </NuxtLink>
       <p class="text-xs text-gray-500 mt-0.5">{{ Number(item.product.effective_price).toLocaleString('sr-RS') }} RSD</p>

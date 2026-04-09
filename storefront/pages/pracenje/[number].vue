@@ -71,7 +71,7 @@ useHead({ title: `Praćenje ${orderNumber} — eLokal` })
         </div>
       </div>
 
-      <NuxtLink to="/account/orders" class="text-sm text-primary-600 hover:underline">
+      <NuxtLink to="/nalog/orders" class="text-sm text-primary-600 hover:underline">
         ← Sve narudžbine
       </NuxtLink>
     </template>

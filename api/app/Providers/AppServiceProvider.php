@@ -33,5 +33,25 @@ class AppServiceProvider extends ServiceProvider
             $key = $request->input('email', '') . '|' . $request->ip();
             return Limit::perMinute(5)->by($key);
         });
+
+        // Pretraga: 120 zahteva/min
+        RateLimiter::for('search', function (Request $request) {
+            return Limit::perMinute(120)->by($request->ip());
+        });
+
+        // Checkout: 10 zahteva/min
+        RateLimiter::for('checkout', function (Request $request) {
+            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
+        });
+
+        // Auth (register, forgot-password): 5 zahteva/min
+        RateLimiter::for('auth', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        // Kontakt forma: 3 zahteva/min
+        RateLimiter::for('contact', function (Request $request) {
+            return Limit::perMinute(3)->by($request->ip());
+        });
     }
 }

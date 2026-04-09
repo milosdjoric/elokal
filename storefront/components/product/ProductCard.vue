@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Product } from '~/types'
 
-const props = defineProps<{ product: Product }>()
+const props = withDefaults(defineProps<{ product: Product; showSwatches?: boolean }>(), { showSwatches: true })
 const emit = defineEmits<{ quickView: [product: Product] }>()
 const { addToCart } = useCart()
 
@@ -47,15 +47,18 @@ const variantSwatches = computed(() => {
 
 <template>
   <div
-    class="group relative bg-white border border-gray-200 transition-shadow hover:shadow-md"
+    class="group relative bg-white border border-gray-200 transition-shadow hover:shadow-md flex flex-col h-full"
     @mouseenter="hovered = true"
     @mouseleave="hovered = false"
   >
     <!-- Image -->
-    <NuxtLink :to="`/products/${product.slug}`" class="block relative aspect-square overflow-hidden">
+    <NuxtLink :to="`/proizvodi/${product.slug}`" class="block relative aspect-square overflow-hidden">
       <img
         :src="hovered && hoverImg ? hoverImg : primaryImg || ''"
         :alt="product.name"
+        loading="lazy"
+        width="400"
+        height="400"
         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
 
@@ -84,14 +87,14 @@ const variantSwatches = computed(() => {
     </NuxtLink>
 
     <!-- Info -->
-    <div class="p-3">
-      <NuxtLink :to="`/products/${product.slug}`" class="block">
-        <h3 class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-primary-600 transition-colors">
+    <div class="p-3 flex flex-col flex-1 gap-2">
+      <NuxtLink :to="`/proizvodi/${product.slug}`" class="block">
+        <h3 class="text-sm font-medium text-gray-800 line-clamp-2 min-h-[2.5rem] hover:text-primary-600 transition-colors">
           {{ product.name }}
         </h3>
       </NuxtLink>
 
-      <div class="mt-2">
+      <div class="">
         <UiMoleculesPriceDisplay
           :price="product.price"
           :sale-price="product.sale_price"
@@ -104,9 +107,9 @@ const variantSwatches = computed(() => {
 
       <ProductSaleCountdown v-if="product.is_on_sale && product.sale_price_to" :ends-at="product.sale_price_to" size="sm" class="mt-1" />
 
-      <!-- Variant swatches -->
-      <div v-if="variantSwatches.length > 0" class="mt-2 flex flex-wrap gap-1">
-        <template v-for="swatch in variantSwatches" :key="swatch.value_id">
+      <!-- Variant swatches (max 5) -->
+      <div v-if="showSwatches && variantSwatches.length > 0" class="mt-2 flex flex-wrap items-center gap-1">
+        <template v-for="swatch in variantSwatches.slice(0, 5)" :key="swatch.value_id">
           <span
             v-if="swatch.type === 'color' && swatch.color_hex"
             class="w-4 h-4 rounded-full border border-gray-300"
@@ -115,21 +118,22 @@ const variantSwatches = computed(() => {
           />
           <span
             v-else
-            class="text-[10px] text-gray-500 border border-gray-200 px-1.5 py-0.5 rounded"
+            class="text-[10px] text-gray-500 border border-gray-200 px-1.5 py-0.5"
           >
             {{ swatch.value }}
           </span>
         </template>
+        <span v-if="variantSwatches.length > 5" class="text-[10px] text-gray-400">+{{ variantSwatches.length - 5 }}</span>
       </div>
 
       <button
         v-if="product.stock_quantity > 0"
-        class="mt-3 w-full py-2 text-xs font-semibold text-primary-600 border border-primary-600 hover:bg-primary-600 hover:text-white transition-colors"
+        class="mt-auto pt-3 w-full py-2 text-xs font-semibold text-primary-600 border border-primary-600 hover:bg-primary-600 hover:text-white transition-colors"
         @click="handleAddToCart"
       >
         Dodaj u korpu
       </button>
-      <p v-else class="mt-3 text-xs text-gray-400 text-center py-2">Nema na stanju</p>
+      <p v-else class="mt-auto pt-3 text-xs text-gray-400 text-center py-2">Nema na stanju</p>
     </div>
   </div>
 </template>

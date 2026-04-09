@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import type { Product, Category } from '~/types'
+import type { Product } from '~/types'
 
 const { get } = useApi()
 
+const isOpen = ref(false)
 const query = ref('')
 const results = ref<Product[]>([])
-const showDropdown = ref(false)
+const matchingCategories = ref<{ id: number; name: string; slug: string }[]>([])
 const loading = ref(false)
-const categoryScope = ref('')
-const categories = ref<Category[]>([])
 const trendingSearches = ref<string[]>([])
+const selectedIndex = ref(-1)
+const inputRef = ref<HTMLInputElement | null>(null)
 let debounceTimer: ReturnType<typeof setTimeout>
 
-async function fetchSearchMeta() {
+// Expose open za parent komponentu
+defineExpose({ open: () => { isOpen.value = true } })
+
+async function fetchTrending() {
   try {
-    const [catData, settingsData] = await Promise.all([
-      get<{ data: Category[] }>('/v1/categories'),
-      get<Record<string, string>>('/v1/settings'),
-    ])
-    categories.value = catData.data
-    const trending = settingsData.trending_searches
-    if (trending) {
-      trendingSearches.value = trending.split(',').map(s => s.trim()).filter(Boolean)
+    const data = await get<{ data: Record<string, Record<string, string>> }>('/v1/settings')
+    const flat: Record<string, string> = {}
+    for (const group of Object.values(data.data)) Object.assign(flat, group)
+    if (flat.trending_searches) {
+      trendingSearches.value = flat.trending_searches.split(',').map(s => s.trim()).filter(Boolean)
     }
   }
   catch { /* silent */ }
@@ -30,18 +31,15 @@ async function fetchSearchMeta() {
 async function search() {
   if (query.value.length < 2) {
     results.value = []
-    if (query.value.length === 0) showDropdown.value = trendingSearches.value.length > 0
-    else showDropdown.value = false
+    matchingCategories.value = []
     return
   }
-
   loading.value = true
+  selectedIndex.value = -1
   try {
-    const params: Record<string, string | number> = { q: query.value, per_page: 5 }
-    if (categoryScope.value) params.category = categoryScope.value
-    const data = await get<{ data: Product[] }>('/v1/search', params)
+    const data = await get<{ data: Product[]; matching_categories?: { id: number; name: string; slug: string }[] }>('/v1/search', { q: query.value, per_page: 6 })
     results.value = data.data
-    showDropdown.value = true
+    matchingCategories.value = data.matching_categories || []
   }
   catch { results.value = [] }
   finally { loading.value = false }
@@ -49,28 +47,41 @@ async function search() {
 
 function onInput() {
   clearTimeout(debounceTimer)
-  debounceTimer = setTimeout(search, 300)
+  debounceTimer = setTimeout(search, 250)
 }
 
-function handleSubmit() {
-  if (query.value.trim()) {
-    showDropdown.value = false
-    const routeQuery: Record<string, string> = { q: query.value }
-    if (categoryScope.value) routeQuery.category = categoryScope.value
-    navigateTo({ path: '/search', query: routeQuery })
-  }
+function open() {
+  isOpen.value = true
+  nextTick(() => inputRef.value?.focus())
+}
+
+function close() {
+  isOpen.value = false
+  query.value = ''
+  results.value = []
+  matchingCategories.value = []
+  selectedIndex.value = -1
+}
+
+function goToResults() {
+  if (!query.value.trim()) return
+  close()
+  navigateTo({ path: '/pretraga', query: { q: query.value } })
+}
+
+function selectProduct(slug: string) {
+  close()
+  navigateTo(`/proizvodi/${slug}`)
+}
+
+function selectCategory(slug: string) {
+  close()
+  navigateTo(`/kategorije/${slug}`)
 }
 
 function useTrending(term: string) {
   query.value = term
-  showDropdown.value = false
   search()
-}
-
-function selectProduct(slug: string) {
-  showDropdown.value = false
-  query.value = ''
-  navigateTo(`/products/${slug}`)
 }
 
 function primaryImage(product: Product): string | null {
@@ -78,94 +89,197 @@ function primaryImage(product: Product): string | null {
   return img ? resolveImageUrl(img.image_path) : null
 }
 
-function close() { showDropdown.value = false }
-function delayedClose() { setTimeout(close, 200) }
+// Navigacija tastaturom
+const totalItems = computed(() => matchingCategories.value.length + results.value.length)
 
-function onFocus() {
-  if (query.value.length >= 2) showDropdown.value = true
-  else if (query.value.length === 0 && trendingSearches.value.length > 0) showDropdown.value = true
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') { close(); return }
+  if (e.key === 'Enter') {
+    if (selectedIndex.value >= 0) {
+      const catLen = matchingCategories.value.length
+      if (selectedIndex.value < catLen) {
+        selectCategory(matchingCategories.value[selectedIndex.value].slug)
+      } else {
+        const prodIdx = selectedIndex.value - catLen
+        if (results.value[prodIdx]) selectProduct(results.value[prodIdx].slug)
+      }
+    } else {
+      goToResults()
+    }
+    return
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    selectedIndex.value = Math.min(selectedIndex.value + 1, totalItems.value - 1)
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    selectedIndex.value = Math.max(selectedIndex.value - 1, -1)
+  }
 }
 
-onMounted(fetchSearchMeta)
+// Ctrl+K / Cmd+K global shortcut
+function onGlobalKeydown(e: KeyboardEvent) {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault()
+    open()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', onGlobalKeydown)
+  fetchTrending()
+})
+
+onUnmounted(() => {
+  document.removeEventListener('keydown', onGlobalKeydown)
+})
 </script>
 
 <template>
-  <div class="relative" @focusout="delayedClose">
-    <form @submit.prevent="handleSubmit" class="flex">
-      <!-- Category scope -->
-      <select
-        v-if="categories.length > 0"
-        v-model="categoryScope"
-        class="hidden md:block px-3 py-2.5 text-sm border border-gray-300 border-r-0 bg-gray-50 text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500"
-        @change="query.length >= 2 && search()"
-      >
-        <option value="">Sve kategorije</option>
-        <option v-for="cat in categories" :key="cat.id" :value="String(cat.id)">{{ cat.name }}</option>
-      </select>
+  <!-- Trigger button (inline u header) -->
+  <button
+    class="flex items-center gap-2 w-full px-4 py-2 text-sm text-gray-400 bg-gray-100 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+    @click="open"
+  >
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+    </svg>
+    <span class="flex-1 text-left">Pretraži proizvode...</span>
+    <kbd class="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-mono text-gray-400 bg-white border border-gray-200 rounded">
+      <span class="text-xs">⌘</span>K
+    </kbd>
+  </button>
 
-      <div class="relative flex-1">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-        </svg>
-        <input
-          v-model="query"
-          type="text"
-          placeholder="Pretraži proizvode..."
-          class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
-          @input="onInput"
-          @focus="onFocus"
-        />
-      </div>
-    </form>
+  <!-- Modal overlay -->
+  <Teleport to="body">
+    <Transition
+      enter-active-class="transition duration-150"
+      enter-from-class="opacity-0"
+      leave-active-class="transition duration-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="isOpen" class="fixed inset-0 z-[60] flex items-start justify-center pt-[15vh] px-4" @click.self="close">
+        <div class="absolute inset-0 bg-black/50" @click="close" />
 
-    <!-- Dropdown -->
-    <div v-if="showDropdown" class="absolute left-0 right-0 top-full bg-white border border-gray-200 shadow-lg z-50 max-h-80 overflow-y-auto">
-      <!-- Trending searches (kad je input prazan) -->
-      <div v-if="query.length < 2 && trendingSearches.length > 0" class="p-4">
-        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Popularno</p>
-        <div class="flex flex-wrap gap-2">
-          <button
-            v-for="term in trendingSearches"
-            :key="term"
-            class="text-sm px-3 py-1 bg-gray-100 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-full transition-colors"
-            @mousedown.prevent="useTrending(term)"
-          >
-            {{ term }}
-          </button>
+        <!-- Search panel -->
+        <div class="relative bg-white shadow-2xl w-full max-w-xl overflow-hidden">
+          <!-- Input -->
+          <div class="flex items-center gap-3 px-4 border-b border-gray-200">
+            <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <input
+              ref="inputRef"
+              v-model="query"
+              type="text"
+              placeholder="Pretraži proizvode, kategorije..."
+              class="flex-1 py-4 text-base bg-transparent outline-none placeholder:text-gray-400"
+              @input="onInput"
+              @keydown="onKeydown"
+            />
+            <button v-if="query" class="text-gray-400 hover:text-gray-600" @click="query = ''; results = []; matchingCategories = []">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <kbd class="hidden md:inline-flex px-1.5 py-0.5 text-[10px] font-mono text-gray-400 bg-gray-100 border border-gray-200 rounded">ESC</kbd>
+          </div>
+
+          <!-- Results -->
+          <div class="max-h-[50vh] overflow-y-auto">
+            <!-- Empty state: trending -->
+            <div v-if="query.length < 2 && trendingSearches.length > 0" class="p-4">
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Popularno</p>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  v-for="term in trendingSearches"
+                  :key="term"
+                  class="text-sm px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+                  @click="useTrending(term)"
+                >
+                  {{ term }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Loading -->
+            <div v-else-if="loading" class="p-8 text-center">
+              <UiAtomsSpinner size="sm" />
+            </div>
+
+            <!-- No results -->
+            <div v-else-if="query.length >= 2 && results.length === 0 && matchingCategories.length === 0" class="p-8 text-center">
+              <p class="text-gray-500">Nema rezultata za "<span class="font-medium text-gray-700">{{ query }}</span>"</p>
+              <p class="text-sm text-gray-400 mt-1">Pokušajte sa drugim pojmom.</p>
+            </div>
+
+            <!-- Results -->
+            <div v-else-if="query.length >= 2">
+              <!-- Categories -->
+              <div v-if="matchingCategories.length" class="px-4 pt-3 pb-2">
+                <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Kategorije</p>
+                <button
+                  v-for="(cat, i) in matchingCategories"
+                  :key="cat.id"
+                  class="flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors"
+                  :class="selectedIndex === i ? 'bg-primary-50 text-primary-700' : 'text-gray-600 hover:bg-gray-50'"
+                  @click="selectCategory(cat.slug)"
+                  @mouseenter="selectedIndex = i"
+                >
+                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                  </svg>
+                  {{ cat.name }}
+                </button>
+              </div>
+
+              <!-- Products -->
+              <div v-if="results.length">
+                <p class="px-4 pt-3 pb-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Proizvodi</p>
+                <button
+                  v-for="(product, i) in results"
+                  :key="product.id"
+                  class="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors"
+                  :class="selectedIndex === (matchingCategories.length + i) ? 'bg-primary-50' : 'hover:bg-gray-50'"
+                  @click="selectProduct(product.slug)"
+                  @mouseenter="selectedIndex = matchingCategories.length + i"
+                >
+                  <img
+                    v-if="primaryImage(product)"
+                    :src="primaryImage(product)!"
+                    class="w-10 h-10 object-cover flex-shrink-0"
+                    alt=""
+                  />
+                  <div class="w-10 h-10 bg-gray-100 flex-shrink-0" v-else />
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium text-gray-800 truncate">{{ product.name }}</p>
+                    <p class="text-xs text-primary-600 font-semibold">{{ Number(product.effective_price).toLocaleString('sr-RS') }} RSD</p>
+                  </div>
+                  <svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+              </div>
+
+              <!-- View all -->
+              <button
+                class="w-full px-4 py-3 text-sm text-primary-600 font-medium text-center border-t border-gray-100 hover:bg-gray-50 transition-colors"
+                @click="goToResults"
+              >
+                Prikaži sve rezultate za "{{ query }}" →
+              </button>
+            </div>
+          </div>
+
+          <!-- Footer hint -->
+          <div class="hidden md:flex items-center gap-4 px-4 py-2 bg-gray-50 border-t border-gray-100 text-[10px] text-gray-400">
+            <span><kbd class="px-1 py-0.5 bg-white border rounded">↑↓</kbd> navigacija</span>
+            <span><kbd class="px-1 py-0.5 bg-white border rounded">Enter</kbd> otvori</span>
+            <span><kbd class="px-1 py-0.5 bg-white border rounded">ESC</kbd> zatvori</span>
+          </div>
         </div>
       </div>
-      <div v-else-if="loading" class="p-4 text-center">
-        <UiAtomsSpinner size="sm" />
-      </div>
-      <div v-else-if="results.length === 0 && query.length >= 2" class="p-4 text-sm text-gray-500 text-center">
-        Nema rezultata za "{{ query }}"
-      </div>
-      <div v-else>
-        <button
-          v-for="product in results"
-          :key="product.id"
-          class="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
-          @click="selectProduct(product.slug)"
-        >
-          <img
-            v-if="primaryImage(product)"
-            :src="primaryImage(product)!"
-            class="w-10 h-10 object-cover flex-shrink-0"
-            alt=""
-          />
-          <div class="min-w-0 flex-1">
-            <p class="text-sm font-medium text-gray-800 truncate">{{ product.name }}</p>
-            <p class="text-xs text-primary-600 font-semibold">{{ Number(product.effective_price).toLocaleString('sr-RS') }} RSD</p>
-          </div>
-        </button>
-        <NuxtLink
-          :to="{ path: '/search', query: { q: query } }"
-          class="block px-4 py-2 text-sm text-primary-600 font-medium text-center border-t hover:bg-gray-50"
-          @click="showDropdown = false"
-        >
-          Prikaži sve rezultate →
-        </NuxtLink>
-      </div>
-    </div>
-  </div>
+    </Transition>
+  </Teleport>
 </template>

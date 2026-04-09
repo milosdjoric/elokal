@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -71,9 +72,13 @@ class ProductController extends Controller
         $sortField = $request->input('sort', 'created_at');
         $sortDir = $request->input('direction', 'desc');
 
-        $allowedSorts = ['name', 'price', 'created_at'];
-        if (in_array($sortField, $allowedSorts)) {
-            $query->orderBy($sortField, $sortDir === 'asc' ? 'asc' : 'desc');
+        if ($sortField === 'discount') {
+            $query->orderByRaw('CASE WHEN sale_price IS NOT NULL AND sale_price > 0 AND sale_price < price THEN (price - sale_price) / price ELSE 0 END DESC');
+        } else {
+            $allowedSorts = ['name', 'price', 'created_at'];
+            if (in_array($sortField, $allowedSorts)) {
+                $query->orderBy($sortField, $sortDir === 'asc' ? 'asc' : 'desc');
+            }
         }
 
         $perPage = min($request->input('per_page', 12), 48);
@@ -140,5 +145,39 @@ class ProductController extends Controller
         }
 
         return (new ProductResource($product))->additional(['prev_next' => $prevNext]);
+    }
+
+    public function trackView(Request $request, int $productId): JsonResponse
+    {
+        if (! feature('feature_social_proof')) {
+            return response()->json(['viewers' => 0]);
+        }
+
+        $visitorId = $request->ip() . '-' . substr(md5($request->header('User-Agent', '')), 0, 8);
+        $viewerKey = "product_viewers:{$productId}:{$visitorId}";
+        $countKey = "product_viewer_count:{$productId}";
+
+        // Registruj ovog viewer-a sa TTL od 5 minuta
+        $isNew = ! Cache::has($viewerKey);
+        Cache::put($viewerKey, true, now()->addMinutes(5));
+
+        if ($isNew) {
+            Cache::increment($countKey);
+            // Setuj TTL za count ako ne postoji
+            if (Cache::get($countKey) <= 1) {
+                Cache::put($countKey, 1, now()->addMinutes(10));
+            }
+        }
+
+        $viewers = (int) Cache::get($countKey, 0);
+
+        return response()->json(['viewers' => $viewers]);
+    }
+
+    public function viewerCount(int $productId): JsonResponse
+    {
+        $viewers = (int) Cache::get("product_viewer_count:{$productId}", 0);
+
+        return response()->json(['viewers' => $viewers]);
     }
 }

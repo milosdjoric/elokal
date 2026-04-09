@@ -27,6 +27,7 @@ const { hasFreeShippingThreshold, formattedThreshold } = useShippingConfig()
       </div>
       <div class="hidden md:flex items-center gap-4">
         <span v-if="hasFreeShippingThreshold">Besplatna dostava za narudžbine iznad {{ formattedThreshold }} din</span>
+        <LayoutLanguagePicker />
         <LayoutCurrencySwitcher />
       </div>
     </div>

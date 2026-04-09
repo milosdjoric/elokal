@@ -43,6 +43,11 @@ class GiftCard extends Model
         return $code;
     }
 
+    public function isValid(): bool|string
+    {
+        return $this->isUsable();
+    }
+
     public function isUsable(): bool|string
     {
         if (! $this->is_active) return 'Poklon kartica nije aktivna.';

@@ -29,7 +29,7 @@ class LoyaltyAccount extends Model
         return $this->hasMany(LoyaltyTransaction::class)->orderByDesc('created_at');
     }
 
-    public function addPoints(int $points, string $type, ?string $description = null, ?int $orderId = null): void
+    public function addPoints(int $points, string $type, ?string $description = null, ?int $orderId = null, ?int $expiresInDays = 365): void
     {
         $this->increment('points_balance', $points);
         $this->increment('points_earned_total', $points);
@@ -39,6 +39,7 @@ class LoyaltyAccount extends Model
             'type' => $type,
             'description' => $description,
             'order_id' => $orderId,
+            'expires_at' => $expiresInDays ? now()->addDays($expiresInDays) : null,
         ]);
 
         $this->recalculateTier();

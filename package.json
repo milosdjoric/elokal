@@ -1,0 +1,13 @@
+{
+  "name": "elokal-e2e",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:storefront": "playwright test --project=storefront",
+    "test:admin": "playwright test --project=admin",
+    "test:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
+  }
+}

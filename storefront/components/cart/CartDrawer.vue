@@ -52,7 +52,7 @@ function close() { emit('update:modelValue', false) }
               <span>Ukupno:</span>
               <span>{{ total }}</span>
             </div>
-            <NuxtLink to="/cart" class="block" @click="close">
+            <NuxtLink to="/korpa" class="block" @click="close">
               <UiAtomsButton class="w-full" size="lg">Pregledaj korpu</UiAtomsButton>
             </NuxtLink>
           </div>

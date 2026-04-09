@@ -34,5 +34,6 @@ onMounted(async () => {
     <LayoutCookieConsent />
     <ProductFloatingCompareBar />
     <CartExitIntentPopup />
+    <NewsletterPopup />
   </div>
 </template>

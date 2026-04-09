@@ -12,6 +12,7 @@ use App\Models\Review;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ReportController extends Controller
 {
@@ -183,5 +184,126 @@ class ReportController extends Controller
             'no_result_searches' => $noResultSearches,
             'total_searches' => $totalSearches,
         ]);
+    }
+
+    public function exportCsv(Request $request, string $type): StreamedResponse
+    {
+        $days = $request->input('days', 30);
+        $from = now()->subDays($days);
+        $date = now()->format('Y-m-d');
+
+        return match ($type) {
+            'sales' => $this->exportSalesCsv($from, $date),
+            'products' => $this->exportTopProductsCsv($date),
+            'customers' => $this->exportTopCustomersCsv($date),
+            'categories' => $this->exportCategoriesCsv($from, $date),
+            'coupons' => $this->exportCouponsCsv($from, $date),
+            default => abort(404, 'Nepoznat tip izveštaja.'),
+        };
+    }
+
+    private function exportSalesCsv($from, string $date): StreamedResponse
+    {
+        $sales = Order::where('created_at', '>=', $from)
+            ->whereNotIn('status', ['cancelled', 'refunded'])
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as revenue'), DB::raw('COUNT(*) as orders'))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        return response()->streamDownload(function () use ($sales) {
+            $h = fopen('php://output', 'w');
+            fputcsv($h, ['Datum', 'Prihod', 'Narudžbine']);
+            foreach ($sales as $row) {
+                fputcsv($h, [$row->date, $row->revenue, $row->orders]);
+            }
+            fclose($h);
+        }, "sales-{$date}.csv", ['Content-Type' => 'text/csv']);
+    }
+
+    private function exportTopProductsCsv(string $date): StreamedResponse
+    {
+        $products = DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->select('products.name', 'products.sku',
+                DB::raw('SUM(order_items.quantity) as total_sold'),
+                DB::raw('SUM(order_items.line_total) as total_revenue'))
+            ->groupBy('products.id', 'products.name', 'products.sku')
+            ->orderByDesc('total_revenue')
+            ->get();
+
+        return response()->streamDownload(function () use ($products) {
+            $h = fopen('php://output', 'w');
+            fputcsv($h, ['Proizvod', 'SKU', 'Prodato', 'Prihod']);
+            foreach ($products as $row) {
+                fputcsv($h, [$row->name, $row->sku, $row->total_sold, $row->total_revenue]);
+            }
+            fclose($h);
+        }, "top-products-{$date}.csv", ['Content-Type' => 'text/csv']);
+    }
+
+    private function exportTopCustomersCsv(string $date): StreamedResponse
+    {
+        $customers = User::withCount('orders')
+            ->withSum('orders', 'total')
+            ->orderByDesc('orders_sum_total')
+            ->get(['id', 'name', 'email']);
+
+        return response()->streamDownload(function () use ($customers) {
+            $h = fopen('php://output', 'w');
+            fputcsv($h, ['Ime', 'Email', 'Narudžbine', 'Ukupno potrošeno']);
+            foreach ($customers as $c) {
+                fputcsv($h, [$c->name, $c->email, $c->orders_count, $c->orders_sum_total ?? 0]);
+            }
+            fclose($h);
+        }, "top-customers-{$date}.csv", ['Content-Type' => 'text/csv']);
+    }
+
+    private function exportCategoriesCsv($from, string $date): StreamedResponse
+    {
+        $categories = DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->join('category_product', 'products.id', '=', 'category_product.product_id')
+            ->join('categories', 'category_product.category_id', '=', 'categories.id')
+            ->join('orders', 'order_items.order_id', '=', 'orders.id')
+            ->where('orders.created_at', '>=', $from)
+            ->whereNotIn('orders.status', ['cancelled', 'refunded'])
+            ->select('categories.name', DB::raw('SUM(order_items.quantity) as total_sold'),
+                DB::raw('SUM(order_items.line_total) as total_revenue'),
+                DB::raw('COUNT(DISTINCT orders.id) as orders_count'))
+            ->groupBy('categories.id', 'categories.name')
+            ->orderByDesc('total_revenue')
+            ->get();
+
+        return response()->streamDownload(function () use ($categories) {
+            $h = fopen('php://output', 'w');
+            fputcsv($h, ['Kategorija', 'Prodato', 'Prihod', 'Narudžbine']);
+            foreach ($categories as $c) {
+                fputcsv($h, [$c->name, $c->total_sold, $c->total_revenue, $c->orders_count]);
+            }
+            fclose($h);
+        }, "categories-{$date}.csv", ['Content-Type' => 'text/csv']);
+    }
+
+    private function exportCouponsCsv($from, string $date): StreamedResponse
+    {
+        $coupons = DB::table('coupon_usages')
+            ->join('coupons', 'coupon_usages.coupon_id', '=', 'coupons.id')
+            ->where('coupon_usages.created_at', '>=', $from)
+            ->select('coupons.code', 'coupons.type', 'coupons.value',
+                DB::raw('COUNT(*) as times_used'),
+                DB::raw('SUM(coupon_usages.discount_amount) as total_discount'))
+            ->groupBy('coupons.id', 'coupons.code', 'coupons.type', 'coupons.value')
+            ->orderByDesc('times_used')
+            ->get();
+
+        return response()->streamDownload(function () use ($coupons) {
+            $h = fopen('php://output', 'w');
+            fputcsv($h, ['Kod', 'Tip', 'Vrednost', 'Korišćenja', 'Ukupan popust']);
+            foreach ($coupons as $c) {
+                fputcsv($h, [$c->code, $c->type, $c->value, $c->times_used, $c->total_discount]);
+            }
+            fclose($h);
+        }, "coupons-{$date}.csv", ['Content-Type' => 'text/csv']);
     }
 }

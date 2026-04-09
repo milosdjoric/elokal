@@ -3,6 +3,6 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const token = localStorage.getItem('user_token')
   if (!token) {
-    return navigateTo({ path: '/account/login', query: { redirect: to.fullPath } })
+    return navigateTo({ path: '/nalog/login', query: { redirect: to.fullPath } })
   }
 })

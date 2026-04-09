@@ -85,7 +85,7 @@ function addAllToCart() {
             top: `${hs.y_position + 4}%`,
           }"
         >
-          <NuxtLink :to="`/products/${hs.product.slug}`" class="block">
+          <NuxtLink :to="`/proizvodi/${hs.product.slug}`" class="block">
             <img v-if="primaryImage(hs.product)" :src="primaryImage(hs.product)!" class="w-full h-24 object-cover rounded mb-2" />
             <p class="text-sm font-medium text-gray-800 truncate">{{ hs.product.name }}</p>
             <p class="text-sm text-primary-600 font-semibold">{{ formatPrice(hs.product.effective_price || hs.product.price) }}</p>

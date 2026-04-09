@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Storefront;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductCollection;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\SearchLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -27,6 +29,21 @@ class SearchController extends Controller
                   ->orWhere('sku', 'like', "%{$search}%");
             });
 
+        // Category scope filter
+        if ($request->filled('category')) {
+            $query->whereHas('categories', fn ($q) => $q->where('categories.id', $request->category));
+        }
+
+        // Sortiranje
+        $sort = $request->input('sort', 'relevance');
+        $query = match ($sort) {
+            'price_asc' => $query->orderBy('price'),
+            'price_desc' => $query->orderByDesc('price'),
+            'created_at' => $query->orderByDesc('created_at'),
+            'name' => $query->orderBy('name'),
+            default => $query->orderByDesc('id'), // relevance — najnoviji prvo
+        };
+
         $perPage = min($request->input('per_page', 12), 48);
         $results = $query->paginate($perPage);
 
@@ -37,6 +54,14 @@ class SearchController extends Controller
             'ip' => $request->ip(),
         ]);
 
-        return new ProductCollection($results);
+        // Matching kategorije za autocomplete
+        $matchingCategories = Category::where('is_active', true)
+            ->where('name', 'like', "%{$search}%")
+            ->select('id', 'name', 'slug')
+            ->limit(5)
+            ->get();
+
+        return (new ProductCollection($results))
+            ->additional(['matching_categories' => $matchingCategories]);
     }
 }

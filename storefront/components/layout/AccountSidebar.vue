@@ -3,17 +3,17 @@ const route = useRoute()
 const { logout, user } = useAuth()
 
 const items = [
-  { label: 'Pregled', to: '/account', icon: 'home' },
-  { label: 'Profil', to: '/account/profile', icon: 'user' },
-  { label: 'Adrese', to: '/account/addresses', icon: 'map' },
-  { label: 'Narudžbine', to: '/account/orders', icon: 'package' },
-  { label: 'Lista želja', to: '/account/wishlist', icon: 'heart' },
-  { label: 'Poeni', to: '/account/poeni', icon: 'star' },
-  { label: 'Krediti', to: '/account/krediti', icon: 'wallet' },
+  { label: 'Pregled', to: '/nalog', icon: 'home' },
+  { label: 'Profil', to: '/nalog/profile', icon: 'user' },
+  { label: 'Adrese', to: '/nalog/addresses', icon: 'map' },
+  { label: 'Narudžbine', to: '/nalog/orders', icon: 'package' },
+  { label: 'Lista želja', to: '/nalog/wishlist', icon: 'heart' },
+  { label: 'Poeni', to: '/nalog/poeni', icon: 'star' },
+  { label: 'Krediti', to: '/nalog/krediti', icon: 'wallet' },
 ]
 
 function isActive(path: string): boolean {
-  if (path === '/account') return route.path === '/account'
+  if (path === '/nalog') return route.path === '/nalog'
   return route.path.startsWith(path)
 }
 </script>

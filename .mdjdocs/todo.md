@@ -417,11 +417,11 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] `/customers/:id` — profil sa istorijom
 
 ### v0.2.11 — Print / PDF
-- [ ] Invoice PDF generisanje (logo, podaci prodavca, PIB, kupac, stavke, totali)
-- [ ] Invoice numbering (konfigurabilan format, auto-increment)
-- [ ] Packing slip PDF (stavke bez cena)
-- [ ] Credit note PDF (za refund)
-- [ ] Download iz admin order detail-a
+- [x] Invoice PDF generisanje (logo, podaci prodavca, PIB, kupac, stavke, totali)
+- [x] Invoice numbering (konfigurabilan format, auto-increment)
+- [x] Packing slip PDF (stavke bez cena)
+- [x] Credit note PDF (za refund)
+- [x] Download iz admin order detail-a
 - [ ] Download iz kupac account-a
 - [ ] Auto-email invoice kao attachment
 - [ ] Bulk print (ZIP sa više invoice-a)
@@ -468,7 +468,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] NewsletterSubscriber model + migracija
 - [x] Subscribe/confirm/unsubscribe endpointi
 - [x] Double opt-in flow
-- [ ] Newsletter popup (modal, exit intent, jednom po sesiji)
+- [x] Newsletter popup (modal, exit intent, jednom po sesiji)
 - [x] Admin: pregled pretplatnika, export CSV
 - [x] Feature flag: FEATURE_NEWSLETTER
 
@@ -539,10 +539,10 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 **Paketi:**
 - [ ] Social login — Google, Facebook, Apple (Laravel Socialite + OAuth kredencijali) — v0.2.1, v0.2.2
 - [ ] Admin 2FA — TOTP setup, QR kod, backup kodovi (pragmarx/google2fa ili similar) — v0.2.3
-- [ ] PDF — Invoice, packing slip, credit note (dompdf ili snappy) — v0.2.11
+- [x] PDF — Invoice, packing slip, credit note (print CSS) — v0.2.11
 - [ ] Rich text editor — TipTap ili Quill za blog content editor — v0.2.21
 - [ ] API dokumentacija — OpenAPI 3.0 spec + Swagger UI (l5-swagger ili scramble) — v0.2.24
-- [ ] Newsletter popup — exit intent modal, jednom po sesiji — v0.2.17
+- [x] Newsletter popup — exit intent modal, jednom po sesiji — v0.2.17
 
 **SMTP (email):**
 - [ ] Email branding template (logo, boje, footer) — v0.2.22
@@ -617,7 +617,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Automatsko vraćanje pri otkazivanju/return-u
 - [x] Stock reservation (15 min pri checkout-u)
 - [x] Backorder opcija po proizvodu (restock date polje)
-- [ ] Low stock notifikacije (email adminu)
+- [x] Low stock notifikacije (email adminu)
 - [x] Testovi
 
 ### v0.3.7 — Inventar: Admin
@@ -635,12 +635,12 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Shipment model + migracija (tracking, carrier, status)
 - [x] Shipping kalkulacija (flat, weight, price-based, free)
 - [x] Checkout: dostupne metode po zoni
-- [ ] Tracking status updates
+- [x] Tracking status updates
 - [x] Testovi
 
 ### v0.3.9 — Dostava: Admin + Storefront
 - [x] Admin: CRUD zona i metoda
-- [ ] Admin: carrier konfiguracija
+- [x] Admin: carrier konfiguracija
 - [x] Admin: tracking unos na order detail-u
 - [x] Checkout: prikaz metoda sa cenom i estimated delivery
 - [x] Cart: shipping estimate
@@ -654,7 +654,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Pouzeće (COD) implementacija
 - [x] Virman/uplata implementacija (instrukcije, manual confirm)
 - [ ] Stripe integracija (Elements, 3D Secure, save card)
-- [ ] Refund flow (full/partial, auto za online, manual za offline)
+- [x] Refund flow (full/partial, auto za online, manual za offline)
 - [ ] Testovi
 
 ### v0.3.11 — Plaćanje: Admin + Storefront
@@ -678,9 +678,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ### v0.3.13 — Abandoned Cart Recovery
 - [x] AbandonedCart model + migracija
 - [x] Detekcija napuštene korpe (1h timeout)
-- [ ] Email serija (1h, 24h, 72h — queue jobs)
+- [x] Email serija (1h, 24h, 72h — queue jobs)
 - [x] Recovery link (/korpa/obnovi/:token)
-- [ ] Auto-generisan kupon u 2. emailu
+- [x] Auto-generisan kupon u 2. emailu
 - [x] Exit intent popup (konfigurabilan u adminu)
 - [x] Admin: lista napuštenih korpi, recovery rate izveštaj
 - [x] Feature flag: FEATURE_ABANDONED_CART
@@ -693,7 +693,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] CSV export proizvoda (filter pre exporta)
 - [x] CSV export narudžbina
 - [x] CSV export kupaca
-- [ ] Scheduled export (nedeljni/mesečni na email)
+- [x] Scheduled export (nedeljni/mesečni na email)
 
 ### Odloženo — Faza 3
 > Stavke koje zahtevaju eksternu zavisnost, velik UI rad ili SMTP.
@@ -701,8 +701,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 **Eksterno:**
 - [ ] Stripe integracija (API ključ) — v0.3.10
 - [ ] Email sa tracking brojem — v0.3.9
-- [ ] Low stock email notifikacije — v0.3.6
-- [ ] Scheduled export na email — v0.3.14
+- [x] Low stock email notifikacije — v0.3.6
+- [x] Scheduled export na email — v0.3.14
 
 **UI-heavy (iterativno sa dizajnom):**
 - [x] Varijante matrica + bulk edit na product formi — v0.3.2
@@ -729,7 +729,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ### v0.4.1 — Gift Cards
 - [x] GiftCard model + migracija
 - [x] GiftCardTransaction model
-- [ ] Kupovina (poseban proizvod, izbor iznosa, recipient forma)
+- [x] Kupovina (poseban proizvod, izbor iznosa, recipient forma)
 - [ ] Email primaocu sa kodom
 - [x] Korišćenje na checkout-u (polje za kod, parcijalno korišćenje)
 - [x] `/poklon-kartica/provera` — balance check
@@ -744,7 +744,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Tier sistem (bronze/silver/gold/platinum)
 - [x] `/nalog/poeni` — balance, tier, progress, istorija
 - [x] Admin: konfiguracija pravila, pregled po korisniku, ručno dodavanje
-- [ ] Expiry pravila
+- [x] Expiry pravila
 - [x] Feature flag: FEATURE_LOYALTY
 
 ### v0.4.3 — Store Credits
@@ -756,15 +756,15 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Feature flag: FEATURE_STORE_CREDITS
 
 ### v0.4.4 — Multi-language (i18n)
-- [ ] Nuxt i18n modul setup
-- [ ] JSON translation fajlovi za UI stringove
-- [ ] Translations kolona/tabela u bazi (Product, Category, Post, Page)
-- [ ] Admin: jezički tab-ovi na formama
-- [ ] Admin: dostupni jezici podešavanje
-- [ ] Indikator kompletnosti prevoda
-- [ ] Bulk export/import prevoda (CSV/JSON)
-- [ ] hreflang tagovi, sitemap po jeziku, OG locale
-- [ ] Feature flag: FEATURE_MULTI_LANGUAGE
+- [x] Nuxt i18n modul setup
+- [x] JSON translation fajlovi za UI stringove
+- [x] Translations kolona/tabela u bazi (Product, Category, Post, Page)
+- [x] Admin: jezički tab-ovi na formama
+- [x] Admin: dostupni jezici podešavanje
+- [x] Indikator kompletnosti prevoda
+- [x] Bulk export/import prevoda (CSV/JSON)
+- [x] hreflang tagovi, sitemap po jeziku, OG locale
+- [x] Feature flag: FEATURE_MULTI_LANGUAGE
 
 ### v0.4.5 — Multi-valuta
 - [x] Kursna lista (ručno ili API)
@@ -782,9 +782,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### v0.4.7 — Social Proof
 - [x] "Kupljeno X puta" brojač na PDP-u
-- [ ] "X ljudi gleda ovaj proizvod"
+- [x] "X ljudi gleda ovaj proizvod"
 - [x] Popup notifikacije ("Marko iz Beograda je upravo kupio...")
-- [ ] Admin: konfiguracija, uključeno/isključeno
+- [x] Admin: konfiguracija, uključeno/isključeno
 - [x] Feature flag: FEATURE_SOCIAL_PROOF
 
 ### v0.4.8 — Promo Bar
@@ -805,17 +805,17 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Feature flag: FEATURE_SHOP_THE_LOOK
 
 ### v0.4.11 — Store Locator
-- [ ] StoreLocation model
-- [ ] Mapa (Google Maps / Leaflet) + lista
-- [ ] Pretraga po gradu/radius
-- [ ] Admin: CRUD lokacija
-- [ ] Feature flag: FEATURE_STORE_LOCATOR
+- [x] StoreLocation model
+- [x] Mapa (Google Maps / Leaflet) + lista
+- [x] Pretraga po gradu/radius
+- [x] Admin: CRUD lokacija
+- [x] Feature flag: FEATURE_STORE_LOCATOR
 
 ### v0.4.12 — Downloadable Products
-- [ ] Download link po kupovini (account + email)
-- [ ] Admin: upload fajlova, ograničenja (max downloads, expiry)
-- [ ] `/nalog/preuzimanja` stranica
-- [ ] Feature flag: FEATURE_DOWNLOADS
+- [x] Download link po kupovini (account + email)
+- [x] Admin: upload fajlova, ograničenja (max downloads, expiry)
+- [x] `/nalog/preuzimanja` stranica
+- [x] Feature flag: FEATURE_DOWNLOADS
 
 ### v0.4.13 — Izveštaji
 - [x] Dashboard overview kartice (prihod, narudžbine, AOV, conversion, novi vs returning)
@@ -825,8 +825,8 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Izveštaj: Kupci (top po potrošnji, novi po periodu, CLV, abandoned cart)
 - [x] Izveštaj: Kuponi (korišćenost, prihod sa/bez)
 - [x] Search analytics UI (top pretrage, pretrage bez rezultata, CTR)
-- [ ] Export CSV/PDF
-- [ ] Scheduled export na email
+- [x] Export CSV/PDF
+- [x] Scheduled export na email
 
 ### v0.4.14 — Media Library (proširenja)
 - [x] Folder organizacija ili tag sistem
@@ -841,15 +841,15 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Permisije UI u admin formi
 
 ### v0.4.16 — Admin podešavanja (proširenja)
-- [ ] Email tab: sender, template boje, uključivanje/isključivanje emailova
-- [ ] Languages tab: dostupni jezici, default, picker pozicija
-- [ ] Notifications tab: admin email, low stock threshold, notify on order/review
+- [x] Email tab: sender, template boje, uključivanje/isključivanje emailova
+- [x] Languages tab: dostupni jezici, default, picker pozicija
+- [x] Notifications tab: admin email, low stock threshold, notify on order/review
 
 ### v0.4.17 — Statičke stranice
 - [x] Page model + migracija (title, slug, content, meta)
 - [x] Admin: CRUD stranica (rich text editor)
 - [x] `/o-nama`, `/kontakt`, `/uslovi-koriscenja`, `/politika-privatnosti`, `/cesta-pitanja`
-- [ ] Kontakt forma sa email notifikacijom
+- [x] Kontakt forma sa email notifikacijom
 
 ### v0.4.18 — Webhooks
 - [x] Webhook model (URL, events, secret, status)
@@ -860,33 +860,33 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Feature flag: FEATURE_WEBHOOKS
 
 ### v0.4.19 — API Rate Limiting (proširenja)
-- [ ] Per-route limiti (search 120, checkout 10, auth 5)
-- [ ] Response headers (X-RateLimit-Limit, Remaining, Retry-After)
-- [ ] Admin IP whitelist
+- [x] Per-route limiti (search 120, checkout 10, auth 5)
+- [x] Response headers (X-RateLimit-Limit, Remaining, Retry-After)
+- [x] Admin IP whitelist
 
 ### v0.4.20 — Performanse & Tehničko
 - [x] sitemap.xml (auto-generisan, po jeziku)
 - [x] robots.txt
 - [x] Schema.org markup (Product, BreadcrumbList, Organization, FAQPage)
-- [ ] Core Web Vitals optimizacija (LCP < 2.5s, FID < 100ms, CLS < 0.1)
-- [ ] API response caching (homepage, categories tree)
-- [ ] Database indexi optimizacija
-- [ ] Lazy loading slika (native + Nuxt Image)
+- [x] Core Web Vitals optimizacija (LCP < 2.5s, FID < 100ms, CLS < 0.1)
+- [x] API response caching (homepage, categories tree)
+- [x] Database indexi optimizacija
+- [x] Lazy loading slika (native + Nuxt Image)
 - [ ] Image optimization (WebP, responsive srcset)
-- [ ] Font optimization (preload, font-display: swap)
+- [x] Font optimization (preload, font-display: swap)
 - [ ] Critical CSS inline
-- [ ] Dark mode priprema (CSS varijable)
+- [x] Dark mode priprema (CSS varijable)
 
 ---
 
 ## DevOps (paralelno sa razvojem)
 
 ### D.1 — CI/CD
-- [ ] GitHub Actions pipeline (lint → test → build → deploy)
+- [x] GitHub Actions pipeline (lint → test → build → deploy)
 - [ ] Staging environment setup (Hetzner dev VPS + Vercel preview)
 - [ ] Staging seed data (50+ proizvoda, realistični podaci)
 - [ ] Zero-downtime deploy (symlink strategy)
-- [ ] Health check endpoint (/api/health)
+- [x] Health check endpoint (/api/health)
 
 ### D.2 — Monitoring
 - [ ] Sentry setup (API + admin + storefront)
@@ -895,10 +895,10 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Alerting pravila (error spike, response time, disk, memory, security)
 
 ### D.3 — Backup
-- [ ] Dnevni automatski DB backup (cron, mysqldump)
+- [x] Dnevni automatski DB backup (cron, mysqldump)
 - [ ] Upload na eksterni storage (R2/S3)
-- [ ] Rotacija (7 dnevnih + 4 nedeljnih + 3 mesečnih)
-- [ ] Pre-migration backup
+- [x] Rotacija (7 dnevnih + 4 nedeljnih + 3 mesečnih)
+- [x] Pre-migration backup
 - [ ] Media sync na eksterni storage
 - [ ] Mesečni test restore na staging-u
 
@@ -907,4 +907,4 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] useFeature() composable
 - [x] Backend feature() helper + middleware
 - [x] Admin sidebar filtriranje po feature flags
-- [ ] Setup checklist dokumentacija za novog klijenta
+- [x] Setup checklist dokumentacija za novog klijenta
