@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             ShippingSeeder::class,
             DemoDataSeeder::class,
+            FullDemoSeeder::class,
         ]);
 
         User::create([
@@ -30,12 +31,6 @@ class DatabaseSeeder extends Seeder
             ['country' => 'RS', 'is_default' => true],
             ['name' => 'PDV 20%', 'rate' => 20.00, 'is_active' => true],
         );
-
-        // Feature flagovi
-        $features = config('features', []);
-        foreach ($features as $key => $default) {
-            Setting::setValue('features', $key, $default ? 'true' : 'false');
-        }
 
         // Kuriri
         $carriers = [
