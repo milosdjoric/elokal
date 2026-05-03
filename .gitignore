@@ -45,3 +45,7 @@ e2e/blob-report/
 
 # Internal
 .data/
+
+# Local mdjdocs symlinks (monorepo hook workaround)
+api/.mdjdocs
+storefront/.mdjdocs
