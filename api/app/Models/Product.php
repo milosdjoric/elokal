@@ -126,7 +126,46 @@ class Product extends Model
         return (int) OrderItem::where('product_id', $this->id)->sum('quantity');
     }
 
+    /**
+     * Najniža efektivna cena u poslednjih 30 dana.
+     * Legal RS: Zakon o trgovini, čl. 32a — kod oglašavanja sniženja cena
+     * obavezno se prikazuje najniža cena iz prethodnog 30-dnevnog perioda.
+     *
+     * Logika: minimum effective_price iz history-ja zadnjih 30 dana, ali
+     * isključujući trenutnu cenu (jer Observer upisuje trenutnu cenu pri
+     * promeni — bez ekskluzije, lowest bi uvek bio current sale).
+     */
+    public function getLowestPrice30DaysAttribute(): ?string
+    {
+        // Relevantno samo za aktivne sale-eve (zakonska obaveza pri oglašavanju sniženja).
+        // Za proizvode bez sale-a — ne prikazujemo (kupcu nije referentna informacija).
+        if (! $this->isSaleActive()) {
+            return null;
+        }
+
+        // Cutoff: pre sale period-a.
+        //  - ako sale ima eksplicitan `sale_price_from`, koristimo njega
+        //  - inače fallback: recorded_at poslednjeg history zapisa (Observer je upisao
+        //    trenutnu sale cenu poslednjim zapisom — sve PRE toga je istorija).
+        $cutoff = $this->sale_price_from
+            ?? optional($this->priceHistory()->latest('recorded_at')->first())->recorded_at
+            ?? now();
+
+        $min = $this->priceHistory()
+            ->where('recorded_at', '>=', now()->subDays(30))
+            ->where('recorded_at', '<', $cutoff)
+            ->min('effective_price');
+
+        return $min !== null ? number_format((float) $min, 2, '.', '') : null;
+    }
+
     // --- Relations ---
+
+    public function priceHistory(): HasMany
+    {
+        return $this->hasMany(ProductPriceHistory::class)->orderByDesc('recorded_at');
+    }
+
 
     public function categories(): BelongsToMany
     {

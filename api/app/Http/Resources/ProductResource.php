@@ -33,6 +33,7 @@ class ProductResource extends JsonResource
             'custom_tabs' => $this->custom_tabs,
             'effective_price' => $this->effective_price,
             'sale_percentage' => $this->sale_percentage,
+            'lowest_price_30_days' => $this->lowest_price_30_days,
             'formatted_unit_price' => $this->formatted_unit_price,
             'is_on_sale' => $this->isSaleActive(),
             'times_sold' => $this->times_sold,
