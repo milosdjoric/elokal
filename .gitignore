@@ -17,6 +17,7 @@ api/storage/*.key
 api/.env
 api/.env.backup
 api/.env.production
+api/.env.sqlite-backup
 
 # IDE
 .idea/
