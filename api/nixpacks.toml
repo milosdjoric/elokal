@@ -1,0 +1,4 @@
+# Headless Laravel API — Nuxt frontendi su odvojeni, ne treba npm/vite build.
+# Forsiraj samo PHP provider da Nixpacks ne pokrece 'npm run build' (koji puca:
+# Node 18 < 20 + @tailwindcss/oxide native binding bug).
+providers = ['php']

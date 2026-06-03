@@ -1,0 +1,10 @@
+vendor/
+node_modules/
+public/storage
+.env
+.env.*
+storage/logs/*
+# Headless API — sakrij frontend asset toolchain da Nixpacks ne pokrene npm/vite build
+package.json
+package-lock.json
+vite.config.js
