@@ -1,8 +1,8 @@
 import type { ApiError } from '~/types'
 
-const API_BASE = 'http://localhost:8000/api'
-
 export function useApi() {
+  const API_BASE = useRuntimeConfig().public.apiBase as string
+
   function getToken(): string | null {
     if (import.meta.server) return null
     return localStorage.getItem('admin_token')

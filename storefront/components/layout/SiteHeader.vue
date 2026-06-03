@@ -6,6 +6,7 @@ const { count } = useCart()
 const wishlistStore = useWishlistStore()
 const wishlistCount = computed(() => wishlistStore.count)
 const { isLoggedIn } = useAuth()
+const { getValue } = useFeature()
 
 const categories = ref<Category[]>([])
 const cartDrawerOpen = ref(false)
@@ -43,7 +44,7 @@ onMounted(fetchCategories)
 
         <!-- Logo -->
         <NuxtLink to="/" class="text-2xl font-bold text-dark flex-shrink-0">
-          eLokal
+          {{ getValue('site_name', 'eLokal') }}
         </NuxtLink>
 
         <!-- Search bar (desktop) -->
@@ -181,7 +182,7 @@ onMounted(fetchCategories)
         <div class="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-white shadow-xl flex flex-col overflow-y-auto">
           <!-- Header -->
           <div class="flex items-center justify-between px-4 py-4 border-b">
-            <span class="text-lg font-bold text-dark">eLokal</span>
+            <span class="text-lg font-bold text-dark">{{ getValue('site_name', 'eLokal') }}</span>
             <button class="p-1 text-gray-400 hover:text-gray-600" @click="mobileMenuOpen = false">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

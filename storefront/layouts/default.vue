@@ -1,20 +1,18 @@
 <script setup lang="ts">
 const { setOrganizationSchema } = useSchemaOrg()
-const { getValue } = useFeature()
+const { getValue, loadSettings } = useFeature()
 
-onMounted(async () => {
-  const siteName = await getValue('general_site_name', 'eLokal')
-  const siteUrl = window.location.origin
-  const logo = await getValue('general_logo_url', '')
-  const phone = await getValue('general_phone', '')
-  const email = await getValue('general_email', '')
+// Ucitaj settings SSR-side da brending (naziv/logo) bude dostupan u prvom renderu —
+// po-bazi -> po-klijentu (Flavor A). Jedan build sluzi bilo kog klijenta preko apiBase.
+await loadSettings()
 
+onMounted(() => {
   setOrganizationSchema({
-    name: siteName,
-    url: siteUrl,
-    logo: logo || undefined,
-    phone: phone || undefined,
-    email: email || undefined,
+    name: getValue('site_name', 'eLokal'),
+    url: window.location.origin,
+    logo: getValue('site_logo', '') || undefined,
+    phone: getValue('site_phone', '') || undefined,
+    email: getValue('site_email', '') || undefined,
   })
 })
 </script>

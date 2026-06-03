@@ -12,6 +12,13 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
   ],
 
+  // Per-klijent API URL preko NUXT_PUBLIC_API_BASE (Vercel build env).
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:8000/api',
+    },
+  },
+
   app: {
     head: {
       link: [

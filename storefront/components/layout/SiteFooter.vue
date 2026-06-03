@@ -1,10 +1,14 @@
+<script setup lang="ts">
+const { getValue } = useFeature()
+</script>
+
 <template>
   <footer class="bg-dark text-white mt-16">
     <div class="max-w-7xl mx-auto px-4 py-12">
       <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
         <!-- About -->
         <div>
-          <h3 class="text-lg font-bold mb-4">eLokal</h3>
+          <h3 class="text-lg font-bold mb-4">{{ getValue('site_name', 'eLokal') }}</h3>
           <p class="text-sm text-gray-300 leading-relaxed">
             Vaš pouzdani online shop za kvalitetne proizvode po najboljim cenama.
           </p>
@@ -35,9 +39,9 @@
         <div>
           <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">Kontakt</h4>
           <ul class="space-y-2 text-sm text-gray-300">
-            <li>+381 11 123 4567</li>
-            <li>info@webshop.rs</li>
-            <li>Beograd, Srbija</li>
+            <li v-if="getValue('site_phone')">{{ getValue('site_phone') }}</li>
+            <li v-if="getValue('site_email')">{{ getValue('site_email') }}</li>
+            <li v-if="getValue('site_address')">{{ getValue('site_address') }}</li>
           </ul>
           <div class="flex gap-3 mt-4">
             <a href="#" class="text-gray-400 hover:text-white">
@@ -54,7 +58,7 @@
     <!-- Bottom bar -->
     <div class="border-t border-gray-700">
       <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between text-xs text-gray-400">
-        <p>&copy; {{ new Date().getFullYear() }} eLokal. Sva prava zadržana.</p>
+        <p>&copy; {{ new Date().getFullYear() }} {{ getValue('site_name', 'eLokal') }}. Sva prava zadržana.</p>
         <div class="flex gap-4 mt-2 md:mt-0">
           <a href="#" class="hover:text-white">Politika privatnosti</a>
           <a href="#" class="hover:text-white">Uslovi korišćenja</a>
