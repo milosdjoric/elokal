@@ -67,6 +67,13 @@ Svaka stavka opisuje konkretne mogucnosti koje korisnik ili admin moze da korist
   - Precrtana originalna cena kad je popust aktivan
   - Unit price prikaz (npr. "125 RSD/m")
 
+- [x] **Najniza cena u 30 dana (Zakon o trgovini RS, cl. 32a)**
+  - Kad je proizvod na akciji, prikazuje se najniza cena iz prethodnih 30 dana
+  - `ProductPriceHistory` belezi snapshot cene/sale cene pri svakoj promeni (ProductObserver)
+  - `lowest_price_30_days` racuna minimum iz 30 dana PRE pocetka tekuce akcije (ne ukljucuje samu akciju)
+  - Izlozeno storefront-u kroz ProductResource
+  - `php artisan price-history:backfill` popunjava istoriju za postojece proizvode
+
 - [x] **Social proof**
   - "X ljudi trenutno gleda ovaj proizvod" — real-time brojac iz cache-a
   - "Kupljeno X puta" — ukupan broj prodaja
@@ -1244,6 +1251,13 @@ Svaka stavka opisuje konkretne mogucnosti koje korisnik ili admin moze da korist
   - Provera na frontendu: `useFeature().isEnabled('feature_name')`
   - Provera na backendu: `Setting::getValue('feature_name')`
   - Admin UI: toggle prekidaci u Settings → Feature Flags tabu
+
+- [x] **Price history audit trail (30-dnevni minimum)**
+  - `ProductPriceHistory` tabela: snapshot regularne i sale cene sa `recorded_at`
+  - `ProductObserver` automatski belezi pri kreiranju proizvoda i svakoj promeni cene
+  - `Product::lowest_price_30_days` accessor — najniza efektivna cena 30 dana pre starta akcije
+  - Zakonska obaveza po Zakonu o trgovini RS (cl. 32a) — prikaz najnize cene pre sniženja
+  - `BackfillPriceHistory` artisan komanda za inicijalno popunjavanje
 
 - [x] **Stock movements audit trail**
   - Svaka promena stock-a se loguje: kolicina, tip (sale/return/adjustment/restock/cancellation), referenca, beleska, stock posle
