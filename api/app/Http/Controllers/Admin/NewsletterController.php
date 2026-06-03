@@ -19,7 +19,7 @@ class NewsletterController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('email', 'like', "%{$request->search}%");
+            $query->where('email', 'ilike', "%{$request->search}%");
         }
 
         $perPage = min($request->input('per_page', 15), 100);

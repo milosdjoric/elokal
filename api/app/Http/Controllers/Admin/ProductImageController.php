@@ -21,8 +21,8 @@ class ProductImageController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('alt_text', 'like', "%{$search}%")
-                  ->orWhereHas('product', fn ($q2) => $q2->where('name', 'like', "%{$search}%"));
+                $q->where('alt_text', 'ilike', "%{$search}%")
+                  ->orWhereHas('product', fn ($q2) => $q2->where('name', 'ilike', "%{$search}%"));
             });
         }
 
@@ -35,7 +35,7 @@ class ProductImageController extends Controller
         // Filteri
         if ($request->filled('type')) {
             $ext = $request->type;
-            $query->where('image_path', 'like', "%.{$ext}");
+            $query->where('image_path', 'ilike', "%.{$ext}");
         }
 
         if ($request->filled('date_from')) {

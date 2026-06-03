@@ -1153,16 +1153,20 @@ class FullDemoSeeder extends Seeder
                 'sort_order' => 0,
             ]);
 
-            // Download log za prvog korisnika
+            // Download log za prvog korisnika — samo ako korisnik ima narudzbinu
+            // (order_id je NOT NULL: download je vezan za narudzbinu)
             if ($users->isNotEmpty() && $i < 2) {
-                DownloadLog::create([
-                    'downloadable_file_id' => $file->id,
-                    'order_id' => Order::where('user_id', $users[$i]->id)->first()?->id,
-                    'user_id' => $users[$i]->id,
-                    'download_count' => rand(1, 3),
-                    'expires_at' => now()->addDays(30),
-                    'token' => DownloadLog::generateToken(),
-                ]);
+                $userOrder = Order::where('user_id', $users[$i]->id)->first();
+                if ($userOrder) {
+                    DownloadLog::create([
+                        'downloadable_file_id' => $file->id,
+                        'order_id' => $userOrder->id,
+                        'user_id' => $users[$i]->id,
+                        'download_count' => rand(1, 3),
+                        'expires_at' => now()->addDays(30),
+                        'token' => DownloadLog::generateToken(),
+                    ]);
+                }
             }
         }
     }

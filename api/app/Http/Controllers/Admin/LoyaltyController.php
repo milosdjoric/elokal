@@ -54,11 +54,13 @@ class LoyaltyController extends Controller
         return response()->json([
             'tiers' => LoyaltyAccount::TIERS,
             'earn_rules' => [
-                'purchase' => '1 poen = 100 RSD',
+                // TODO(CORE-002 1b): rate brojevi (100/50) ostaju hardkodovani — externalizovati
+                // u settings ako loyalty stope treba da budu per-klijent (dira i checkout logiku).
+                'purchase' => '1 poen = 100 ' . currency_symbol(),
                 'registration' => '100 poena',
                 'review' => '50 poena',
             ],
-            'redeem_rate' => '100 poena = 100 RSD',
+            'redeem_rate' => '100 poena = 100 ' . currency_symbol(),
         ]);
     }
 }

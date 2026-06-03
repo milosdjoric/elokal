@@ -19,7 +19,7 @@ class StoreLocationController extends Controller
 
         // Pretraga po gradu
         if ($request->filled('city')) {
-            $query->where('city', 'like', "%{$request->city}%");
+            $query->where('city', 'ilike', "%{$request->city}%");
         }
 
         // Pretraga po radijusu

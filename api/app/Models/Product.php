@@ -100,7 +100,7 @@ class Product extends Model
             return null;
         }
 
-        return number_format($this->unit_price, 2, ',', '.') . ' RSD/' . $this->unit_label;
+        return number_format($this->unit_price, 2, ',', '.') . ' ' . currency_symbol() . '/' . $this->unit_label;
     }
 
     // --- Helpers ---

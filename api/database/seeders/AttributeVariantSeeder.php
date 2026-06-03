@@ -72,7 +72,7 @@ class AttributeVariantSeeder extends Seeder
             foreach (['Bela', 'Bež', 'Roze', 'Siva'] as $i => $colorName) {
                 $variant = ProductVariant::create([
                     'product_id' => $tepihOblak->id,
-                    'sku' => $tepihOblak->sku . '-' . strtoupper(substr($colorName, 0, 3)),
+                    'sku' => $tepihOblak->sku . '-' . strtoupper(mb_substr($colorName, 0, 3)),
                     'price' => $basePrice + ($i * 200),
                     'stock_quantity' => rand(5, 30),
                     'is_active' => true,
@@ -91,7 +91,7 @@ class AttributeVariantSeeder extends Seeder
                     $priceAdj = ($sizeName === 'M' ? 500 : ($sizeName === 'L' ? 1200 : 0));
                     $variant = ProductVariant::create([
                         'product_id' => $fotelja->id,
-                        'sku' => $fotelja->sku . '-' . strtoupper(substr($colorName, 0, 3)) . '-' . $sizeName,
+                        'sku' => $fotelja->sku . '-' . strtoupper(mb_substr($colorName, 0, 3)) . '-' . $sizeName,
                         'price' => $basePrice + $priceAdj,
                         'stock_quantity' => rand(3, 15),
                         'is_active' => true,
@@ -116,7 +116,7 @@ class AttributeVariantSeeder extends Seeder
             foreach ($lampColors as $i => $colorName) {
                 $variant = ProductVariant::create([
                     'product_id' => $lampa->id,
-                    'sku' => $lampa->sku . '-' . strtoupper(substr($colorName, 0, 3)),
+                    'sku' => $lampa->sku . '-' . strtoupper(mb_substr($colorName, 0, 3)),
                     'price' => $basePrice,
                     'stock_quantity' => rand(5, 20),
                     'is_active' => true,

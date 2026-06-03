@@ -23,10 +23,10 @@ class SearchController extends Controller
         $query = Product::with(['categories', 'images'])
             ->where('is_active', true)
             ->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('short_description', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%");
+                $q->where('name', 'ilike', "%{$search}%")
+                  ->orWhere('short_description', 'ilike', "%{$search}%")
+                  ->orWhere('description', 'ilike', "%{$search}%")
+                  ->orWhere('sku', 'ilike', "%{$search}%");
             });
 
         // Category scope filter
@@ -56,7 +56,7 @@ class SearchController extends Controller
 
         // Matching kategorije za autocomplete
         $matchingCategories = Category::where('is_active', true)
-            ->where('name', 'like', "%{$search}%")
+            ->where('name', 'ilike', "%{$search}%")
             ->select('id', 'name', 'slug')
             ->limit(5)
             ->get();

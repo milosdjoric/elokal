@@ -24,7 +24,7 @@ class BlogController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', "%{$request->search}%");
+            $query->where('title', 'ilike', "%{$request->search}%");
         }
 
         if ($request->filled('category_id')) {

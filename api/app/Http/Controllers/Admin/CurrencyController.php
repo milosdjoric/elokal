@@ -32,7 +32,10 @@ class CurrencyController extends Controller
             Currency::where('is_default', true)->update(['is_default' => false]);
         }
 
-        return response()->json(['data' => Currency::create($data)], 201);
+        $currency = Currency::create($data);
+        forget_currency_cache();
+
+        return response()->json(['data' => $currency], 201);
     }
 
     public function update(Request $request, Currency $currency): JsonResponse
@@ -51,12 +54,16 @@ class CurrencyController extends Controller
         }
 
         $currency->update($data);
+        forget_currency_cache();
+
         return response()->json(['data' => $currency]);
     }
 
     public function destroy(Currency $currency): JsonResponse
     {
         $currency->delete();
+        forget_currency_cache();
+
         return response()->json(['message' => 'Valuta obrisana.']);
     }
 }

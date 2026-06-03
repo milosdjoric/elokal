@@ -14,7 +14,7 @@ class GiftCardController extends Controller
         $query = GiftCard::orderByDesc('created_at');
 
         if ($request->filled('search')) {
-            $query->where('code', 'like', "%{$request->search}%");
+            $query->where('code', 'ilike', "%{$request->search}%");
         }
         if ($request->filled('active')) {
             $query->where('is_active', $request->boolean('active'));

@@ -24,10 +24,10 @@ class OrderController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('shipping_first_name', 'like', "%{$search}%")
-                  ->orWhere('shipping_last_name', 'like', "%{$search}%");
+                $q->where('order_number', 'ilike', "%{$search}%")
+                  ->orWhere('email', 'ilike', "%{$search}%")
+                  ->orWhere('shipping_first_name', 'ilike', "%{$search}%")
+                  ->orWhere('shipping_last_name', 'ilike', "%{$search}%");
             });
         }
 
@@ -133,7 +133,7 @@ class OrderController extends Controller
         $order->timeline()->create([
             'status' => $order->status,
             'old_status' => $isFullRefund ? $oldStatus : $order->status,
-            'note' => "Refund: {$amount} RSD ({$methodLabel})" . ($request->reason ? " — {$request->reason}" : ''),
+            'note' => "Refund: {$amount} " . currency_symbol() . " ({$methodLabel})" . ($request->reason ? " — {$request->reason}" : ''),
             'actor_type' => 'admin',
             'actor_id' => $request->user()->id,
         ]);

@@ -29,7 +29,7 @@ class CouponController extends Controller
 
         if ($coupon->min_order_amount && $request->subtotal < (float) $coupon->min_order_amount) {
             return response()->json([
-                'message' => "Minimalan iznos narudžbine za ovaj kupon je {$coupon->min_order_amount} RSD.",
+                'message' => "Minimalan iznos narudžbine za ovaj kupon je {$coupon->min_order_amount} " . currency_symbol() . '.',
             ], 422);
         }
 

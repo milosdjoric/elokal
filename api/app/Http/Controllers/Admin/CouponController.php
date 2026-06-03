@@ -19,7 +19,7 @@ class CouponController extends Controller
         }
 
         if ($request->filled('search')) {
-            $query->where('code', 'like', "%{$request->search}%");
+            $query->where('code', 'ilike', "%{$request->search}%");
         }
 
         return response()->json($query->paginate(15));
