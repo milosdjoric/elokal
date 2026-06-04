@@ -91,6 +91,23 @@ git push
     pao jer Vercel klonira shallow i `.vercelignore` je brisao `.git`; treba
     robustnija varijanta. Dok se ne uradi — svaki push gradi sve.
 
+### ⚠️ Backend (`api`) deploy — RUČNO, nije auto
+
+Bitna razlika: **`api` (Laravel) NIJE povezan sa GitHub-om** — `git push` ga
+NE deploy-uje (samo storefront ide na Vercel automatski). Posle izmene u `api/`,
+backend deploy ide **ručno** preko Railway CLI:
+
+```bash
+cd api
+RAILWAY_API_TOKEN=<token> railway up --service elokal-api
+```
+
+Railway radi NIXPACKS build + `php artisan migrate --force` (preDeploy hook).
+
+> **Zeleni CI ≠ live.** GitHub Actions testira `api/` na svaki push, ali dok ne
+> uradiš `railway up`, živi api vrti **stari** kod. (Npr. nov endpoint daje 404
+> na produkciji iako su testovi zeleni.)
+
 ## ⚠️ Granica koju treba znati
 
 Fix u base-u **ne stiže** na klijenta koji je baš taj fajl override-ovao
