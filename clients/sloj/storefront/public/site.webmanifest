@@ -1,0 +1,25 @@
+{
+  "name": "sloj kolektiv",
+  "short_name": "sloj",
+  "description": "Slojevit nameštaj, dosledno. Šperploča, jednostavno.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafafa",
+  "theme_color": "#1a1a1a",
+  "lang": "sr-Latn-RS",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    }
+  ]
+}

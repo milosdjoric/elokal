@@ -1,0 +1,125 @@
+/*
+ * sloj kolektiv — design tokens
+ * Format: RGB triplet (Tailwind v3 / @nuxtjs/tailwindcss compatible).
+ * Use: rgb(var(--color-text)) ili Tailwind utility ako je mapirano u tailwind.config.ts.
+ *
+ * Paleta:
+ *   ply   — breza šperploča (warm cream → deep wood)
+ *   ink   — grafit (text + structural)
+ *   terra — terakota (single accent — sale, CTA hover, link underline)
+ *   surface — off-white #FAFAFA + true white
+ */
+
+:root {
+  /* surfaces */
+  --color-bg: 255 255 255;          /* true white — page bg */
+  --color-bg-soft: 248 248 247;     /* very subtle off-white tint, almost white */
+  --color-surface: 255 255 255;     /* true white — cards, modals */
+  --color-surface-elev: 255 255 255;
+  --color-surface-ply: 251 247 240; /* lightest ply tint za retke warm sekcije */
+
+  /* text */
+  --color-text: 26 26 26;           /* #1A1A1A — graphite primary */
+  --color-text-secondary: 82 82 82;
+  --color-text-muted: 115 115 115;
+  --color-text-on-ply: 26 26 26;
+  --color-text-on-ink: 250 250 250;
+  --color-text-on-terra: 250 250 250;
+
+  /* borders */
+  --color-border: 229 226 219;      /* warm grey — ne plavičast */
+  --color-border-strong: 163 163 163;
+  --color-border-ink: 26 26 26;     /* hairline na hover/focus */
+
+  /* ply skala — breza šperploča */
+  --color-ply-50:  251 247 240;
+  --color-ply-100: 245 237 222;
+  --color-ply-200: 237 225 200;
+  --color-ply-300: 232 213 176;     /* base — #E8D5B0 */
+  --color-ply-400: 217 192 148;
+  --color-ply-500: 201 168 117;
+  --color-ply-600: 168 138  92;
+  --color-ply-700: 135 109  69;
+  --color-ply-800:  92  74  48;
+  --color-ply-900:  58  46  30;
+
+  /* ink skala — grafit */
+  --color-ink-50:  245 245 245;
+  --color-ink-100: 229 229 229;
+  --color-ink-200: 212 212 212;
+  --color-ink-300: 163 163 163;
+  --color-ink-400: 115 115 115;
+  --color-ink-500:  82  82  82;
+  --color-ink-600:  64  64  64;
+  --color-ink-700:  38  38  38;
+  --color-ink-800:  26  26  26;     /* base — #1A1A1A */
+  --color-ink-900:  10  10  10;
+
+  /* terra skala — terakota accent */
+  --color-terra-50:  250 237 230;
+  --color-terra-100: 245 216 199;
+  --color-terra-200: 237 185 160;
+  --color-terra-300: 224 149 115;
+  --color-terra-400: 203 117  81;
+  --color-terra-500: 184  92  56;   /* base — #B85C38 */
+  --color-terra-600: 159  75  44;
+  --color-terra-700: 130  58  34;
+  --color-terra-800: 100  43  25;
+  --color-terra-900:  66  28  16;
+
+  /* status — semantic; kalibrisano da ne odudara od warm palete */
+  --color-success: 60 95 50;
+  --color-success-soft: 235 240 220;
+  --color-warning: 156 95 30;
+  --color-warning-soft: 250 235 210;
+  --color-danger: 159 75 44;        /* mapirano na terra-600 — error retko, ne gradi drugu paletu */
+  --color-danger-soft: 245 216 199;
+  --color-info: 64 64 64;
+  --color-info-soft: 245 242 235;
+
+  /* focus ring */
+  --color-focus: 184 92 56;         /* terra-500 */
+
+  /* motion */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 320ms;
+
+  /* z-index skala */
+  --z-dropdown: 30;
+  --z-sticky: 40;
+  --z-drawer: 50;
+  --z-modal: 60;
+  --z-toast: 70;
+  --z-tooltip: 80;
+
+  /* type scale guard — koriste ih komponente koje žele uniformnu hierarhiju */
+  --tracking-display: -0.02em;
+  --tracking-heading: -0.01em;
+  --tracking-wide: 0.08em;          /* lowercase nav, eyebrow */
+  --tracking-wider: 0.16em;         /* category banners, dividers */
+}
+
+/* dark mode pripremljeno ali nije aktivno; ne dodavati dark: prefiks dok ne odluči se sistemski */
+.dark {
+  --color-bg: 14 13 11;
+  --color-bg-soft: 22 20 17;
+  --color-surface: 22 20 17;
+  --color-surface-elev: 30 27 23;
+  --color-surface-ply: 30 27 23;
+
+  --color-text: 232 213 176;
+  --color-text-secondary: 201 168 117;
+  --color-text-muted: 168 138 92;
+  --color-text-on-ply: 26 26 26;
+  --color-text-on-ink: 232 213 176;
+  --color-text-on-terra: 250 250 250;
+
+  --color-border: 58 46 30;
+  --color-border-strong: 92 74 48;
+  --color-border-ink: 232 213 176;
+
+  --color-focus: 224 149 115;
+}
