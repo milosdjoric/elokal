@@ -73,6 +73,7 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('settings', [StorefrontSettingController::class, 'index']);
 
     Route::get('categories', [StorefrontCategoryController::class, 'index']);
+    Route::get('categories/{slug}', [StorefrontCategoryController::class, 'show']);
 
     Route::get('search', SearchController::class);
 
