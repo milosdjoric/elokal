@@ -2,7 +2,6 @@
 # ali treba i base storefront/ (layer extends ga). Sve ostalo isključujemo.
 api
 admin
-.git
 .mdjdocs
 **/node_modules
 **/.nuxt
