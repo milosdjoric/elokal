@@ -50,4 +50,5 @@ e2e/blob-report/
 # Local mdjdocs symlinks (monorepo hook workaround)
 api/.mdjdocs
 storefront/.mdjdocs
+clients/*/storefront/.mdjdocs
 .vercel
