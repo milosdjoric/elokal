@@ -28,7 +28,7 @@ function accept() {
     >
       <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <p class="text-sm text-gray-300">
-          Koristimo kolačiće za poboljšanje vašeg iskustva na sajtu.
+          Koristimo kolačiće za bolje iskustvo — ovaj tekst dolazi iz base-a, isti na svim klijentima.
           <a href="#" class="underline hover:text-white">Saznaj više</a>
         </p>
         <button
