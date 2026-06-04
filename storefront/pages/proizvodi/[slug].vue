@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { Product, ProductVariant, PaginatedResponse } from '~/types'
+// Eksplicitan import (golo u template-u) — layer-safe za nasleđivanje u klijentima.
+import { resolveImageUrl } from '../../utils/image'
 
 const route = useRoute()
 const { get } = useApi()

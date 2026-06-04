@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { Category } from '~/types'
+// resolveImageUrl se koristi golo u template-u; eksplicitan import jer vue-tsc ne
+// aplicira auto-import na nasleđene base komponente kad ih klijent layer build-uje.
+import { resolveImageUrl } from '../../utils/image'
 
 const { get } = useApi()
 const { count } = useCart()

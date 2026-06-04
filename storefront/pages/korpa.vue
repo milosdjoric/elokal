@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// Eksplicitan import (golo u template-u) — layer-safe za nasleđivanje u klijentima.
+import { resolveImageUrl } from '../utils/image'
+
 const { items, isEmpty, updateQuantity, removeFromCart } = useCart()
 
 const cartLayout = ref<'standard' | 'table'>('standard')
