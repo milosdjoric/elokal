@@ -1,0 +1,12 @@
+# Monorepo: Vercel deploy-uje samo clients/sloj/storefront (rootDirectory),
+# ali treba i base storefront/ (layer extends ga). Sve ostalo isključujemo.
+api
+admin
+.git
+.mdjdocs
+**/node_modules
+**/.nuxt
+**/.output
+**/.data
+**/.vercel
+*.log
