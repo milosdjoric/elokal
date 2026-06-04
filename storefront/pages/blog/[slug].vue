@@ -28,10 +28,7 @@ function formatDate(dateStr: string): string {
 }
 
 function imageUrl(path: string | null): string {
-  if (!path) return ''
-  if (path.startsWith('http')) return path
-  const { apiBase } = useApi()
-  return `${apiBase.replace('/api', '')}/storage/${path}`
+  return resolveImageUrl(path)
 }
 
 onMounted(fetchPost)

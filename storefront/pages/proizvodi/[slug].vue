@@ -138,7 +138,7 @@ async function fetchProduct() {
     // Schema.org — Product
     const p = data.data
     const primaryImg = p.images?.find(i => i.is_primary) || p.images?.[0]
-    const imgUrl = primaryImg ? `${useApi().apiBase.replace('/api', '')}/storage/${primaryImg.image_path}` : undefined
+    const imgUrl = primaryImg ? resolveImageUrl(primaryImg.image_path) : undefined
     setProductSchema({
       name: p.name,
       description: p.short_description || p.description || undefined,

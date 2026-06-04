@@ -90,9 +90,7 @@ function formatPrice(price: string): string {
 }
 
 function imageUrl(path: string | null): string {
-  if (!path) return ''
-  if (path.startsWith('http')) return path
-  return `${apiBase.replace('/api', '')}/storage/${path}`
+  return resolveImageUrl(path)
 }
 
 onMounted(fetchOrder)

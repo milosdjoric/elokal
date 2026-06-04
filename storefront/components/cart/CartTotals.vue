@@ -87,11 +87,7 @@ function formatPrice(price: string): string {
 
 function primaryImage(product: Product): string | null {
   const img = product.images?.find(i => i.is_primary) || product.images?.[0]
-  if (!img) return null
-  const path = img.image_path
-  if (path.startsWith('http')) return path
-  const { apiBase } = useApi()
-  return `${apiBase.replace('/api', '')}/storage/${path}`
+  return img ? resolveImageUrl(img.image_path) : null
 }
 
 onMounted(() => {
