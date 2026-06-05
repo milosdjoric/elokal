@@ -43,8 +43,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      // Deli api sa sloj-em (isti proizvodi, base izgled).
-      apiBase: 'https://elokal-api-production.up.railway.app/api',
+      // Demo ima svoj nezavisan api/bazu (elokal-demo-api → elokal-demo-db).
+      apiBase: 'https://elokal-demo-api-production.up.railway.app/api',
     },
   },
 
