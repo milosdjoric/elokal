@@ -137,16 +137,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!-- Trigger button — vizuelno deo header-a (bela pozadina, hairline border, full-width) -->
+  <!-- Trigger button — čist search bar, deo header-a (bez tehničkog ⌘K hinta) -->
   <button
     class="flex items-center gap-3 w-full px-6 lg:px-10 py-3 text-[14px] text-ink-400 bg-paper border-b border-ink-100 hover:text-ink-700 transition-colors"
     @click="open"
   >
     <Icon name="lucide:search" class="w-4 h-4" />
-    <span class="flex-1 text-left">Pretraži proizvode...</span>
-    <kbd class="hidden md:inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[11px] font-mono text-ink-400 bg-paper border border-ink-100">
-      <span class="text-xs">⌘</span>K
-    </kbd>
+    <span class="flex-1 text-left">Pretražite nameštaj, kategorije…</span>
   </button>
 
   <!-- Modal overlay -->
@@ -158,38 +155,37 @@ onUnmounted(() => {
       leave-to-class="opacity-0"
     >
       <div v-if="isOpen" class="fixed inset-0 z-[60] flex items-start justify-center pt-[15vh] px-4" @click.self="close">
-        <div class="absolute inset-0 bg-black/50" @click="close" />
+        <div class="absolute inset-0 bg-ink-900/40 backdrop-blur-sm" @click="close" />
 
         <!-- Search panel -->
-        <div class="relative bg-white shadow-2xl w-full max-w-xl overflow-hidden">
+        <div class="relative bg-paper shadow-2xl w-full max-w-xl overflow-hidden">
           <!-- Input -->
-          <div class="flex items-center gap-3 px-4 border-b border-gray-200">
-            <Icon name="lucide:search" class="w-5 h-5 text-gray-400 flex-shrink-0" />
+          <div class="flex items-center gap-3 px-5 border-b border-ink-100">
+            <Icon name="lucide:search" class="w-5 h-5 text-ink-400 flex-shrink-0" />
             <input
               ref="inputRef"
               v-model="query"
               type="text"
-              placeholder="Pretraži proizvode, kategorije..."
-              class="flex-1 py-4 text-base bg-transparent outline-none placeholder:text-gray-400"
+              placeholder="Pretražite nameštaj, kategorije…"
+              class="flex-1 py-5 text-base text-ink-800 bg-transparent outline-none placeholder:text-ink-400"
               @input="onInput"
               @keydown="onKeydown"
             />
-            <button v-if="query" class="text-gray-400 hover:text-gray-600" aria-label="Obriši" @click="query = ''; results = []; matchingCategories = []">
-              <Icon name="lucide:x" class="w-4 h-4" />
+            <button v-if="query" class="text-ink-400 hover:text-ink-800 transition-colors p-1 -mr-1" aria-label="Obriši" @click="query = ''; results = []; matchingCategories = []">
+              <Icon name="lucide:x" class="w-5 h-5" />
             </button>
-            <kbd class="hidden md:inline-flex px-1.5 py-0.5 text-[11px] font-mono text-gray-400 bg-gray-100 border border-gray-200 rounded">ESC</kbd>
           </div>
 
           <!-- Results -->
-          <div class="max-h-[50vh] overflow-y-auto">
+          <div class="max-h-[55vh] overflow-y-auto">
             <!-- Empty state: trending -->
-            <div v-if="query.length < 2 && trendingSearches.length > 0" class="p-4">
-              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Popularno</p>
+            <div v-if="query.length < 2 && trendingSearches.length > 0" class="p-5">
+              <p class="text-[11px] font-medium text-ink-400 uppercase tracking-[0.12em] mb-3">Popularno traženo</p>
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="term in trendingSearches"
                   :key="term"
-                  class="text-sm px-3 py-1.5 bg-gray-100 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+                  class="text-sm px-3.5 py-1.5 border border-ink-200 text-ink-700 hover:border-terra-400 hover:text-terra-700 transition-colors"
                   @click="useTrending(term)"
                 >
                   {{ term }}
@@ -198,75 +194,68 @@ onUnmounted(() => {
             </div>
 
             <!-- Loading -->
-            <div v-else-if="loading" class="p-8 text-center">
+            <div v-else-if="loading" class="p-10 text-center">
               <UiAtomsSpinner size="sm" />
             </div>
 
             <!-- No results -->
-            <div v-else-if="query.length >= 2 && results.length === 0 && matchingCategories.length === 0" class="p-8 text-center">
-              <p class="text-gray-500">Nema rezultata za "<span class="font-medium text-gray-700">{{ query }}</span>"</p>
-              <p class="text-sm text-gray-400 mt-1">Pokušajte sa drugim pojmom.</p>
+            <div v-else-if="query.length >= 2 && results.length === 0 && matchingCategories.length === 0" class="p-10 text-center">
+              <p class="text-ink-600">Ništa nismo našli za „<span class="font-medium text-ink-800">{{ query }}</span>"</p>
+              <p class="text-sm text-ink-400 mt-1">Probajte sa drugim pojmom.</p>
             </div>
 
             <!-- Results -->
             <div v-else-if="query.length >= 2">
               <!-- Categories -->
-              <div v-if="matchingCategories.length" class="px-4 pt-3 pb-2">
-                <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Kategorije</p>
+              <div v-if="matchingCategories.length" class="px-3 pt-4 pb-1">
+                <p class="px-2 text-[11px] font-medium text-ink-400 uppercase tracking-[0.12em] mb-2">Kategorije</p>
                 <button
                   v-for="(cat, i) in matchingCategories"
                   :key="cat.id"
-                  class="flex items-center gap-2 w-full px-3 py-2 text-sm text-left transition-colors"
-                  :class="selectedIndex === i ? 'bg-primary-50 text-primary-700' : 'text-gray-600 hover:bg-gray-50'"
+                  class="flex items-center gap-3 w-full px-2 py-2.5 text-sm text-left transition-colors"
+                  :class="selectedIndex === i ? 'bg-ply-50 text-ink-900' : 'text-ink-700 hover:bg-paper-soft'"
                   @click="selectCategory(cat.slug)"
                   @mouseenter="selectedIndex = i"
                 >
-                  <Icon name="lucide:folder" class="w-4 h-4 text-gray-400" />
+                  <Icon name="lucide:folder" class="w-4 h-4 text-ink-400" />
                   {{ cat.name }}
                 </button>
               </div>
 
               <!-- Products -->
-              <div v-if="results.length">
-                <p class="px-4 pt-3 pb-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Proizvodi</p>
+              <div v-if="results.length" class="px-3 pb-1">
+                <p class="px-2 pt-3 pb-1 text-[11px] font-medium text-ink-400 uppercase tracking-[0.12em]">Proizvodi</p>
                 <button
                   v-for="(product, i) in results"
                   :key="product.id"
-                  class="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors"
-                  :class="selectedIndex === (matchingCategories.length + i) ? 'bg-primary-50' : 'hover:bg-gray-50'"
+                  class="w-full flex items-center gap-3 px-2 py-2.5 text-left transition-colors"
+                  :class="selectedIndex === (matchingCategories.length + i) ? 'bg-ply-50' : 'hover:bg-paper-soft'"
                   @click="selectProduct(product.slug)"
                   @mouseenter="selectedIndex = matchingCategories.length + i"
                 >
                   <img
                     v-if="primaryImage(product)"
                     :src="primaryImage(product)!"
-                    class="w-10 h-10 object-cover flex-shrink-0"
+                    class="w-12 h-12 object-cover flex-shrink-0 bg-ply-50"
                     alt=""
                   />
-                  <div class="w-10 h-10 bg-gray-100 flex-shrink-0" v-else />
+                  <div class="w-12 h-12 bg-ply-100 flex-shrink-0" v-else />
                   <div class="min-w-0 flex-1">
-                    <p class="text-sm font-medium text-gray-800 truncate">{{ product.name }}</p>
-                    <p class="text-xs text-primary-600 font-semibold tabular-nums">{{ formatPrice(product.effective_price) }}</p>
+                    <p class="text-sm font-medium text-ink-800 truncate">{{ product.name }}</p>
+                    <p class="text-sm text-terra-600 tabular-nums">{{ formatPrice(product.effective_price) }}</p>
                   </div>
-                  <Icon name="lucide:chevron-right" class="w-4 h-4 text-gray-300 flex-shrink-0" />
+                  <Icon name="lucide:arrow-right" class="w-4 h-4 text-ink-300 flex-shrink-0" />
                 </button>
               </div>
 
               <!-- View all -->
               <button
-                class="w-full px-4 py-3 text-sm text-primary-600 font-medium text-center border-t border-gray-100 hover:bg-gray-50 transition-colors"
+                class="w-full px-4 py-4 text-sm text-terra-600 hover:text-terra-700 font-medium text-center border-t border-ink-100 hover:bg-paper-soft transition-colors"
                 @click="goToResults"
               >
-                Prikaži sve rezultate za "{{ query }}" →
+                Pogledajte sve rezultate za „{{ query }}"
               </button>
             </div>
-          </div>
-
-          <!-- Footer hint -->
-          <div class="hidden md:flex items-center gap-4 px-4 py-2 bg-gray-50 border-t border-gray-100 text-[11px] text-gray-400">
-            <span><kbd class="px-1 py-0.5 bg-white border rounded">↑↓</kbd> navigacija</span>
-            <span><kbd class="px-1 py-0.5 bg-white border rounded">Enter</kbd> otvori</span>
-            <span><kbd class="px-1 py-0.5 bg-white border rounded">ESC</kbd> zatvori</span>
           </div>
         </div>
       </div>
