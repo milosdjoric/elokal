@@ -236,12 +236,12 @@ useSeoMeta({
 
 <template>
   <div class="bg-paper">
-    <div v-if="loading" class="max-w-[1400px] mx-auto px-6 lg:px-10 py-32 flex justify-center">
+    <div v-if="loading" class="container-site py-32 flex justify-center">
       <UiAtomsSpinner size="lg" />
     </div>
 
     <template v-else-if="product">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10 pt-8 pb-20">
+      <div class="container-site pt-8 pb-20">
         <div class="flex items-center justify-between mb-8">
           <LayoutBreadcrumbs :items="[
             { label: 'Proizvodi', to: '/proizvodi' },
@@ -527,7 +527,7 @@ useSeoMeta({
       <!-- Sticky add to cart bar — minimalistic -->
       <Transition enter-active-class="transition duration-200" enter-from-class="translate-y-full" leave-active-class="transition duration-150" leave-to-class="translate-y-full">
         <div v-if="showStickyBar && product.stock_quantity > 0" class="fixed bottom-0 left-0 right-0 bg-paper/95 backdrop-blur border-t border-ink-100 z-40 py-4 lg:hidden">
-          <div class="max-w-[1400px] mx-auto px-6 flex items-center justify-between gap-4">
+          <div class="container-site flex items-center justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
               <p class="text-[14px] text-ink-800 truncate">{{ product.name }}</p>
             </div>

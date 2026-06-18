@@ -127,7 +127,7 @@ onMounted(fetchData)
     <!-- 3. NAŠ IZBOR — 4 product grid sa names ispod (Vitra carousel-style) -->
     <!-- =============================================== -->
     <section v-if="!loading && editorialProducts.length" class="bg-paper py-24 lg:py-32">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="container-site">
         <div class="flex items-end justify-between mb-12">
           <h2 class="text-[28px] md:text-[36px] font-normal text-ink-800 tracking-[-0.01em] max-w-2xl leading-[1.1]">
             Naš izbor ovog meseca
@@ -150,7 +150,7 @@ onMounted(fetchData)
     </section>
 
     <section v-if="loading" class="bg-paper py-24 lg:py-32">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="container-site">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-8">
           <UiAtomsSkeleton v-for="i in 4" :key="i" height="380px" />
         </div>
@@ -161,7 +161,7 @@ onMounted(fetchData)
     <!-- 4. EDITORIAL MOSAIC — 2-col, title + subtitle ispod (Vitra Scout Work / Accessories style) -->
     <!-- =============================================== -->
     <section class="bg-paper pb-24 lg:pb-32">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="container-site">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
           <NuxtLink to="/blog" class="group block">
             <div class="aspect-[16/10] overflow-hidden bg-ink-50 mb-5">
@@ -216,7 +216,7 @@ onMounted(fetchData)
     <!-- 5. STORY — minimalistic, beli prostor, Vitra-restraint -->
     <!-- =============================================== -->
     <section class="bg-surface">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-24 lg:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div class="container-site py-24 lg:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div class="lg:col-span-5">
           <h2 class="text-[36px] md:text-[48px] font-light leading-[1.05] text-ink-800 tracking-[-0.02em]">
             Slojevi se ne kriju.<br>
@@ -238,7 +238,7 @@ onMounted(fetchData)
     <!-- 6. RECENTLY VIEWED -->
     <!-- =============================================== -->
     <section v-if="recentItems.length > 0" class="bg-paper py-20 lg:py-24">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+      <div class="container-site">
         <ProductCarousel
           title="Nedavno gledali ste"
           :products="recentItems"

@@ -35,7 +35,7 @@ const aboutLinks = [
 
 <template>
   <footer class="bg-ink-900 text-ink-200">
-    <div class="max-w-[1400px] mx-auto px-6 lg:px-10 pt-16 pb-10">
+    <div class="container-site pt-16 pb-10">
       <!-- Top: brand + newsletter -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
         <div class="lg:col-span-5">

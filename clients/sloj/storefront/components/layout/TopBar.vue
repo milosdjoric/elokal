@@ -4,7 +4,7 @@ const { hasFreeShippingThreshold, formattedThreshold } = useShippingConfig()
 
 <template>
   <div class="bg-ink-900 text-ply-200 text-[11px] tracking-[0.08em] py-2 hidden md:block">
-    <div class="max-w-[1400px] mx-auto px-6 lg:px-10 flex justify-between items-center">
+    <div class="container-site flex justify-between items-center">
       <span class="lowercase">slojevit nameštaj — pažljivo birano</span>
       <div class="flex items-center gap-6">
         <span v-if="hasFreeShippingThreshold" class="flex items-center gap-2 lowercase">

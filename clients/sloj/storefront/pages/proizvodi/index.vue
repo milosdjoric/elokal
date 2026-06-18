@@ -316,6 +316,12 @@ onMounted(() => {
   fetchFilters()
 })
 
+const breadcrumbItems = computed(() => {
+  const items: { label: string, to?: string }[] = [{ label: 'Kategorije', to: '/proizvodi' }]
+  if (activeCategory.value) items.push({ label: activeCategory.value.name })
+  return items
+})
+
 useHead({ title: 'Proizvodi — sloj kolektiv' })
 </script>
 
@@ -323,17 +329,9 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
   <div class="bg-paper">
     <!-- 1. EDITORIAL ZAGLAVLJE — svetli breadcrumb + centriran bold naslov/opis (Vitra PLP stil) -->
     <div class="border-b border-ink-100">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <!-- Breadcrumb (svetli, gore-levo) -->
-        <nav class="flex items-center gap-2 py-4 text-[12px] text-ink-400" aria-label="Breadcrumb">
-          <NuxtLink to="/" class="hover:text-ink-700 transition-colors">Početna</NuxtLink>
-          <Icon name="lucide:chevron-right" class="w-3 h-3 text-ink-300" />
-          <NuxtLink to="/proizvodi" class="hover:text-ink-700 transition-colors">Kategorije</NuxtLink>
-          <template v-if="activeCategory">
-            <Icon name="lucide:chevron-right" class="w-3 h-3 text-ink-300" />
-            <span class="text-ink-800">{{ activeCategory.name }}</span>
-          </template>
-        </nav>
+      <div class="container-site">
+        <!-- Breadcrumb (deljena komponenta — standardizovano) -->
+        <LayoutBreadcrumbs :items="breadcrumbItems" />
 
         <!-- Centriran naslov + opis -->
         <div class="max-w-2xl mx-auto text-center pt-8 pb-14 md:pt-14 md:pb-20">
@@ -352,7 +350,7 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
 
     <!-- 3. TOOLBAR — Filter toggle, sort, count -->
     <div class="border-b border-ink-100">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10 h-14 flex items-center justify-between text-[14px]">
+      <div class="container-site h-14 flex items-center justify-between text-[14px]">
         <div class="flex items-center gap-6">
           <button
             type="button"
@@ -394,7 +392,7 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
       leave-to-class="opacity-0 max-h-0"
     >
       <div v-if="filterPanelOpen" class="border-b border-ink-100 bg-ink-50 overflow-hidden">
-        <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-10 grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div class="container-site py-10 grid grid-cols-1 md:grid-cols-4 gap-10">
           <!-- Kategorija -->
           <div>
             <h3 class="text-[13px] font-medium text-ink-800 mb-4 pb-2 border-b border-ink-200">Kategorija</h3>
@@ -480,7 +478,7 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
 
         <!-- Active filters + clear -->
         <div v-if="activeFilters.length > 0" class="border-t border-ink-100 bg-paper">
-          <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-4 flex flex-wrap items-center gap-2">
+          <div class="container-site py-4 flex flex-wrap items-center gap-2">
             <span class="text-[12px] text-ink-500 mr-2">Aktivni:</span>
             <span
               v-for="(filter, i) in activeFilters"
@@ -574,7 +572,7 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
 
     <!-- Pagination -->
     <div v-if="totalPages > 1" class="bg-paper border-t border-ink-100">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10 py-12 flex justify-center gap-1">
+      <div class="container-site py-12 flex justify-center gap-1">
         <button
           v-for="p in totalPages"
           :key="p"

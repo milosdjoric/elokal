@@ -69,6 +69,11 @@
 }
 
 @layer components {
+  /* container — centralizovana širina i gutter sajta (1 izvor istine) */
+  .container-site {
+    @apply max-w-[1400px] mx-auto px-6 lg:px-10;
+  }
+
   /* placeholder za missing slike — macro plywood layers (horizontal stripes) */
   .bg-placeholder {
     background-color: rgb(var(--color-ply-100));

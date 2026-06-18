@@ -214,7 +214,7 @@ onUnmounted(() => {
         @mouseenter="cancelClose()"
         @mouseleave="scheduleClose()"
       >
-        <div class="max-w-[1400px] mx-auto px-10 py-12 grid grid-cols-12 gap-8">
+        <div class="container-site py-12 grid grid-cols-12 gap-8">
           <div class="col-span-3">
             <p class="text-[12px] tracking-[0.04em] text-ink-500 mb-5">{{ activeCategory.name }}</p>
             <NuxtLink

@@ -8,7 +8,7 @@ useHead({ title: 'Korpa — sloj kolektiv' })
 
 <template>
   <div class="bg-paper">
-    <div class="max-w-[1400px] mx-auto px-6 lg:px-10 pt-10 pb-20">
+    <div class="container-site pt-10 pb-20">
       <LayoutBreadcrumbs :items="[{ label: 'Korpa' }]" />
 
       <div class="flex items-end justify-between mt-8 mb-12 pb-8 border-b border-ink-100">
