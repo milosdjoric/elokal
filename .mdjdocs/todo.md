@@ -174,9 +174,12 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Header redizajn (Pangaia stil): crni announcement bar, logo centriran, nav levo (CAPS), full-bleed red, niža visina (h-14)
 - [x] Font: Afacad Flux primenjen svuda (link + tailwind `sans` + CSS `html`); JetBrains Mono ostaje za mono
 - [x] Commit + push + deploy (header + font) — verifikovano uživo na `elokal-sloj-web.vercel.app` (kategorije se učitavaju; raniji „prazan" nav bio cold-start)
-- [x] Search modal: manje tehnički — uklonjeni keyboard-hint čipovi (↑↓/Enter/ESC), ⌘K i ESC kbd; brend tokeni (ink/ply/terra/paper); topliji copy. Urađeno lokalno.
-- [ ] Commit + push search modal redizajn na prod
+- [x] Search modal: manje tehnički — uklonjeni keyboard-hint čipovi (↑↓/Enter/ESC), ⌘K i ESC kbd; brend tokeni (ink/ply/terra/paper); topliji copy. **Push-ovano + uživo.**
+- [x] PLP zaglavlje (`proizvodi/index.vue`): editorial Vitra stil — svetli breadcrumb (Početna › Kategorije › X), centriran bold naslov + centriran opis, čist sort bar. Zamenilo crni breadcrumb band + hero strip (i raniji all-caps band). Lokalno, čeka push.
+- [ ] Commit + push PLP zaglavlje na prod
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
+
+> Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
 
 ## Feature flags cleanup — FLAGS-001
 
