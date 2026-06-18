@@ -175,8 +175,10 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Font: Afacad Flux primenjen svuda (link + tailwind `sans` + CSS `html`); JetBrains Mono ostaje za mono
 - [x] Commit + push + deploy (header + font) — verifikovano uživo na `elokal-sloj-web.vercel.app` (kategorije se učitavaju; raniji „prazan" nav bio cold-start)
 - [x] Search modal: manje tehnički — uklonjeni keyboard-hint čipovi (↑↓/Enter/ESC), ⌘K i ESC kbd; brend tokeni (ink/ply/terra/paper); topliji copy. **Push-ovano + uživo.**
-- [x] PLP zaglavlje (`proizvodi/index.vue`): editorial Vitra stil — svetli breadcrumb (Početna › Kategorije › X), centriran bold naslov + centriran opis, čist sort bar. Zamenilo crni breadcrumb band + hero strip (i raniji all-caps band). Lokalno, čeka push.
-- [ ] Commit + push PLP zaglavlje na prod
+- [x] PLP zaglavlje (`proizvodi/index.vue`): editorial Vitra stil — svetli breadcrumb (Početna › Kategorije › X), centriran bold naslov + centriran opis, čist sort bar. Zamenilo crni breadcrumb band + hero strip (i raniji all-caps band). **Push-ovano + uživo.**
+- [x] Standardizacija container-a: dodat `.container-site` u `tailwind.css` (`@apply max-w-[1400px] mx-auto px-6 lg:px-10`), zamenjeno 18× po sloj `.vue` (1 izvor istine za širinu/gutter). Lokalno, čeka push.
+- [x] Standardizacija breadcrumb-a: deljena `Breadcrumbs.vue` na brend tokene (ink, 12px); PLP prebačen sa inline na `<LayoutBreadcrumbs>`. Sad jednako svuda. Lokalno, čeka push.
+- [ ] Commit + push standardizacije (container-site + breadcrumbs) na prod
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
 
 > Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
