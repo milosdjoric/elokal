@@ -170,12 +170,12 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 ## Sloj storefront (klijent) — Pangaia redizajn
 
 > Vizuelni uzori: Vitra (layout) + Pangaia (brand). Vidi `.mdjdocs/notes/vizuelni-uzori-storefront.md`.
-> Sve niže je urađeno **lokalno** u `clients/sloj/storefront/` — NIJE commit-ovano ni deploy-ovano na Vercel.
 
 - [x] Header redizajn (Pangaia stil): crni announcement bar, logo centriran, nav levo (CAPS), full-bleed red, niža visina (h-14)
 - [x] Font: Afacad Flux primenjen svuda (link + tailwind `sans` + CSS `html`); JetBrains Mono ostaje za mono
-- [ ] Commit + push + Vercel redeploy (header + font da se vide na živom `elokal-sloj-web.vercel.app`)
-- [ ] Provera: kategorije se ne učitavaju na živom sajtu (samo Magazin/Inspiracija) — zaseban od redizajna, istražiti API
+- [x] Commit + push + deploy (header + font) — verifikovano uživo na `elokal-sloj-web.vercel.app` (kategorije se učitavaju; raniji „prazan" nav bio cold-start)
+- [x] Search modal: manje tehnički — uklonjeni keyboard-hint čipovi (↑↓/Enter/ESC), ⌘K i ESC kbd; brend tokeni (ink/ply/terra/paper); topliji copy. Urađeno lokalno.
+- [ ] Commit + push search modal redizajn na prod
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
 
 ## Feature flags cleanup — FLAGS-001
