@@ -321,37 +321,26 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
 
 <template>
   <div class="bg-paper">
-    <!-- 1. CRNI BREADCRUMB BAND — Vitra "Product categories / Dining tables ... Inspirations" -->
-    <div class="bg-ink-900 text-paper">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10 h-12 flex items-center justify-between text-[13px]">
-        <div class="flex items-center gap-2 text-paper/80">
-          <NuxtLink to="/proizvodi" class="hover:text-paper transition-colors">Kategorije</NuxtLink>
-          <span class="text-paper/40">/</span>
-          <span class="text-paper">{{ activeCategory?.name || 'Svi proizvodi' }}</span>
-        </div>
-        <NuxtLink to="/izgled" class="hidden md:inline-flex items-center gap-1 text-paper/80 hover:text-paper transition-colors">
-          Inspiracija
-        </NuxtLink>
-      </div>
-    </div>
+    <!-- 1. EDITORIAL ZAGLAVLJE — svetli breadcrumb + centriran bold naslov/opis (Vitra PLP stil) -->
+    <div class="border-b border-ink-100">
+      <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
+        <!-- Breadcrumb (svetli, gore-levo) -->
+        <nav class="flex items-center gap-2 py-4 text-[12px] text-ink-400" aria-label="Breadcrumb">
+          <NuxtLink to="/" class="hover:text-ink-700 transition-colors">Početna</NuxtLink>
+          <Icon name="lucide:chevron-right" class="w-3 h-3 text-ink-300" />
+          <NuxtLink to="/proizvodi" class="hover:text-ink-700 transition-colors">Kategorije</NuxtLink>
+          <template v-if="activeCategory">
+            <Icon name="lucide:chevron-right" class="w-3 h-3 text-ink-300" />
+            <span class="text-ink-800">{{ activeCategory.name }}</span>
+          </template>
+        </nav>
 
-    <!-- 2. HERO STRIP — foto levo + naslov+opis na ply pozadini desno (Vitra style) -->
-    <div class="grid grid-cols-1 md:grid-cols-12 min-h-[420px] md:min-h-[520px]">
-      <div class="md:col-span-7 lg:col-span-7 bg-ply-100 overflow-hidden">
-        <img
-          v-if="activeCategory?.image_path"
-          :src="resolveImageUrl(activeCategory.image_path)"
-          :alt="activeCategory.name"
-          class="w-full h-full object-cover"
-        />
-        <div v-else class="w-full h-full bg-ply-edge" />
-      </div>
-      <div class="md:col-span-5 lg:col-span-5 bg-surface flex items-center px-8 lg:px-14 py-12 md:py-16">
-        <div class="max-w-md">
-          <h1 class="text-[32px] md:text-[44px] lg:text-[52px] font-light text-ink-800 tracking-[-0.02em] leading-[1.1]">
+        <!-- Centriran naslov + opis -->
+        <div class="max-w-2xl mx-auto text-center pt-8 pb-14 md:pt-14 md:pb-20">
+          <h1 class="text-[34px] md:text-[48px] lg:text-[56px] font-bold text-ink-900 tracking-[-0.02em] leading-[1.05]">
             {{ activeCategory?.name || 'Svi proizvodi' }}
           </h1>
-          <p class="mt-6 text-[15px] md:text-[16px] text-ink-700 leading-[1.7]">
+          <p class="mt-5 text-[15px] md:text-[16px] text-ink-600 leading-[1.7]">
             <span v-if="activeCategory?.description">{{ activeCategory.description }}</span>
             <span v-else>
               Opendesk dizajni izrađeni od breze šperploče. Svaki komad sklopljen po radioničkom standardu — bez šrafova gde nisu potrebni, isporuka 14–21 dan.
@@ -377,7 +366,8 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
           <span class="text-ink-400 hidden md:inline">·</span>
           <span class="text-ink-500"><span class="text-ink-800 tabular-nums">{{ total }}</span> proizvoda</span>
         </div>
-        <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2 text-ink-700">
+          <Icon name="lucide:arrow-up-down" class="w-4 h-4 text-ink-500" />
           <select
             :value="sortSelectValue"
             class="text-[14px] bg-transparent border-0 px-0 py-1.5 focus:outline-none cursor-pointer"
