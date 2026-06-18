@@ -9,6 +9,14 @@ const wishlistStore = useWishlistStore()
 const wishlistCount = computed(() => wishlistStore.count)
 const { isLoggedIn } = useAuth()
 
+// Announcement bar (Pangaia-style) — uredi tekst/link po potrebi
+// (kasnije se može povući iz /v1/settings umesto hardkodovanog teksta)
+const announcement = {
+  text: 'Ručno rađen nameštaj od šperploče — besplatna dostava širom Srbije.',
+  linkText: 'Pogledaj kolekciju',
+  to: '/proizvodi',
+}
+
 const categories = ref<Category[]>([])
 const searchBarRef = ref<{ open: () => void } | null>(null)
 const megaMenuOpen = ref<number | null>(null)
@@ -78,64 +86,68 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="bg-paper sticky top-0 z-40">
-    <!-- Top utility band — Vitra style "Find Vitra | Contact" -->
-    <div class="border-b border-ink-100">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10 h-9 flex items-center justify-end gap-6">
-        <NuxtLink to="/prodavnice" class="hidden md:inline-flex items-center gap-1.5 text-[12px] text-ink-500 hover:text-ink-800 transition-colors">
-          <Icon name="lucide:map-pin" class="w-3.5 h-3.5" />
-          Pronađi nas
+  <!-- Announcement bar — Pangaia style: crni, centriran, podvučen link (scroll-uje sa stranicom) -->
+  <div class="bg-ink-900 text-paper">
+    <div class="px-6 lg:px-10 min-h-9 py-2 flex items-center justify-center text-center">
+      <p class="text-[12px] tracking-[0.04em]">
+        {{ announcement.text }}
+        <NuxtLink
+          v-if="announcement.linkText"
+          :to="announcement.to"
+          class="underline underline-offset-2 decoration-paper/60 hover:decoration-paper ml-1 transition-colors"
+        >
+          {{ announcement.linkText }}
         </NuxtLink>
-        <NuxtLink to="/kontakt" class="text-[12px] text-ink-500 hover:text-ink-800 transition-colors">
-          Kontakt
-        </NuxtLink>
-      </div>
+      </p>
     </div>
+  </div>
 
-    <!-- Main row: brand + nav + icons -->
+  <header class="bg-paper sticky top-0 z-40">
+    <!-- Main row: nav (levo) · logo (centar) · ikone (desno) — Pangaia layout, full-bleed -->
     <div class="border-b border-ink-100">
-      <div class="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <div class="flex items-center justify-between h-20 gap-6">
-          <!-- Mobile hamburger -->
-          <button
-            class="lg:hidden p-2 -ml-2 text-ink-800 hover:text-terra-600 transition-colors"
-            aria-label="Otvori meni"
-            @click="mobileMenuOpen = true"
-          >
-            <Icon name="lucide:menu" class="w-5 h-5" />
-          </button>
+      <div class="px-6 lg:px-10">
+        <div class="grid grid-cols-[1fr_auto_1fr] items-center h-14 gap-4">
+          <!-- LEVO: desktop nav / mobilni hamburger -->
+          <div class="flex items-center justify-start min-w-0">
+            <button
+              class="lg:hidden p-2 -ml-2 text-ink-800 hover:text-terra-600 transition-colors"
+              aria-label="Otvori meni"
+              @click="mobileMenuOpen = true"
+            >
+              <Icon name="lucide:menu" class="w-5 h-5" />
+            </button>
 
-          <!-- Brand wordmark -->
-          <NuxtLink to="/" class="flex-shrink-0 py-2" aria-label="sloj kolektiv — naslovna">
-            <UiAtomsBrandMark size="md" />
+            <nav class="hidden lg:flex items-center gap-6 flex-nowrap" aria-label="Glavna navigacija">
+              <button
+                v-for="cat in categories"
+                :key="cat.id"
+                type="button"
+                class="nav-link py-2 uppercase text-[12px] whitespace-nowrap"
+                :class="megaMenuOpen === cat.id ? 'is-active' : ''"
+                :aria-expanded="megaMenuOpen === cat.id"
+                @mouseenter="scheduleOpen(cat.id)"
+                @mouseleave="scheduleClose()"
+                @focus="scheduleOpen(cat.id)"
+                @click="goToCategory(cat.slug)"
+              >
+                {{ cat.name }}
+              </button>
+              <NuxtLink to="/blog" class="nav-link py-2 uppercase text-[12px] whitespace-nowrap">
+                Magazin
+              </NuxtLink>
+              <NuxtLink to="/izgled" class="nav-link py-2 uppercase text-[12px] whitespace-nowrap">
+                Inspiracija
+              </NuxtLink>
+            </nav>
+          </div>
+
+          <!-- CENTAR: brend wordmark -->
+          <NuxtLink to="/" class="justify-self-center flex-shrink-0 py-2" aria-label="sloj kolektiv — naslovna">
+            <UiAtomsBrandMark size="md" :with-descriptor="false" />
           </NuxtLink>
 
-          <!-- Desktop category nav (Title Case, Vitra style) -->
-          <nav class="hidden lg:flex items-center gap-8 flex-1 justify-center" aria-label="Glavna navigacija">
-            <button
-              v-for="cat in categories"
-              :key="cat.id"
-              type="button"
-              class="nav-link py-3 normal-case !tracking-normal text-[15px]"
-              :class="megaMenuOpen === cat.id ? 'is-active' : ''"
-              :aria-expanded="megaMenuOpen === cat.id"
-              @mouseenter="scheduleOpen(cat.id)"
-              @mouseleave="scheduleClose()"
-              @focus="scheduleOpen(cat.id)"
-              @click="goToCategory(cat.slug)"
-            >
-              {{ cat.name }}
-            </button>
-            <NuxtLink to="/blog" class="nav-link py-3 normal-case !tracking-normal text-[15px]">
-              Magazin
-            </NuxtLink>
-            <NuxtLink to="/izgled" class="nav-link py-3 normal-case !tracking-normal text-[15px]">
-              Inspiracija
-            </NuxtLink>
-          </nav>
-
-          <!-- Icons -->
-          <div class="flex items-center gap-1">
+          <!-- DESNO: ikone -->
+          <div class="flex items-center justify-end gap-0.5 sm:gap-1">
             <button
               class="p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
               aria-label="Pretraga"
@@ -146,7 +158,7 @@ onUnmounted(() => {
 
             <NuxtLink
               :to="isLoggedIn ? '/nalog' : '/nalog/login'"
-              class="p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
+              class="hidden sm:inline-flex p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
               aria-label="Moj nalog"
             >
               <Icon name="lucide:user" class="w-[18px] h-[18px]" />
@@ -154,7 +166,7 @@ onUnmounted(() => {
 
             <NuxtLink
               to="/nalog/wishlist"
-              class="relative p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
+              class="relative hidden sm:inline-flex p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
               aria-label="Lista želja"
             >
               <Icon name="lucide:heart" class="w-[18px] h-[18px]" />
@@ -232,7 +244,7 @@ onUnmounted(() => {
     <Transition enter-active-class="transition duration-150" enter-from-class="opacity-0" leave-active-class="transition duration-100" leave-to-class="opacity-0">
       <div
         v-if="megaMenuOpen !== null && activeCategory?.children?.length"
-        class="hidden lg:block fixed inset-0 top-20 bg-ink-900/10 z-30"
+        class="hidden lg:block fixed inset-0 top-14 bg-ink-900/10 z-30"
         aria-hidden="true"
         @click="closeNow()"
       />
