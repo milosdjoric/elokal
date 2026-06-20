@@ -241,7 +241,7 @@ useSeoMeta({
     </div>
 
     <template v-else-if="product">
-      <div class="container-site pt-4 pb-20">
+      <div class="container-site">
         <div class="flex items-center justify-between mb-8">
           <LayoutBreadcrumbs :items="[
             { label: 'Proizvodi', to: '/proizvodi' },
