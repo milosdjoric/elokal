@@ -179,7 +179,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Standardizacija container-a: `.container-site` u `tailwind.css` kao 1 izvor istine za gutter; zamenjeno 18× po sloj `.vue`. **Push-ovano.**
 - [x] Standardizacija breadcrumb-a: deljena `Breadcrumbs.vue` na brend tokene (ink, 12px); PLP prebačen na `<LayoutBreadcrumbs>`. **Push-ovano.**
 - [x] Konzistentna linija sajta: `.container-site` prebačen sa 1400-boxed na **full-bleed** (`px-6 lg:px-10`) — meni, breadcrumb, filteri, footer sad na istoj liniji (~40px). Breadcrumb vertikalno poravnat PLP↔PDP (`pt-8`). Lokalno, čeka push. (Boxed-1400 = 1-linija toggle ako se predomisliš.)
-- [ ] Commit + push line-consistency (full-bleed container + breadcrumb pt-8) na prod
+- [x] Konzistentna linija + breadcrumb pt-8 — **Push-ovano.**
+- [x] PLP vrh kompaktniji: manji naslov (56→44px) + upola manji padding (pt-6, pt-2/pb-8). Lokalno, čeka push.
+- [ ] Commit + push PLP kompaktni vrh na prod
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
 
 > Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
