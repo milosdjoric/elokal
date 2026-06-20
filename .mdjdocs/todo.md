@@ -182,8 +182,13 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Konzistentna linija + breadcrumb pt-8 — **Push-ovano.**
 - [x] PLP vrh kompaktniji: manji naslov (56→44px) + manji padding. **Push-ovano.**
 - [x] Top padding PLP+PDP spušten na `pt-4`. **Push-ovano.**
-- [x] Padding sklonjen sa `container-site` (PDP `pt-4 pb-20`, PLP `pt-4`) — razmak nose unutrašnji elementi (breadcrumb `py-4`, sekcije `mb-20`). Lokalno, čeka push.
-- [ ] Commit + push (čist container) na prod
+- [x] Padding sklonjen sa `container-site` (čist container; razmak nose unutrašnji elementi). **Push-ovano.**
+- [x] Desktop meni prelazi u hamburger ranije — prag `lg`(1024)→`min-[1440px]`, nav `gap-6`→`gap-5` (nav ~550px, staje od ~1342px; 1440 daje marginu, 1512 full-screen zadržava nav). Lokalno, čeka push.
+- [x] Icon hover terra(crveno)→ink (search/nalog/wishlist/korpa/hamburger) — „u skladu sa sajtom". Lokalno, čeka push.
+- [x] PDP akordioni full width (skinut `max-w-3xl`). Lokalno, čeka push.
+- [x] Mini cart cross-sell („Često kupljeno") — skinut `-mx-6 px-6` edge-bleed, itemi sad u normalnom padding-u. Lokalno, čeka push.
+- [x] Loader: sloj override `Spinner.vue` — tanka linija (border, ink) umesto debelog primary spinnera. Lokalno, čeka push.
+- [ ] Commit + push (meni breakpoint + 4 UI doterivanja) na prod
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
 
 > Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
