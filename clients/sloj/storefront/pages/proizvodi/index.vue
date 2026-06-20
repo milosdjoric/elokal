@@ -329,16 +329,16 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
   <div class="bg-paper">
     <!-- 1. EDITORIAL ZAGLAVLJE — svetli breadcrumb + centriran bold naslov/opis (Vitra PLP stil) -->
     <div class="border-b border-ink-100">
-      <div class="container-site pt-8">
+      <div class="container-site pt-6">
         <!-- Breadcrumb (deljena komponenta — standardizovano) -->
         <LayoutBreadcrumbs :items="breadcrumbItems" />
 
-        <!-- Centriran naslov + opis -->
-        <div class="max-w-2xl mx-auto text-center pt-8 pb-14 md:pt-14 md:pb-20">
-          <h1 class="text-[34px] md:text-[48px] lg:text-[56px] font-bold text-ink-900 tracking-[-0.02em] leading-[1.05]">
+        <!-- Centriran naslov + opis (kompaktnije) -->
+        <div class="max-w-2xl mx-auto text-center pt-2 pb-8 md:pt-4 md:pb-12">
+          <h1 class="text-[28px] md:text-[38px] lg:text-[44px] font-bold text-ink-900 tracking-[-0.02em] leading-[1.1]">
             {{ activeCategory?.name || 'Svi proizvodi' }}
           </h1>
-          <p class="mt-5 text-[15px] md:text-[16px] text-ink-600 leading-[1.7]">
+          <p class="mt-3 text-[14px] md:text-[15px] text-ink-600 leading-[1.6]">
             <span v-if="activeCategory?.description">{{ activeCategory.description }}</span>
             <span v-else>
               Opendesk dizajni izrađeni od breze šperploče. Svaki komad sklopljen po radioničkom standardu — bez šrafova gde nisu potrebni, isporuka 14–21 dan.
