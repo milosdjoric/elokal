@@ -68,7 +68,7 @@ onMounted(fetchWishlist)
           <div v-for="product in products" :key="product.id" class="relative">
             <ProductCard :product="product" @notify-me="openNotifyMe" />
             <button
-              class="absolute top-2 right-2 z-20 bg-white rounded-full p-1.5 shadow text-rose-600 hover:bg-rose-50"
+              class="absolute top-2 right-2 z-20 bg-white rounded-full p-1.5 shadow text-ink-600 hover:bg-ink-50"
               title="Ukloni"
               aria-label="Ukloni iz liste želja"
               @click="removeItem(product.id)"

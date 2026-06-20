@@ -24,7 +24,7 @@ function toggle() {
       :name="isActive ? 'lucide:heart' : 'lucide:heart'"
       :class="[
         size === 'sm' ? 'w-5 h-5' : 'w-6 h-6',
-        isActive ? 'text-rose-600' : 'text-gray-400 group-hover:text-rose-500',
+        isActive ? 'text-ink-800' : 'text-ink-400 group-hover:text-ink-800',
       ]"
       :style="isActive ? 'fill: currentColor' : ''"
     />

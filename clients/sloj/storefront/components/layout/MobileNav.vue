@@ -43,7 +43,7 @@ function isActive(path: string): boolean {
         <!-- Wishlist dot indicator -->
         <span
           v-if="item.icon === 'lucide:heart' && wishlistCount > 0"
-          class="absolute top-1.5 right-[28%] w-1.5 h-1.5 bg-rose-600 rounded-full"
+          class="absolute top-1.5 right-[28%] w-1.5 h-1.5 bg-terra-500 rounded-full"
           aria-hidden="true"
         />
 
