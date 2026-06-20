@@ -329,7 +329,7 @@ useHead({ title: 'Proizvodi — sloj kolektiv' })
   <div class="bg-paper">
     <!-- 1. EDITORIAL ZAGLAVLJE — svetli breadcrumb + centriran bold naslov/opis (Vitra PLP stil) -->
     <div class="border-b border-ink-100">
-      <div class="container-site">
+      <div class="container-site pt-8">
         <!-- Breadcrumb (deljena komponenta — standardizovano) -->
         <LayoutBreadcrumbs :items="breadcrumbItems" />
 
