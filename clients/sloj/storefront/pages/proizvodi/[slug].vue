@@ -419,8 +419,8 @@ useSeoMeta({
           </div>
         </div>
 
-        <!-- Akordeon sekcije — Vitra style -->
-        <div class="mb-20 max-w-3xl">
+        <!-- Akordeon sekcije — Vitra style (full width) -->
+        <div class="mb-20">
           <details v-if="product.description" class="group border-t border-ink-200 py-6" open>
             <summary class="flex items-center justify-between cursor-pointer list-none">
               <span class="text-[18px] md:text-[22px] font-light text-ink-800 tracking-[-0.01em]">O dizajnu</span>

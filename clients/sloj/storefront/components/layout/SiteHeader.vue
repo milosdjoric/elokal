@@ -110,14 +110,14 @@ onUnmounted(() => {
           <!-- LEVO: desktop nav / mobilni hamburger -->
           <div class="flex items-center justify-start min-w-0">
             <button
-              class="lg:hidden p-2 -ml-2 text-ink-800 hover:text-terra-600 transition-colors"
+              class="min-[1440px]:hidden p-2 -ml-2 text-ink-800 hover:text-ink-900 transition-colors"
               aria-label="Otvori meni"
               @click="mobileMenuOpen = true"
             >
               <Icon name="lucide:menu" class="w-5 h-5" />
             </button>
 
-            <nav class="hidden lg:flex items-center gap-6 flex-nowrap" aria-label="Glavna navigacija">
+            <nav class="hidden min-[1440px]:flex items-center gap-5 flex-nowrap" aria-label="Glavna navigacija">
               <button
                 v-for="cat in categories"
                 :key="cat.id"
@@ -149,7 +149,7 @@ onUnmounted(() => {
           <!-- DESNO: ikone -->
           <div class="flex items-center justify-end gap-0.5 sm:gap-1">
             <button
-              class="p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
+              class="p-2.5 text-ink-700 hover:text-ink-900 transition-colors"
               aria-label="Pretraga"
               @click="searchBarRef?.open()"
             >
@@ -158,7 +158,7 @@ onUnmounted(() => {
 
             <NuxtLink
               :to="isLoggedIn ? '/nalog' : '/nalog/login'"
-              class="hidden sm:inline-flex p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
+              class="hidden sm:inline-flex p-2.5 text-ink-700 hover:text-ink-900 transition-colors"
               aria-label="Moj nalog"
             >
               <Icon name="lucide:user" class="w-[18px] h-[18px]" />
@@ -166,7 +166,7 @@ onUnmounted(() => {
 
             <NuxtLink
               to="/nalog/wishlist"
-              class="relative hidden sm:inline-flex p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
+              class="relative hidden sm:inline-flex p-2.5 text-ink-700 hover:text-ink-900 transition-colors"
               aria-label="Lista želja"
             >
               <Icon name="lucide:heart" class="w-[18px] h-[18px]" />
@@ -179,7 +179,7 @@ onUnmounted(() => {
             </NuxtLink>
 
             <button
-              class="relative p-2.5 text-ink-700 hover:text-terra-600 transition-colors"
+              class="relative p-2.5 text-ink-700 hover:text-ink-900 transition-colors"
               aria-label="Korpa"
               @click="cartStore.openDrawer()"
             >
@@ -210,7 +210,7 @@ onUnmounted(() => {
     >
       <div
         v-if="activeCategory && activeCategory.children?.length"
-        class="hidden lg:block absolute left-0 right-0 top-full bg-paper border-b border-ink-100 z-50"
+        class="hidden min-[1440px]:block absolute left-0 right-0 top-full bg-paper border-b border-ink-100 z-50"
         @mouseenter="cancelClose()"
         @mouseleave="scheduleClose()"
       >
@@ -244,7 +244,7 @@ onUnmounted(() => {
     <Transition enter-active-class="transition duration-150" enter-from-class="opacity-0" leave-active-class="transition duration-100" leave-to-class="opacity-0">
       <div
         v-if="megaMenuOpen !== null && activeCategory?.children?.length"
-        class="hidden lg:block fixed inset-0 top-14 bg-ink-900/10 z-30"
+        class="hidden min-[1440px]:block fixed inset-0 top-14 bg-ink-900/10 z-30"
         aria-hidden="true"
         @click="closeNow()"
       />
@@ -259,7 +259,7 @@ onUnmounted(() => {
       leave-active-class="transition duration-200"
       leave-to-class="opacity-0"
     >
-      <div v-if="mobileMenuOpen" class="fixed inset-0 z-50 lg:hidden">
+      <div v-if="mobileMenuOpen" class="fixed inset-0 z-50 min-[1440px]:hidden">
         <div class="absolute inset-0 bg-ink-900/40" @click="mobileMenuOpen = false" />
         <div class="absolute left-0 top-0 bottom-0 w-[85vw] max-w-sm bg-paper flex flex-col overflow-y-auto">
           <!-- Header -->

@@ -175,7 +175,7 @@ function onKeydown(e: KeyboardEvent) {
             <!-- Cross-sell -->
             <div v-if="!isEmpty && crossSell.length > 0" class="border-t border-ink-100 px-6 py-4 flex-shrink-0">
               <p class="text-[12px] text-ink-500 mb-3">Često kupljeno zajedno</p>
-              <div class="flex gap-3 overflow-x-auto pb-1 -mx-6 px-6 snap-x">
+              <div class="flex gap-3 overflow-x-auto pb-1 snap-x">
                 <div
                   v-for="product in crossSell"
                   :key="product.id"
