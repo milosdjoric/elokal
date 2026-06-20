@@ -181,8 +181,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Konzistentna linija sajta: `.container-site` prebačen sa 1400-boxed na **full-bleed** (`px-6 lg:px-10`) — meni, breadcrumb, filteri, footer sad na istoj liniji (~40px). Breadcrumb vertikalno poravnat PLP↔PDP (`pt-8`). Lokalno, čeka push. (Boxed-1400 = 1-linija toggle ako se predomisliš.)
 - [x] Konzistentna linija + breadcrumb pt-8 — **Push-ovano.**
 - [x] PLP vrh kompaktniji: manji naslov (56→44px) + manji padding. **Push-ovano.**
-- [x] Top padding PLP+PDP spušten na `pt-4` (usklađeno, kompaktan breadcrumb gap). Lokalno, čeka push.
-- [ ] Commit + push pt-4 na prod
+- [x] Top padding PLP+PDP spušten na `pt-4`. **Push-ovano.**
+- [x] Padding sklonjen sa `container-site` (PDP `pt-4 pb-20`, PLP `pt-4`) — razmak nose unutrašnji elementi (breadcrumb `py-4`, sekcije `mb-20`). Lokalno, čeka push.
+- [ ] Commit + push (čist container) na prod
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
 
 > Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
