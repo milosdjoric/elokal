@@ -180,8 +180,9 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Standardizacija breadcrumb-a: deljena `Breadcrumbs.vue` na brend tokene (ink, 12px); PLP prebačen na `<LayoutBreadcrumbs>`. **Push-ovano.**
 - [x] Konzistentna linija sajta: `.container-site` prebačen sa 1400-boxed na **full-bleed** (`px-6 lg:px-10`) — meni, breadcrumb, filteri, footer sad na istoj liniji (~40px). Breadcrumb vertikalno poravnat PLP↔PDP (`pt-8`). Lokalno, čeka push. (Boxed-1400 = 1-linija toggle ako se predomisliš.)
 - [x] Konzistentna linija + breadcrumb pt-8 — **Push-ovano.**
-- [x] PLP vrh kompaktniji: manji naslov (56→44px) + upola manji padding (pt-6, pt-2/pb-8). Lokalno, čeka push.
-- [ ] Commit + push PLP kompaktni vrh na prod
+- [x] PLP vrh kompaktniji: manji naslov (56→44px) + manji padding. **Push-ovano.**
+- [x] Top padding PLP+PDP spušten na `pt-4` (usklađeno, kompaktan breadcrumb gap). Lokalno, čeka push.
+- [ ] Commit + push pt-4 na prod
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
 
 > Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
