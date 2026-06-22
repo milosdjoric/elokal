@@ -183,13 +183,24 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] PLP vrh kompaktniji: manji naslov (56→44px) + manji padding. **Push-ovano.**
 - [x] Top padding PLP+PDP spušten na `pt-4`. **Push-ovano.**
 - [x] Padding sklonjen sa `container-site` (čist container; razmak nose unutrašnji elementi). **Push-ovano.**
-- [x] Desktop meni prelazi u hamburger ranije — prag `lg`(1024)→`min-[1440px]`, nav `gap-6`→`gap-5` (nav ~550px, staje od ~1342px; 1440 daje marginu, 1512 full-screen zadržava nav). Lokalno, čeka push.
-- [x] Icon hover terra(crveno)→ink (search/nalog/wishlist/korpa/hamburger) — „u skladu sa sajtom". Lokalno, čeka push.
-- [x] PDP akordioni full width (skinut `max-w-3xl`). Lokalno, čeka push.
-- [x] Mini cart cross-sell („Često kupljeno") — skinut `-mx-6 px-6` edge-bleed, itemi sad u normalnom padding-u. Lokalno, čeka push.
-- [x] Loader: sloj override `Spinner.vue` — tanka linija (border, ink) umesto debelog primary spinnera. Lokalno, čeka push.
-- [ ] Commit + push (meni breakpoint + 4 UI doterivanja) na prod
+- [x] Desktop meni prelazi u hamburger ranije — prag `lg`(1024)→`min-[1440px]`, nav `gap-6`→`gap-5` (nav ~550px, staje od ~1342px; 1440 daje marginu, 1512 full-screen zadržava nav). **Push-ovano + uživo.**
+- [x] Icon hover terra(crveno)→ink (search/nalog/wishlist/korpa/hamburger). **Push-ovano.**
+- [x] PDP akordioni full width (skinut `max-w-3xl`). **Push-ovano + uživo.**
+- [x] Mini cart cross-sell („Često kupljeno") — skinut `-mx-6 px-6` edge-bleed. **Push-ovano.**
+- [x] Loader: sloj override `Spinner.vue` — tanka ink linija umesto debelog primary spinnera. **Push-ovano.**
+- [x] Wishlist srce + dots: rose(crveno) → brend ink/terra (WishlistButton/MobileNav/wishlist strana); rose bila ne-brend boja. **Push-ovano** (`05da949`).
+- [~] Standardizacija širine svih strana na `container-site` (sve strane trenutno razne `max-w-{4xl..7xl} mx-auto` → različite širine). Urađeno: `[slug].vue` (CMS/uslovi) kao šablon (container-site + brand ink + readable prose), lokalno. **Čeka potvrdu opsega** pre batch-a: tekst (`blog/[slug]`, `nalog/preuzimanja`), grid/lista (`blog/*`, `pretraga`, `prodavnice`, `uporedi`, `izgled`), nalog dashboard (8 strana). Forme (login/register/poklon-kartica/pracenje/checkout) ostaju centrirane-uske (preporuka). Detalji plana: notes 2026-06-22.
 - [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
+
+## rucniradovi (Handmade Marketplace) — ODLUKA: zaseban sajt
+
+> 2026-06-20. Stigao design handoff (Kindred Marketplace, `clients/rucniradovi/…zip`) + PRD.
+> Analiza: elokal je single-merchant (nema seller/shop/tenant/commission/payout model; arhitektura
+> namerno single-tenant — CORE-002). Marketplace = drugačiji proizvod.
+> **Odluka korisnika: ide kao ZASEBAN sajt** (svoj stack/baza/plaćanja), NE forsirati multi-tenant u elokal.
+> elokal ostaje single-merchant. Detalji analize: `.mdjdocs/notes/2026-06-20.md`.
+
+- [ ] (rucniradovi) `clients/rucniradovi/` (design zip) stoji untracked u elokal repou — odlučiti: premestiti van / gitignore (pošto je zaseban projekat)
 
 > Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
 
