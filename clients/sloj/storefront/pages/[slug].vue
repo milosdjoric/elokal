@@ -35,9 +35,9 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto px-4 py-8">
+  <div class="container-site py-12">
     <LayoutBreadcrumbs :items="[{ label: page.title }]" />
-    <h1 class="text-3xl font-bold text-gray-800 mb-8">{{ page.title }}</h1>
-    <article class="prose prose-lg max-w-none text-gray-700" v-html="page.content" />
+    <h1 class="text-[28px] md:text-[36px] font-bold text-ink-900 tracking-[-0.02em] mt-4 mb-8">{{ page.title }}</h1>
+    <article class="prose prose-lg text-ink-600" v-html="page.content" />
   </div>
 </template>
