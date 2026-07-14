@@ -10,13 +10,20 @@ interface NavItem {
   icon: string
 }
 
-const items: NavItem[] = [
+const { isEnabled } = useFeature()
+const wishlistEnabled = computed(() => isEnabled('feature_wishlist', true))
+
+const allItems: NavItem[] = [
   { label: 'Početna', to: '/', icon: 'lucide:home' },
   { label: 'Kategorije', to: '/kategorije', icon: 'lucide:layout-grid' },
   { label: 'Pretraga', to: '/pretraga', icon: 'lucide:search' },
   { label: 'Lista', to: '/nalog/wishlist', icon: 'lucide:heart' },
   { label: 'Korpa', to: '/korpa', icon: 'lucide:shopping-bag' },
 ]
+
+const items = computed(() =>
+  allItems.filter(item => item.to !== '/nalog/wishlist' || wishlistEnabled.value),
+)
 
 function isActive(path: string): boolean {
   if (path === '/') return route.path === '/'

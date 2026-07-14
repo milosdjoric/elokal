@@ -4,6 +4,11 @@ import type { Product } from '~/types'
 definePageMeta({ middleware: 'auth' })
 useHead({ title: 'Lista želja — sloj kolektiv' })
 
+const { isEnabled } = useFeature()
+if (!isEnabled('feature_wishlist', true)) {
+  throw createError({ statusCode: 404, statusMessage: 'Stranica nije pronađena' })
+}
+
 const authStore = useAuthStore()
 const { apiBase } = useApi()
 const wishlistStore = useWishlistStore()

@@ -7,6 +7,9 @@ const props = defineProps<{
 const wishlistStore = useWishlistStore()
 const isActive = computed(() => wishlistStore.isInWishlist(props.productId))
 
+const { isEnabled } = useFeature()
+const featureActive = computed(() => isEnabled('feature_wishlist', true))
+
 function toggle() {
   wishlistStore.toggle(props.productId)
 }
@@ -14,6 +17,7 @@ function toggle() {
 
 <template>
   <button
+    v-if="featureActive"
     type="button"
     :aria-label="isActive ? 'Ukloni iz liste želja' : 'Dodaj u listu želja'"
     class="group transition-colors"

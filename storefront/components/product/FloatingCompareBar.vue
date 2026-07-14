@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const compareStore = useCompareStore()
 
+const { isEnabled } = useFeature()
+const featureActive = computed(() => isEnabled('feature_compare', true))
+
 const primaryImage = (product: { images?: Array<{ image_path: string; is_primary: boolean }> }) => {
   const img = product.images?.find(i => i.is_primary) || product.images?.[0]
   return img ? resolveImageUrl(img.image_path) : null
@@ -14,7 +17,7 @@ const primaryImage = (product: { images?: Array<{ image_path: string; is_primary
     leave-active-class="transition duration-150 ease-in"
     leave-to-class="translate-y-full opacity-0"
   >
-    <div v-if="compareStore.count > 0" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40 py-3">
+    <div v-if="featureActive && compareStore.count > 0" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40 py-3">
       <div class="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
         <div class="flex items-center gap-3 overflow-x-auto">
           <div

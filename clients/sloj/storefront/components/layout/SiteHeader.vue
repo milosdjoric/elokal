@@ -8,6 +8,8 @@ const router = useRouter()
 const wishlistStore = useWishlistStore()
 const wishlistCount = computed(() => wishlistStore.count)
 const { isLoggedIn } = useAuth()
+const { isEnabled } = useFeature()
+const wishlistEnabled = computed(() => isEnabled('feature_wishlist', true))
 
 // Announcement bar (Pangaia-style) — uredi tekst/link po potrebi
 // (kasnije se može povući iz /v1/settings umesto hardkodovanog teksta)
@@ -165,6 +167,7 @@ onUnmounted(() => {
             </NuxtLink>
 
             <NuxtLink
+              v-if="wishlistEnabled"
               to="/nalog/wishlist"
               class="relative hidden sm:inline-flex p-2.5 text-ink-700 hover:text-ink-900 transition-colors"
               aria-label="Lista želja"
@@ -311,7 +314,7 @@ onUnmounted(() => {
           <!-- Footer links -->
           <div class="border-t border-ink-100 px-6 py-5 space-y-3">
             <NuxtLink to="/nalog" class="block text-[14px] text-ink-700" @click="mobileMenuOpen = false">Moj nalog</NuxtLink>
-            <NuxtLink to="/nalog/wishlist" class="block text-[14px] text-ink-700" @click="mobileMenuOpen = false">Lista želja</NuxtLink>
+            <NuxtLink v-if="wishlistEnabled" to="/nalog/wishlist" class="block text-[14px] text-ink-700" @click="mobileMenuOpen = false">Lista želja</NuxtLink>
             <NuxtLink to="/nalog/orders" class="block text-[14px] text-ink-700" @click="mobileMenuOpen = false">Narudžbine</NuxtLink>
             <NuxtLink to="/prodavnice" class="block text-[14px] text-ink-700" @click="mobileMenuOpen = false">Pronađi nas</NuxtLink>
             <NuxtLink to="/kontakt" class="block text-[14px] text-ink-700" @click="mobileMenuOpen = false">Kontakt</NuxtLink>

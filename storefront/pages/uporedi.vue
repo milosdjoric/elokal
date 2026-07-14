@@ -1,4 +1,9 @@
 <script setup lang="ts">
+const { isEnabled } = useFeature()
+if (!isEnabled('feature_compare', true)) {
+  throw createError({ statusCode: 404, statusMessage: 'Stranica nije pronađena' })
+}
+
 const store = useCompareStore()
 
 function formatPrice(price: string): string {

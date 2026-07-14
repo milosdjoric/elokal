@@ -9,6 +9,9 @@ const props = defineProps<{
 const store = useCompareStore()
 const isActive = computed(() => store.isInCompare(props.product.id))
 
+const { isEnabled } = useFeature()
+const featureActive = computed(() => isEnabled('feature_compare', true))
+
 function toggle() {
   store.toggle(props.product)
 }
@@ -16,6 +19,7 @@ function toggle() {
 
 <template>
   <button
+    v-if="featureActive"
     type="button"
     :title="isActive ? 'Ukloni iz poređenja' : 'Dodaj u poređenje'"
     :aria-label="isActive ? 'Ukloni iz poređenja' : 'Dodaj u poređenje'"
