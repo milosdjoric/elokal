@@ -87,32 +87,34 @@ const gdpr = reactive({
   terms_url: '',
 })
 
+// Flagovi koriste kanonske ključeve (`feature_*`, jednina) koje čitaju
+// backend feature() helper, storefront i sidebar — bez grupnog prefiksa.
 const features = reactive({
-  wishlist: 'true',
-  newsletter: 'true',
-  compare: 'true',
-  social_proof: 'false',
-  store_credits: 'true',
-  multi_currency: 'false',
-  gift_cards: 'true',
-  loyalty: 'true',
-  webhooks: 'false',
-  abandoned_cart: 'true',
-  shop_the_look: 'false',
+  feature_wishlist: 'true',
+  feature_newsletter: 'true',
+  feature_compare: 'true',
+  feature_social_proof: 'false',
+  feature_store_credits: 'true',
+  feature_multi_currency: 'false',
+  feature_gift_cards: 'true',
+  feature_loyalty: 'true',
+  feature_webhooks: 'false',
+  feature_abandoned_cart: 'true',
+  feature_shop_the_look: 'false',
 })
 
 const featureLabels: Record<string, string> = {
-  wishlist: 'Lista želja (Wishlist)',
-  newsletter: 'Newsletter',
-  compare: 'Uporedi proizvode',
-  social_proof: 'Social Proof popup-ovi',
-  store_credits: 'Store Credits',
-  multi_currency: 'Više valuta',
-  gift_cards: 'Poklon kartice',
-  loyalty: 'Loyalty program (poeni)',
-  webhooks: 'Webhooks',
-  abandoned_cart: 'Napuštene korpe',
-  shop_the_look: 'Shop the Look',
+  feature_wishlist: 'Lista želja (Wishlist)',
+  feature_newsletter: 'Newsletter',
+  feature_compare: 'Uporedi proizvode',
+  feature_social_proof: 'Social Proof popup-ovi',
+  feature_store_credits: 'Store Credits',
+  feature_multi_currency: 'Više valuta',
+  feature_gift_cards: 'Poklon kartice',
+  feature_loyalty: 'Loyalty program (poeni)',
+  feature_webhooks: 'Webhooks',
+  feature_abandoned_cart: 'Napuštene korpe',
+  feature_shop_the_look: 'Shop the Look',
 }
 
 const groups: Record<string, Record<string, unknown>> = {
@@ -136,7 +138,7 @@ async function fetchSettings() {
     for (const [group, fields] of Object.entries(data)) {
       if (groups[group]) {
         for (const [key, value] of Object.entries(fields)) {
-          const shortKey = key.replace(`${group}_`, '')
+          const shortKey = group === 'features' ? key : key.replace(`${group}_`, '')
           if (shortKey in groups[group]) {
             (groups[group] as Record<string, string>)[shortKey] = value
           }
@@ -157,7 +159,7 @@ async function saveSettings() {
 
     for (const [group, fields] of Object.entries(groups)) {
       for (const [key, value] of Object.entries(fields as Record<string, string>)) {
-        settings.push({ group, key: `${group}_${key}`, value: String(value ?? '') })
+        settings.push({ group, key: group === 'features' ? key : `${group}_${key}`, value: String(value ?? '') })
       }
     }
 
