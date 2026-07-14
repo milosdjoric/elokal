@@ -268,12 +268,14 @@ Route::prefix('admin')->group(function () {
 
         Route::get('activity-log', [ActivityLogController::class, 'index']);
 
-        Route::get('webhooks', [WebhookController::class, 'index']);
-        Route::post('webhooks', [WebhookController::class, 'store']);
-        Route::put('webhooks/{webhook}', [WebhookController::class, 'update']);
-        Route::delete('webhooks/{webhook}', [WebhookController::class, 'destroy']);
-        Route::get('webhooks/{webhook}/logs', [WebhookController::class, 'logs']);
-        Route::post('webhooks/{webhook}/test', [WebhookController::class, 'test']);
+        Route::middleware('feature:webhooks')->group(function () {
+            Route::get('webhooks', [WebhookController::class, 'index']);
+            Route::post('webhooks', [WebhookController::class, 'store']);
+            Route::put('webhooks/{webhook}', [WebhookController::class, 'update']);
+            Route::delete('webhooks/{webhook}', [WebhookController::class, 'destroy']);
+            Route::get('webhooks/{webhook}/logs', [WebhookController::class, 'logs']);
+            Route::post('webhooks/{webhook}/test', [WebhookController::class, 'test']);
+        });
 
         Route::get('reports/overview', [\App\Http\Controllers\Admin\ReportController::class, 'overview']);
         Route::get('reports/sales-by-day', [\App\Http\Controllers\Admin\ReportController::class, 'salesByDay']);

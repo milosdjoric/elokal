@@ -23,6 +23,12 @@ class CheckoutController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
+        if ($request->filled('store_credits') && ! feature('feature_store_credits')) {
+            throw ValidationException::withMessages([
+                'store_credits' => ['Krediti prodavnice trenutno nisu dostupni.'],
+            ]);
+        }
+
         $request->validate([
             'email' => 'required|email',
             'phone' => 'nullable|string|max:30',
@@ -146,7 +152,7 @@ class CheckoutController extends Controller
 
             // Store credits
             $storeCreditDiscount = 0;
-            if ($request->filled('store_credits') && $request->user()) {
+            if ($request->filled('store_credits') && $request->user() && feature('feature_store_credits')) {
                 $creditAccount = StoreCreditAccount::firstOrCreate(['user_id' => $request->user()->id]);
                 $requestedCredits = (float) $request->store_credits;
                 if ($requestedCredits > (float) $creditAccount->balance) {
@@ -207,12 +213,7 @@ class CheckoutController extends Controller
 
             // Dedukcija store credits
             if ($storeCreditDiscount > 0 && $request->user()) {
-                $creditAccount->decrement('balance', $storeCreditDiscount);
-                $creditAccount->transactions()->create([
-                    'type' => 'debit',
-                    'amount' => $storeCreditDiscount,
-                    'description' => "Narudžbina #{$order->order_number}",
-                ]);
+                $creditAccount->debit($storeCreditDiscount, "Narudžbina #{$order->order_number}", $order->id);
             }
 
             if ($coupon && $discount > 0) {
