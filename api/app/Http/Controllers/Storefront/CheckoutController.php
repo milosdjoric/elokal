@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Storefront;
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Coupon;
@@ -23,19 +24,19 @@ class CheckoutController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
-        if ($request->filled('store_credits') && ! feature('feature_store_credits')) {
+        if ($request->filled('store_credits') && ! feature(FeatureFlag::StoreCredits)) {
             throw ValidationException::withMessages([
                 'store_credits' => ['Krediti prodavnice trenutno nisu dostupni.'],
             ]);
         }
 
-        if ($request->filled('loyalty_points') && ! feature('feature_loyalty')) {
+        if ($request->filled('loyalty_points') && ! feature(FeatureFlag::Loyalty)) {
             throw ValidationException::withMessages([
                 'loyalty_points' => ['Poeni lojalnosti trenutno nisu dostupni.'],
             ]);
         }
 
-        if ($request->filled('gift_card_code') && ! feature('feature_gift_cards')) {
+        if ($request->filled('gift_card_code') && ! feature(FeatureFlag::GiftCards)) {
             throw ValidationException::withMessages([
                 'gift_card_code' => ['Poklon kartice trenutno nisu dostupne.'],
             ]);
@@ -139,7 +140,7 @@ class CheckoutController extends Controller
             // Gift card
             $giftCardDiscount = 0;
             $giftCard = null;
-            if ($request->filled('gift_card_code') && feature('feature_gift_cards')) {
+            if ($request->filled('gift_card_code') && feature(FeatureFlag::GiftCards)) {
                 $giftCard = GiftCard::where('code', strtoupper($request->gift_card_code))
                     ->where('is_active', true)
                     ->first();
@@ -152,7 +153,7 @@ class CheckoutController extends Controller
 
             // Loyalty points
             $loyaltyDiscount = 0;
-            if ($request->filled('loyalty_points') && $request->user() && feature('feature_loyalty')) {
+            if ($request->filled('loyalty_points') && $request->user() && feature(FeatureFlag::Loyalty)) {
                 $loyaltyAccount = LoyaltyAccount::firstOrCreate(['user_id' => $request->user()->id]);
                 $requestedPoints = (int) $request->loyalty_points;
                 if ($requestedPoints > $loyaltyAccount->points_balance) {
@@ -164,7 +165,7 @@ class CheckoutController extends Controller
 
             // Store credits
             $storeCreditDiscount = 0;
-            if ($request->filled('store_credits') && $request->user() && feature('feature_store_credits')) {
+            if ($request->filled('store_credits') && $request->user() && feature(FeatureFlag::StoreCredits)) {
                 $creditAccount = StoreCreditAccount::firstOrCreate(['user_id' => $request->user()->id]);
                 $requestedCredits = (float) $request->store_credits;
                 if ($requestedCredits > (float) $creditAccount->balance) {

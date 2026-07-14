@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Storefront;
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\Controller;
 use App\Models\AbandonedCart;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +12,7 @@ class AbandonedCartController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
-        if (! feature('feature_abandoned_cart')) {
+        if (! feature(FeatureFlag::AbandonedCart)) {
             return response()->json(['message' => 'Feature disabled.'], 403);
         }
 

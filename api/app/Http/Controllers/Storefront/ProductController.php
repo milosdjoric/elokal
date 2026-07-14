@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Storefront;
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductCollection;
 use App\Http\Resources\ProductResource;
@@ -149,7 +150,7 @@ class ProductController extends Controller
 
     public function trackView(Request $request, int $productId): JsonResponse
     {
-        if (! feature('feature_social_proof')) {
+        if (! feature(FeatureFlag::SocialProof)) {
             return response()->json(['viewers' => 0]);
         }
 

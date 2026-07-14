@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Storefront;
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\Controller;
 use App\Models\StoreLocation;
 use Illuminate\Http\JsonResponse;
@@ -11,7 +12,7 @@ class StoreLocationController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        if (! feature('feature_store_locator')) {
+        if (! feature(FeatureFlag::StoreLocator)) {
             abort(404);
         }
 

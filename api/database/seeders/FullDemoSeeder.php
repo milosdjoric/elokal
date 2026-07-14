@@ -205,25 +205,9 @@ class FullDemoSeeder extends Seeder
             Setting::setValue('gdpr', $key, $value);
         }
 
-        // Feature flags — sve ukljuceno za demo
-        $features = [
-            'feature_wishlist' => 'true',
-            'feature_newsletter' => 'true',
-            'feature_compare' => 'true',
-            'feature_social_proof' => 'true',
-            'feature_store_credits' => 'true',
-            'feature_multi_currency' => 'true',
-            'feature_gift_cards' => 'true',
-            'feature_loyalty' => 'true',
-            'feature_webhooks' => 'true',
-            'feature_abandoned_cart' => 'true',
-            'feature_shop_the_look' => 'true',
-            'feature_store_locator' => 'true',
-            'feature_downloads' => 'true',
-            'feature_multi_language' => 'true',
-        ];
-        foreach ($features as $key => $value) {
-            Setting::setValue('features', $key, $value);
+        // Feature flags — sve ukljuceno za demo (lista iz enum registra)
+        foreach (\App\Enums\FeatureFlag::cases() as $flag) {
+            Setting::setValue('features', $flag->value, 'true');
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\FeatureFlag;
 use App\Models\LoyaltyTransaction;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,7 +17,7 @@ class ExpireLoyaltyPoints implements ShouldQueue
 
     public function handle(): void
     {
-        if (! feature('feature_loyalty')) {
+        if (! feature(FeatureFlag::Loyalty)) {
             return;
         }
 

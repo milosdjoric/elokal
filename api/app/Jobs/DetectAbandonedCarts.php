@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\FeatureFlag;
 use App\Models\AbandonedCart;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,7 +16,7 @@ class DetectAbandonedCarts implements ShouldQueue
 
     public function handle(): void
     {
-        if (! feature('feature_abandoned_cart')) {
+        if (! feature(FeatureFlag::AbandonedCart)) {
             return;
         }
 

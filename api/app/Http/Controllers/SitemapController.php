@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\FeatureFlag;
 use App\Models\Category;
 use App\Models\Page;
 use App\Models\Post;
@@ -17,7 +18,7 @@ class SitemapController extends Controller
         $available = Setting::getValue('languages_available', 'sr');
         $locales = array_map('trim', explode(',', $available));
         $defaultLocale = Setting::getValue('languages_default', 'sr');
-        $hasMultiLang = count($locales) > 1 && feature('feature_multi_language');
+        $hasMultiLang = count($locales) > 1 && feature(FeatureFlag::MultiLanguage);
 
         $urls = [];
 

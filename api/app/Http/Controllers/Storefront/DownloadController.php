@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Storefront;
 
+use App\Enums\FeatureFlag;
 use App\Http\Controllers\Controller;
 use App\Models\DownloadLog;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,7 @@ class DownloadController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        if (! feature('feature_downloads')) {
+        if (! feature(FeatureFlag::Downloads)) {
             abort(404);
         }
 
@@ -45,7 +46,7 @@ class DownloadController extends Controller
      */
     public function download(string $token): StreamedResponse|JsonResponse
     {
-        if (! feature('feature_downloads')) {
+        if (! feature(FeatureFlag::Downloads)) {
             abort(404);
         }
 
