@@ -36,9 +36,9 @@ Za svaki od ova tri flaga — odluciti: (a) dodati stvarnu proveru ili (b) obris
 
 ## Prioritet 3 — Nedoslednosti
 
-- [ ] **Abandoned cart — dva razlicita kljuca**: API koristi `feature_abandoned_cart`, a `storefront/ExitIntentPopup.vue` (~linija 16) gleda `cart_feature_abandoned_cart` iz cart grupe settings. Konsolidovati na jedan kljuc; odluciti koji je kanonski (preporuka: `feature_abandoned_cart`)
-- [ ] **Gift cards — nepotpuno gejting**: `feature_gift_cards` se proverava samo u `GiftCardController::purchase()`, dok `check()` i `checkByCode()` rade i kad je flag iskljucen. Dodati proveru u sva tri metoda
-- [ ] **Flagovi bez UI togglea**: `feature_store_locator`, `feature_downloads`, `feature_multi_language` se mogu menjati samo direktno u config/bazi. Izloziti ih u Settings → Feature Flags tab u admin panelu
+- [x] **Abandoned cart — dva razlicita kljuca**: konsolidovano na kanonski `feature_abandoned_cart`. ExitIntentPopup (base+sloj) prebacen na kanonski kljuc, duplikat toggle uklonjen iz admin Cart taba (ostaje samo u Feature Flags), seeder ociscen, migracija `2026_07_14_000002` brise stari `cart_feature_abandoned_cart` red.
+- [x] **Gift cards — nepotpuno gejting**: `feature:gift_cards` middleware na sve 3 rute (inline `abort(404)` iz `purchase()` uklonjen — middleware je jedini izvor, sada 403). PLUS otkrivena i zatvorena 4. rupa: checkout je unovcavao `gift_card_code` bez flag provere — dodat rani 422 gate + provera u obradi. Test: `GiftCardFeatureFlagTest` (TDD, flag-off videni crveni sa validnom karticom u bazi).
+- [x] **Flagovi bez UI togglea**: `feature_store_locator`, `feature_downloads`, `feature_multi_language` dodati u Feature Flags tab (labele: Lokator prodavnica, Digitalna preuzimanja, Više jezika).
 - [x] **(otkriveno 2026-07-14) Loyalty — ista rupa kao store_credits**: dodat gate u `CheckoutController` (rani 422 za `loyalty_points` + provera u obradi), `GET /v1/loyalty/balance` → `feature:loyalty` (403; checkout UI sekcija se sama sakriva jer balance fetch tiho pada). Bonus konzistentnost: `GET /v1/store-credits/balance` → `feature:store_credits`, stranice `nalog/poeni` i `nalog/krediti` → 404 guard (base+sloj). Testovi: `LoyaltyFeatureFlagTest` (3, TDD) + balance test u `CheckoutFeatureFlagTest`.
 
 ---
@@ -118,3 +118,9 @@ _Ovde dodavati stavke sa datumom i vremenom, ne brisati stare._
   - Checkout: rani 422 gate za `loyalty_points` + `feature()` u obradi; `loyalty/balance` i `store-credits/balance` rute pod `feature:` middleware.
   - Storefront base+sloj: `nalog/poeni` i `nalog/krediti` → 404 guard; checkout sekcije (poeni/krediti) se same sakrivaju jer balance fetch tiho pada na 403.
   - Verifikacija: API suite **260 passed (610 assertions)**; typecheck exit 0 (storefront + sloj).
+- **2026-07-14 ~15:15** — **Prioritet 3 zavrsen** (na `main`):
+  - Abandoned cart: jedan kanonski kljuc (`feature_abandoned_cart`) — popup base+sloj, admin Cart tab bez duplikata, seeder, cleanup migracija.
+  - Gift cards: `feature:gift_cards` middleware na 3 rute + NOVA RUPA zatvorena (checkout unovcavao kartice sa ugasenim flagom — 422 gate). TDD.
+  - 3 flaga izlozena u Feature Flags tabu (store_locator, downloads, multi_language) — sada svih 14 ima UI toggle.
+  - Verifikacija: API suite **263 passed (621 assertions)**; typecheck exit 0 (admin + storefront + sloj).
+  - Ostaje samo Prioritet 4 (registry/enum + defaulti + dokumentovanje pravila).
