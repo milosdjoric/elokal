@@ -27,10 +27,10 @@ Audit feature flag sistema otkrio je 4 kategorije problema. Od 14 definisanih fl
 
 Za svaki od ova tri flaga — odluciti: (a) dodati stvarnu proveru ili (b) obrisati flag i UI toggle.
 
-- [ ] `feature_wishlist`: utvrditi da li postoji provera u storefront komponentama i WishlistController-u; ako ne — dodati ili obrisati
-- [ ] `feature_compare`: proveriti storefront `/uporedi` stranicu i product card ikonu; ako nema provere — dodati ili obrisati
-- [ ] `feature_multi_currency`: proveriti da li currency switcher i konverzija cena proveravaju flag; ako ne — dodati ili obrisati
-- [ ] Po zavrsetku: u Settings → Feature Flags UI ne sme da ostane ni jedan toggle koji nema efekta kad se ugasi
+- [x] `feature_wishlist` — ODLUKA: implementirana provera (template fleksibilnost po klijentu). API: `feature:wishlist` middleware na svih 5 ruta (403). UI base+sloj: WishlistButton sakriven, SiteHeader ikona+mobile link, sloj MobileNav stavka, `nalog/wishlist` stranica → 404 guard. Test: `WishlistFeatureFlagTest` (TDD, viden crven).
+- [x] `feature_compare` — ODLUKA: implementirana provera. NALAZ: compare NEMA API povrsinu (cisto klijentski, localStorage) → UI gate je kompletan gate. Base+sloj: CompareButton sakriven, FloatingCompareBar sakriven, `/uporedi` → 404 guard.
+- [x] `feature_multi_currency` — ODLUKA: implementirana provera. API: `feature:multi_currency` na admin currencies CRUD (403; test `CurrencyFeatureFlagTest`, TDD). Storefront base+sloj: `useCurrency.fetchCurrencies()` preskace fetch kad je flag off → switcher se sam sakriva (`v-if currencies.length > 1`), konverzija ostaje default valuta. Javna `GET /v1/currencies` svesno ostavljena otvorena (read-only lista).
+- [x] Po zavrsetku: svih 11 toggle-ova na Feature Flags tabu sada ima bar jednu proveru (wishlist/compare/multi_currency gore; newsletter, shop_the_look, social_proof, loyalty, gift_cards, abandoned_cart, store_credits, webhooks vec imaju). ALI vidi novu stavku u Prioritetu 3 za loyalty checkout rupu.
 
 ---
 
@@ -39,6 +39,7 @@ Za svaki od ova tri flaga — odluciti: (a) dodati stvarnu proveru ili (b) obris
 - [ ] **Abandoned cart — dva razlicita kljuca**: API koristi `feature_abandoned_cart`, a `storefront/ExitIntentPopup.vue` (~linija 16) gleda `cart_feature_abandoned_cart` iz cart grupe settings. Konsolidovati na jedan kljuc; odluciti koji je kanonski (preporuka: `feature_abandoned_cart`)
 - [ ] **Gift cards — nepotpuno gejting**: `feature_gift_cards` se proverava samo u `GiftCardController::purchase()`, dok `check()` i `checkByCode()` rade i kad je flag iskljucen. Dodati proveru u sva tri metoda
 - [ ] **Flagovi bez UI togglea**: `feature_store_locator`, `feature_downloads`, `feature_multi_language` se mogu menjati samo direktno u config/bazi. Izloziti ih u Settings → Feature Flags tab u admin panelu
+- [x] **(otkriveno 2026-07-14) Loyalty — ista rupa kao store_credits**: dodat gate u `CheckoutController` (rani 422 za `loyalty_points` + provera u obradi), `GET /v1/loyalty/balance` → `feature:loyalty` (403; checkout UI sekcija se sama sakriva jer balance fetch tiho pada). Bonus konzistentnost: `GET /v1/store-credits/balance` → `feature:store_credits`, stranice `nalog/poeni` i `nalog/krediti` → 404 guard (base+sloj). Testovi: `LoyaltyFeatureFlagTest` (3, TDD) + balance test u `CheckoutFeatureFlagTest`.
 
 ---
 
@@ -107,3 +108,13 @@ _Ovde dodavati stavke sa datumom i vremenom, ne brisati stare._
   - Verifikacija: API suite **252 passed (591 assertions)** ukljucujuci novi `FeatureFlagSettingsChainTest`; admin `nuxi typecheck` exit 0.
   - Acceptance kriterijumi #1 i #2 (gasenje u Settings UI zaista blokira API) sada vaze end-to-end.
   - Napomena: admin nema test harness (nema vitest/playwright) — Vue deo pokriven typecheck-om + kontraktnim testom na API strani. Uvodjenje vitest-a u admin = kandidat za zasebnu stavku.
+- **2026-07-14 ~14:15** — **Prioritet 2 zavrsen** (mrtvi flagovi → implementirane provere, sve na `main`):
+  - Wishlist: API `feature:wishlist` (5 ruta) + UI sakrivanje base+sloj (dugme, header, mobile nav, stranica 404).
+  - Compare: nema API povrsine (localStorage) → UI-only gate base+sloj (dugme, floating bar, `/uporedi` 404).
+  - Multi-currency: API `feature:multi_currency` na admin CRUD + `useCurrency` preskace fetch (base+sloj).
+  - Verifikacija: API suite **256 passed (599 assertions)**; `nuxi typecheck` exit 0 za storefront i sloj.
+  - NOVO OTKRICE: `feature_loyalty` rupa na checkout-u (ista klasa kao store_credits) — dodato kao stavka u Prioritet 3.
+- **2026-07-14 ~14:45** — **Loyalty rupa zatvorena** (TDD, na `main`):
+  - Checkout: rani 422 gate za `loyalty_points` + `feature()` u obradi; `loyalty/balance` i `store-credits/balance` rute pod `feature:` middleware.
+  - Storefront base+sloj: `nalog/poeni` i `nalog/krediti` → 404 guard; checkout sekcije (poeni/krediti) se same sakrivaju jer balance fetch tiho pada na 403.
+  - Verifikacija: API suite **260 passed (610 assertions)**; typecheck exit 0 (storefront + sloj).
