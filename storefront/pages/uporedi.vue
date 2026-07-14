@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { isEnabled } = useFeature()
-if (!isEnabled('feature_compare', true)) {
+const { isFeatureEnabled } = useFeature()
+if (!isFeatureEnabled(FEATURES.compare)) {
   throw createError({ statusCode: 404, statusMessage: 'Stranica nije pronađena' })
 }
 

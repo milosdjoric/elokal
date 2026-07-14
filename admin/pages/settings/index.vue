@@ -88,39 +88,12 @@ const gdpr = reactive({
 
 // Flagovi koriste kanonske ključeve (`feature_*`, jednina) koje čitaju
 // backend feature() helper, storefront i sidebar — bez grupnog prefiksa.
-const features = reactive({
-  feature_wishlist: 'true',
-  feature_newsletter: 'true',
-  feature_compare: 'true',
-  feature_social_proof: 'false',
-  feature_store_credits: 'true',
-  feature_multi_currency: 'false',
-  feature_gift_cards: 'true',
-  feature_loyalty: 'true',
-  feature_webhooks: 'false',
-  feature_abandoned_cart: 'true',
-  feature_shop_the_look: 'false',
-  feature_store_locator: 'false',
-  feature_downloads: 'false',
-  feature_multi_language: 'false',
-})
+// Lista, defaulti i labele žive u centralnom registru: utils/features.ts.
+const features = reactive<Record<string, string>>(Object.fromEntries(
+  Object.values(FEATURES).map(key => [key, FEATURE_DEFAULTS[key] ? 'true' : 'false']),
+))
 
-const featureLabels: Record<string, string> = {
-  feature_wishlist: 'Lista želja (Wishlist)',
-  feature_newsletter: 'Newsletter',
-  feature_compare: 'Uporedi proizvode',
-  feature_social_proof: 'Social Proof popup-ovi',
-  feature_store_credits: 'Store Credits',
-  feature_multi_currency: 'Više valuta',
-  feature_gift_cards: 'Poklon kartice',
-  feature_loyalty: 'Loyalty program (poeni)',
-  feature_webhooks: 'Webhooks',
-  feature_abandoned_cart: 'Napuštene korpe',
-  feature_shop_the_look: 'Shop the Look',
-  feature_store_locator: 'Lokator prodavnica',
-  feature_downloads: 'Digitalna preuzimanja',
-  feature_multi_language: 'Više jezika',
-}
+const featureLabels: Record<string, string> = FEATURE_LABELS
 
 const groups: Record<string, Record<string, unknown>> = {
   general,

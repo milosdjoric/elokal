@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const compareStore = useCompareStore()
 
-const { isEnabled } = useFeature()
-const featureActive = computed(() => isEnabled('feature_compare', true))
+const { isFeatureEnabled } = useFeature()
+const featureActive = computed(() => isFeatureEnabled(FEATURES.compare))
 
 const primaryImage = (product: { images?: Array<{ image_path: string; is_primary: boolean }> }) => {
   const img = product.images?.find(i => i.is_primary) || product.images?.[0]

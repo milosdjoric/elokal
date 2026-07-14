@@ -7,8 +7,8 @@ const props = defineProps<{
 const wishlistStore = useWishlistStore()
 const isActive = computed(() => wishlistStore.isInWishlist(props.productId))
 
-const { isEnabled } = useFeature()
-const featureActive = computed(() => isEnabled('feature_wishlist', true))
+const { isFeatureEnabled } = useFeature()
+const featureActive = computed(() => isFeatureEnabled(FEATURES.wishlist))
 
 function toggle() {
   wishlistStore.toggle(props.productId)

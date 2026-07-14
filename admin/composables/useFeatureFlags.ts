@@ -17,9 +17,11 @@ export function useFeatureFlags() {
     catch { /* silent */ }
   }
 
-  function isEnabled(key: string, defaultValue = true): boolean {
-    if (!loaded.value) return defaultValue
-    return featureFlags.value[key] ?? defaultValue
+  function isEnabled(key: string, defaultValue?: boolean): boolean {
+    // Default dolazi iz centralnog registra (utils/features.ts) ako nije eksplicitno prosleđen
+    const fallback = defaultValue ?? FEATURE_DEFAULTS[key as FeatureKey] ?? false
+    if (!loaded.value) return fallback
+    return featureFlags.value[key] ?? fallback
   }
 
   return { loadFlags, isEnabled, loaded }

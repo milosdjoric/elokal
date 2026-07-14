@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { isEnabled, getValue, loadSettings } = useFeature()
+const { isEnabled, isFeatureEnabled, getValue, loadSettings } = useFeature()
 const { apiBase } = useApi()
 
 const show = ref(false)
@@ -13,7 +13,7 @@ let timerId: ReturnType<typeof setTimeout> | null = null
 async function init() {
   await loadSettings()
 
-  if (!isEnabled('feature_newsletter', false)) return
+  if (!isFeatureEnabled(FEATURES.newsletter)) return
   if (!isEnabled('newsletter_popup_enabled', true)) return
 
   if (import.meta.client) {

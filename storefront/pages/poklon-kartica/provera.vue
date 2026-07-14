@@ -1,5 +1,9 @@
 <script setup lang="ts">
 const { apiBase } = useApi()
+const { isFeatureEnabled } = useFeature()
+if (!isFeatureEnabled(FEATURES.giftCards)) {
+  throw createError({ statusCode: 404, statusMessage: 'Stranica nije pronađena' })
+}
 
 const code = ref('')
 const loading = ref(false)

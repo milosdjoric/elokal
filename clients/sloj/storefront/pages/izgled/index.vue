@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { get } = useApi()
-const { isEnabled } = useFeature()
+const { isFeatureEnabled } = useFeature()
 
 interface LookData {
   id: number
@@ -27,7 +27,7 @@ const loading = ref(true)
 const featureActive = ref(true)
 
 async function fetchLooks() {
-  featureActive.value = await isEnabled('feature_shop_the_look', false)
+  featureActive.value = isFeatureEnabled(FEATURES.shopTheLook)
   if (!featureActive.value) {
     loading.value = false
     return

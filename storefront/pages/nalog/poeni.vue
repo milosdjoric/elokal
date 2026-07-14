@@ -2,8 +2,8 @@
 definePageMeta({ middleware: 'auth' })
 useHead({ title: 'Poeni — eLokal' })
 
-const { isEnabled } = useFeature()
-if (!isEnabled('feature_loyalty', true)) {
+const { isFeatureEnabled } = useFeature()
+if (!isFeatureEnabled(FEATURES.loyalty)) {
   throw createError({ statusCode: 404, statusMessage: 'Stranica nije pronađena' })
 }
 

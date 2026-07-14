@@ -1,6 +1,9 @@
 <script setup lang="ts">
 const { apiBase } = useApi()
-const { isEnabled } = useFeature()
+const { isFeatureEnabled } = useFeature()
+if (!isFeatureEnabled(FEATURES.giftCards)) {
+  throw createError({ statusCode: 404, statusMessage: 'Stranica nije pronađena' })
+}
 
 const amounts = [1000, 2000, 3000, 5000, 10000]
 const selectedAmount = ref<number | null>(null)

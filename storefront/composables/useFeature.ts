@@ -26,9 +26,14 @@ export function useFeature() {
     return val === 'true' || val === '1'
   }
 
+  // Za feature flagove — default dolazi iz centralnog registra (utils/features.ts)
+  function isFeatureEnabled(key: FeatureKey): boolean {
+    return isEnabled(key, FEATURE_DEFAULTS[key] ?? false)
+  }
+
   function getValue(key: string, defaultValue = ''): string {
     return settings.value[key] ?? defaultValue
   }
 
-  return { loadSettings, isEnabled, getValue, settings }
+  return { loadSettings, isEnabled, isFeatureEnabled, getValue, settings }
 }

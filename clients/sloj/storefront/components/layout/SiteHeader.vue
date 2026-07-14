@@ -8,8 +8,8 @@ const router = useRouter()
 const wishlistStore = useWishlistStore()
 const wishlistCount = computed(() => wishlistStore.count)
 const { isLoggedIn } = useAuth()
-const { isEnabled } = useFeature()
-const wishlistEnabled = computed(() => isEnabled('feature_wishlist', true))
+const { isFeatureEnabled } = useFeature()
+const wishlistEnabled = computed(() => isFeatureEnabled(FEATURES.wishlist))
 
 // Announcement bar (Pangaia-style) — uredi tekst/link po potrebi
 // (kasnije se može povući iz /v1/settings umesto hardkodovanog teksta)

@@ -9,8 +9,8 @@ const { count } = useCart()
 const wishlistStore = useWishlistStore()
 const wishlistCount = computed(() => wishlistStore.count)
 
-const { isEnabled, getValue } = useFeature()
-const wishlistEnabled = computed(() => isEnabled('feature_wishlist', true))
+const { isFeatureEnabled, getValue } = useFeature()
+const wishlistEnabled = computed(() => isFeatureEnabled(FEATURES.wishlist))
 const { isLoggedIn } = useAuth()
 
 const categories = ref<Category[]>([])

@@ -12,11 +12,11 @@ const activeCurrency = ref<Currency | null>(null)
 
 export function useCurrency() {
   const { get } = useApi()
-  const { isEnabled } = useFeature()
+  const { isFeatureEnabled } = useFeature()
 
   async function fetchCurrencies() {
     // Bez multi-currency flaga ne povlačimo valute — cene ostaju u default valuti
-    if (!isEnabled('feature_multi_currency', false)) return
+    if (!isFeatureEnabled(FEATURES.multiCurrency)) return
     if (currencies.value.length > 0) return
     try {
       const data = await get<{ data: Currency[] }>('/v1/currencies')

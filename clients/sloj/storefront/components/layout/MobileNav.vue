@@ -10,8 +10,8 @@ interface NavItem {
   icon: string
 }
 
-const { isEnabled } = useFeature()
-const wishlistEnabled = computed(() => isEnabled('feature_wishlist', true))
+const { isFeatureEnabled } = useFeature()
+const wishlistEnabled = computed(() => isFeatureEnabled(FEATURES.wishlist))
 
 const allItems: NavItem[] = [
   { label: 'Početna', to: '/', icon: 'lucide:home' },

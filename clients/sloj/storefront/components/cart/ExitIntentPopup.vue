@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { isEnabled } = useFeature()
+const { isFeatureEnabled } = useFeature()
 const { items, isEmpty } = useCart()
 const cartStore = useCartStore()
 const { apiBase } = useApi()
@@ -13,7 +13,7 @@ const error = ref('')
 let featureActive = false
 
 async function init() {
-  featureActive = await isEnabled('feature_abandoned_cart', false)
+  featureActive = isFeatureEnabled(FEATURES.abandonedCart)
   if (!featureActive) return
 
   if (import.meta.client) {

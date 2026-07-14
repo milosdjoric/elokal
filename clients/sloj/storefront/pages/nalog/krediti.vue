@@ -2,8 +2,8 @@
 definePageMeta({ middleware: 'auth' })
 useHead({ title: 'Krediti — sloj kolektiv' })
 
-const { isEnabled } = useFeature()
-if (!isEnabled('feature_store_credits', true)) {
+const { isFeatureEnabled } = useFeature()
+if (!isFeatureEnabled(FEATURES.storeCredits)) {
   throw createError({ statusCode: 404, statusMessage: 'Stranica nije pronađena' })
 }
 
