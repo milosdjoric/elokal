@@ -13,7 +13,7 @@ const error = ref('')
 let featureActive = false
 
 async function init() {
-  featureActive = await isEnabled('cart_feature_abandoned_cart', false)
+  featureActive = await isEnabled('feature_abandoned_cart', false)
   if (!featureActive) return
 
   if (import.meta.client) {

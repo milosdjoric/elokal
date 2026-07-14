@@ -169,7 +169,6 @@ class FullDemoSeeder extends Seeder
             'add_to_cart_feedback' => 'drawer',
             'free_shipping_threshold' => '5000',
             'guest_checkout_enabled' => 'true',
-            'cart_feature_abandoned_cart' => 'true',
         ];
         foreach ($cart as $key => $value) {
             Setting::setValue('cart', $key, $value);

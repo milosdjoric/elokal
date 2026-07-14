@@ -65,7 +65,6 @@ const cart = reactive({
   add_to_cart_feedback: 'drawer',
   free_shipping_threshold: '5000',
   guest_checkout: 'true',
-  feature_abandoned_cart: 'true',
 })
 
 const badges = reactive({
@@ -101,6 +100,9 @@ const features = reactive({
   feature_webhooks: 'false',
   feature_abandoned_cart: 'true',
   feature_shop_the_look: 'false',
+  feature_store_locator: 'false',
+  feature_downloads: 'false',
+  feature_multi_language: 'false',
 })
 
 const featureLabels: Record<string, string> = {
@@ -115,6 +117,9 @@ const featureLabels: Record<string, string> = {
   feature_webhooks: 'Webhooks',
   feature_abandoned_cart: 'Napuštene korpe',
   feature_shop_the_look: 'Shop the Look',
+  feature_store_locator: 'Lokator prodavnica',
+  feature_downloads: 'Digitalna preuzimanja',
+  feature_multi_language: 'Više jezika',
 }
 
 const groups: Record<string, Record<string, unknown>> = {
@@ -282,7 +287,7 @@ onMounted(fetchSettings)
             </div>
             <UiAtomsInput v-model="cart.free_shipping_threshold" label="Prag za besplatnu dostavu (RSD)" type="number" />
             <UiAtomsSwitch :model-value="toBool(cart.guest_checkout)" label="Guest checkout" @update:model-value="cart.guest_checkout = fromBool($event)" />
-            <UiAtomsSwitch :model-value="toBool(cart.feature_abandoned_cart)" label="Napuštene korpe (abandoned cart)" @update:model-value="cart.feature_abandoned_cart = fromBool($event)" />
+            <!-- Abandoned cart toggle živi u Feature Flags tabu (feature_abandoned_cart) -->
           </div>
 
           <!-- Badges -->
