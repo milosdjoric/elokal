@@ -169,7 +169,9 @@ Struktura: **ELOKAL BAZA** (deljeni motor: API + admin + base storefront layer �
 - [x] Konsolidovan abandoned cart na `feature_abandoned_cart` (popup base+sloj, admin bez duplikata, seeder, migracija) (2026-07-14)
 - [x] Gift cards: `feature:gift_cards` middleware na 3 rute + [SECURITY] checkout gate za `gift_card_code` (nova rupa, ista klasa). Test: `GiftCardFeatureFlagTest` (2026-07-14)
 - [x] Izlozena 3 flaga bez toggle-a u Settings → Feature Flags UI (2026-07-14)
-- [ ] Kreirati centralni registry/enum za sve kljuceve flagova i zameniti string literale
+- [x] Centralni registry: `FeatureFlag` PHP enum + TS registry (storefront/utils + admin/utils), svi literali zamenjeni, middleware 500 na typo, `FeatureFlagRegistryTest` cuva enum↔config sync (2026-07-14)
+
+> ✅ **FLAGS-001 ZAVRŠEN** — detalji i progress log: `.mdjdocs/tasks/FLAGS-001.md`
 
 ---
 

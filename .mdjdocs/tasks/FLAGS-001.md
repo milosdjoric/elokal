@@ -2,7 +2,7 @@
 
 **Tip:** refactor
 **Branch:** `main` (odluka 2026-07-14: sve se radi na main, bez feature grane)
-**Status:** 🔨 in progress — Prioritet 1 gotov (2026-07-14)
+**Status:** ✅ ZAVRŠEN 2026-07-14 (sva 4 prioriteta + 4 usput otkrivene rupe)
 
 ## Kontekst
 
@@ -45,9 +45,9 @@ Za svaki od ova tri flaga — odluciti: (a) dodati stvarnu proveru ili (b) obris
 
 ## Prioritet 4 — Infrastruktura
 
-- [ ] **Registry / enum flagova**: kreirati jedan fajl (npr. `api/app/Enums/FeatureFlag.php` ili `api/config/features.php` prosiriti) koji sadrzi sve kljuceve kao konstante ili enum case-ove; zameniti sve string literale referencama na taj enum/const
-- [ ] **Pravilo "UI + API"**: dokumentovati u `.mdjdocs/` (ili inline komentar u features.php) da svaki flag mora da gejtuje i UI i odgovarajucu API rutu — flag bez backend gate-a tretirati kao ne-implementiran
-- [ ] **Default vrednosti**: pronaci sva mesta gde se poziva `isEnabled(key, false)` i `isEnabled(key, true)` (ili Laravel `feature($key, true/false)`) i ujednaciti defaultove — isti flag ne sme da ima razlicit fallback zavisno od mesta poziva; defaultove preseliti u registry/config
+- [x] **Registry / enum flagova**: `api/app/Enums/FeatureFlag.php` (string-backed enum, 14 case-ova) — `feature()` prima `FeatureFlag|string`, middleware validira kljuc (`tryFrom` → 500 na typo, ne tihi 403), svih 14 PHP poziva na enum reference, seeder iterira `FeatureFlag::cases()`. Frontend ogledala: `storefront/utils/features.ts` (FEATURES + FEATURE_DEFAULTS, auto-import vazi i za sloj kao layer) i `admin/utils/features.ts` (+ FEATURE_LABELS); svi TS/Vue literali (13 base + 12 sloj + 10 Sidebar) zamenjeni referencama; admin settings features mapa se generise iz registra. Sinhronizaciju enum ↔ config cuva `FeatureFlagRegistryTest`.
+- [x] **Pravilo "UI + API"**: dokumentovano na oba mesta — docblock u `FeatureFlag.php` i header komentar u `config/features.php`. Usput primenjeno na poklon-kartica stranice (index + provera, base+sloj) koje su imale mrtvu `isEnabled` destrukturu a nikakav guard → sada 404 kad je flag off.
+- [x] **Default vrednosti**: `isFeatureEnabled(key)` u storefront `useFeature` cita default iz `FEATURE_DEFAULTS` (ogledalo config/features.php); admin `useFeatureFlags.isEnabled` vise ne podrazumeva pausalno `true` nego registry default (fix: webhooks/store_locator/multi_currency linkovi se vise ne prikazuju pre ucitavanja settings-a). Nijedan poziv vise ne prosledjuje rucni default za flagove.
 
 ---
 
@@ -71,15 +71,15 @@ Za svaki od ova tri flaga — odluciti: (a) dodati stvarnu proveru ili (b) obris
 
 ## Acceptance criteria
 
-- [ ] Gasenje `feature_store_credits` u Settings UI zaista blokira primenu store kredita na checkout API ruti (test prolazi)
-- [ ] Gasenje `feature_webhooks` u Settings UI zaista vraca gresku na webhook API rutama (test prolazi)
-- [ ] Svaki od 14 flagova ima barem jednu vidljivu posledicu i na frontendu i na API-ju kad se ugasi
-- [ ] Nema "dekorativnih" togglea u Settings UI koji ne menjaju ponasanje sistema
-- [ ] Abandoned cart koristi jedan kanonski kljuc na oba mesta
-- [ ] Gift card flagovanje je konzistentno u sva tri metoda kontrolera
-- [ ] `feature_store_locator`, `feature_downloads`, `feature_multi_language` su vidljivi i editabilni u Settings UI
-- [ ] Svi string literali kljuceva zamenjeni referencama na centralni registry/enum
-- [ ] `isEnabled` / `feature()` pozivi za isti flag koriste isti default value
+- [x] Gasenje `feature_store_credits` u Settings UI zaista blokira primenu store kredita na checkout API ruti (test prolazi — `FeatureFlagSettingsChainTest`)
+- [x] Gasenje `feature_webhooks` u Settings UI zaista vraca gresku na webhook API rutama (test prolazi)
+- [x] Svaki od 14 flagova ima barem jednu vidljivu posledicu i na frontendu i na API-ju kad se ugasi (izuzetak: `feature_compare` nema API povrsinu — cisto klijentski, UI gate je kompletan)
+- [x] Nema "dekorativnih" togglea u Settings UI koji ne menjaju ponasanje sistema
+- [x] Abandoned cart koristi jedan kanonski kljuc na oba mesta
+- [x] Gift card flagovanje je konzistentno — middleware na sve 3 rute + checkout gate
+- [x] `feature_store_locator`, `feature_downloads`, `feature_multi_language` su vidljivi i editabilni u Settings UI
+- [x] Svi string literali kljuceva zamenjeni referencama na centralni registry/enum (PHP enum + TS registry ×2)
+- [x] `isEnabled` / `feature()` pozivi za isti flag koriste isti default value (registry defaulti)
 
 ---
 
@@ -124,3 +124,9 @@ _Ovde dodavati stavke sa datumom i vremenom, ne brisati stare._
   - 3 flaga izlozena u Feature Flags tabu (store_locator, downloads, multi_language) — sada svih 14 ima UI toggle.
   - Verifikacija: API suite **263 passed (621 assertions)**; typecheck exit 0 (admin + storefront + sloj).
   - Ostaje samo Prioritet 4 (registry/enum + defaulti + dokumentovanje pravila).
+- **2026-07-14 ~16:00** — **Prioritet 4 zavrsen → TIKET ZATVOREN** (na `main`):
+  - `FeatureFlag` enum (backend) + TS registry ×2 (storefront deli sa sloj-em kroz layer, admin svoj) — svi literali zamenjeni.
+  - Middleware puca glasno (500) na nepoznat flag; `FeatureFlagRegistryTest` cuva enum ↔ config sinhronizaciju.
+  - Defaulti centralizovani — admin vise ne podrazumeva `true` pausalno.
+  - Bonus: poklon-kartica stranice (4) dobile 404 guard — imale mrtvu isEnabled destrukturu.
+  - Verifikacija: API suite **266 passed (625 assertions)**; typecheck exit 0 ×3 (admin, storefront, sloj).
