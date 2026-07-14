@@ -55,6 +55,15 @@ class CheckoutFeatureFlagTest extends TestCase
         $this->assertEquals(500.0, (float) StoreCreditAccount::where('user_id', $user->id)->first()->balance);
     }
 
+    public function test_store_credits_balance_route_returns_403_when_feature_disabled(): void
+    {
+        Setting::setValue('features', 'feature_store_credits', 'false');
+
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->getJson('/api/v1/store-credits/balance')->assertForbidden();
+    }
+
     public function test_checkout_applies_store_credits_when_feature_enabled(): void
     {
         Setting::setValue('features', 'feature_store_credits', 'true');

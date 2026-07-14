@@ -29,6 +29,12 @@ class CheckoutController extends Controller
             ]);
         }
 
+        if ($request->filled('loyalty_points') && ! feature('feature_loyalty')) {
+            throw ValidationException::withMessages([
+                'loyalty_points' => ['Poeni lojalnosti trenutno nisu dostupni.'],
+            ]);
+        }
+
         $request->validate([
             'email' => 'required|email',
             'phone' => 'nullable|string|max:30',
@@ -140,7 +146,7 @@ class CheckoutController extends Controller
 
             // Loyalty points
             $loyaltyDiscount = 0;
-            if ($request->filled('loyalty_points') && $request->user()) {
+            if ($request->filled('loyalty_points') && $request->user() && feature('feature_loyalty')) {
                 $loyaltyAccount = LoyaltyAccount::firstOrCreate(['user_id' => $request->user()->id]);
                 $requestedPoints = (int) $request->loyalty_points;
                 if ($requestedPoints > $loyaltyAccount->points_balance) {

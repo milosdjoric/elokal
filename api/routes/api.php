@@ -131,11 +131,13 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
         Route::post('products/{product}/reviews', [ReviewController::class, 'store']);
         Route::post('reviews/{review}/helpful', [ReviewController::class, 'helpful']);
 
-        Route::get('wishlist', [WishlistController::class, 'index']);
-        Route::get('wishlist/ids', [WishlistController::class, 'ids']);
-        Route::post('wishlist/sync', [WishlistController::class, 'sync']);
-        Route::post('wishlist/{product}', [WishlistController::class, 'store']);
-        Route::delete('wishlist/{product}', [WishlistController::class, 'destroy']);
+        Route::middleware('feature:wishlist')->group(function () {
+            Route::get('wishlist', [WishlistController::class, 'index']);
+            Route::get('wishlist/ids', [WishlistController::class, 'ids']);
+            Route::post('wishlist/sync', [WishlistController::class, 'sync']);
+            Route::post('wishlist/{product}', [WishlistController::class, 'store']);
+            Route::delete('wishlist/{product}', [WishlistController::class, 'destroy']);
+        });
 
         Route::get('orders', [AuthController::class, 'orders']);
         Route::get('orders/{orderNumber}', [AuthController::class, 'showOrder']);
@@ -143,11 +145,11 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
         Route::get('loyalty/balance', function (\Illuminate\Http\Request $request) {
             $account = \App\Models\LoyaltyAccount::firstOrCreate(['user_id' => $request->user()->id]);
             return response()->json(['data' => ['points_balance' => $account->points_balance, 'tier' => $account->tier]]);
-        });
+        })->middleware('feature:loyalty');
         Route::get('store-credits/balance', function (\Illuminate\Http\Request $request) {
             $account = \App\Models\StoreCreditAccount::firstOrCreate(['user_id' => $request->user()->id]);
             return response()->json(['data' => ['balance' => $account->balance]]);
-        });
+        })->middleware('feature:store_credits');
 
         Route::get('downloads', [\App\Http\Controllers\Storefront\DownloadController::class, 'index']);
         Route::get('downloads/{token}', [\App\Http\Controllers\Storefront\DownloadController::class, 'download']);
@@ -297,7 +299,9 @@ Route::prefix('admin')->group(function () {
         Route::get('import/history', [ImportController::class, 'history']);
 
         Route::apiResource('payment-methods', PaymentMethodController::class)->except(['show']);
-        Route::apiResource('currencies', \App\Http\Controllers\Admin\CurrencyController::class)->except(['show']);
+        Route::apiResource('currencies', \App\Http\Controllers\Admin\CurrencyController::class)
+            ->except(['show'])
+            ->middleware('feature:multi_currency');
         Route::get('payments', [PaymentMethodController::class, 'transactions']);
 
         Route::apiResource('tax-rates', TaxRateController::class)->except(['show']);
