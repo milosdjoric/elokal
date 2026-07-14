@@ -35,6 +35,12 @@ class CheckoutController extends Controller
             ]);
         }
 
+        if ($request->filled('gift_card_code') && ! feature('feature_gift_cards')) {
+            throw ValidationException::withMessages([
+                'gift_card_code' => ['Poklon kartice trenutno nisu dostupne.'],
+            ]);
+        }
+
         $request->validate([
             'email' => 'required|email',
             'phone' => 'nullable|string|max:30',
@@ -133,7 +139,7 @@ class CheckoutController extends Controller
             // Gift card
             $giftCardDiscount = 0;
             $giftCard = null;
-            if ($request->filled('gift_card_code')) {
+            if ($request->filled('gift_card_code') && feature('feature_gift_cards')) {
                 $giftCard = GiftCard::where('code', strtoupper($request->gift_card_code))
                     ->where('is_active', true)
                     ->first();

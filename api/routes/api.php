@@ -86,9 +86,11 @@ Route::prefix('v1')->middleware('throttle:api-public')->group(function () {
     Route::get('shipping/config', [StorefrontShippingController::class, 'config']);
     Route::get('payment-methods', [PaymentController::class, 'methods']);
     Route::get('currencies', fn () => response()->json(['data' => \App\Models\Currency::where('is_active', true)->orderBy('code')->get()]));
-    Route::post('gift-card/check', [GiftCardController::class, 'check']);
-    Route::post('gift-card/purchase', [GiftCardController::class, 'purchase']);
-    Route::get('gift-cards/{code}/check', [GiftCardController::class, 'checkByCode']);
+    Route::middleware('feature:gift_cards')->group(function () {
+        Route::post('gift-card/check', [GiftCardController::class, 'check']);
+        Route::post('gift-card/purchase', [GiftCardController::class, 'purchase']);
+        Route::get('gift-cards/{code}/check', [GiftCardController::class, 'checkByCode']);
+    });
     Route::get('pages/{slug}', [StorefrontPageController::class, 'show']);
     Route::get('page-sections/{pageKey?}', [\App\Http\Controllers\Storefront\PageSectionController::class, '__invoke']);
     Route::post('contact', [\App\Http\Controllers\Storefront\ContactController::class, 'store'])->middleware('throttle:contact');

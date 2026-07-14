@@ -32,10 +32,6 @@ class GiftCardController extends Controller
 
     public function purchase(Request $request): JsonResponse
     {
-        if (! feature('feature_gift_cards')) {
-            abort(404);
-        }
-
         $request->validate([
             'amount' => 'required|numeric|min:500|max:50000',
             'recipient_email' => 'required|email',
