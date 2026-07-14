@@ -1,8 +1,8 @@
 # [FLAGS-001] Sredjivanje feature flag sistema
 
 **Tip:** refactor
-**Branch:** `refactor/flags-001-feature-flag-cleanup`
-**Status:** 📋 todo
+**Branch:** `main` (odluka 2026-07-14: sve se radi na main, bez feature grane)
+**Status:** 🔨 in progress — Prioritet 1 gotov (2026-07-14)
 
 ## Kontekst
 
@@ -16,9 +16,10 @@ Audit feature flag sistema otkrio je 4 kategorije problema. Od 14 definisanih fl
 
 > Ovo su jedine dve stavke koje se mogu smatrati security propustom — gasenje flaga u Settings UI nema efekta na API.
 
-- [ ] `feature_store_credits`: dodati `feature('store_credits')` gate u `CheckoutController` — i u validaciju (~linija 46) i u obradu (~linije 149-153). Dok flag ne prodje, ruta treba da vrati 422 ili preskoci store credit odbitak
-- [ ] `feature_webhooks`: premestiti zastitu sa sidebar linka (`admin/components/layout/Sidebar.vue` ~linija 90) na same API rute (`api/routes/api.php` ~linije 270-275) — middleware provera ili inline `feature()` gate na grupama ruta; samo skrivanje linka u UI nije dovoljno
-- [ ] Napisati test za oba slucaja: poziv rute dok je flag iskljucen treba da vrati greshu, ne da tihо uspe
+- [x] `feature_store_credits`: dodat `feature('feature_store_credits')` gate u `CheckoutController` — rani 422 (`ValidationException` na `store_credits` polju) pre validacije + gate u obradi (belt-and-braces)
+- [x] `feature_webhooks`: napravljen `app/Http/Middleware/EnsureFeatureEnabled.php` (parametrizovan: `feature:webhooks` → proverava `feature_webhooks`, vraca 403), alias registrovan u `bootstrap/app.php`, webhook rute u `api.php` umotane u `Route::middleware('feature:webhooks')->group(...)`
+- [x] Testovi: `tests/Feature/Storefront/CheckoutFeatureFlagTest.php` (flag off → 422 + nista se ne desava; flag on → krediti primenjeni + transakcija ispravna) i `tests/Feature/Admin/WebhookFeatureFlagTest.php` (flag off → 403 GET+POST; flag on → 200). TDD: oba prvo videna crvena.
+- [x] **(otkriveno u auditu 2026-07-14)** Admin Settings UI snimao flagove pod pogresnim kljucevima: grupni prefiks pravio `features_wishlist` (mnozina) umesto kanonskog `feature_wishlist` — Feature Flags tab NIKAD nije radio (pisao kljuceve koje niko ne cita, prikazivao defaultove umesto stanja baze). Fix: grupa `features` u `admin/pages/settings/index.vue` koristi kanonske pune kljuceve bez prefiksa (save + fetch); migracija `2026_07_14_000001` brise orphan `features_*` redove; kontraktni test `FeatureFlagSettingsChainTest` (UI payload → settings endpoint → gate reaguje).
 
 ---
 
@@ -93,3 +94,16 @@ Za svaki od ova tri flaga — odluciti: (a) dodati stvarnu proveru ili (b) obris
 ## Progress
 
 _Ovde dodavati stavke sa datumom i vremenom, ne brisati stare._
+
+- **2026-07-14 ~13:10** — Prioritet 1 zavrsen (TDD, na `main`):
+  - `CheckoutController::store()`: rani 422 gate za `store_credits` kad je `feature_store_credits` off + `feature()` provera u obradi.
+  - **Bonus bug fix (otkrio ga pozitivni test):** dedukcija store kredita pisala `description` (kolona ne postoji, zove se `reason`) i nije slala NOT NULL `balance_after` → svaki pravi checkout sa kreditima pucao bi na 500. Zamenjeno postojecom `StoreCreditAccount::debit()` metodom (ispravne kolone + `order_id`).
+  - Novi `EnsureFeatureEnabled` middleware (alias `feature`, prefiksuje `feature_`), webhook rute grupisane pod `feature:webhooks` → 403 kad je flag off.
+  - Testovi: `CheckoutFeatureFlagTest` (2) + `WebhookFeatureFlagTest` (2). Ceo suite: **250 passed (585 assertions)**.
+  - Napomena: radjeno na `main` (dogovor — sve na main), jos nije commitovano.
+- **2026-07-14 ~13:40** — Korak 1 nastavka: **admin Settings kljucevi flagova**.
+  - Nalaz: `saveSettings()` lepio grupni prefiks → `features_*` (mnozina) umesto kanonskih `feature_*`; fetch skidao isti prefiks → tab nikad nije ni prikazivao ni menjao stvarne flagove. Dva paralelna sveta kljuceva.
+  - Fix: `features` grupa izuzeta iz prefiks seme (kanonski kljucevi as-is u save i fetch), reactive mapa + labele prebacene na pune kljuceve. Cleanup migracija za orphan `features_*` redove.
+  - Verifikacija: API suite **252 passed (591 assertions)** ukljucujuci novi `FeatureFlagSettingsChainTest`; admin `nuxi typecheck` exit 0.
+  - Acceptance kriterijumi #1 i #2 (gasenje u Settings UI zaista blokira API) sada vaze end-to-end.
+  - Napomena: admin nema test harness (nema vitest/playwright) — Vue deo pokriven typecheck-om + kontraktnim testom na API strani. Uvodjenje vitest-a u admin = kandidat za zasebnu stavku.

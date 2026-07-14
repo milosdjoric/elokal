@@ -2,7 +2,11 @@
 
 Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
+Struktura: **ELOKAL BAZA** (deljeni motor: API + admin + base storefront layer — radi se jednom, važi za sve klijente) / **SLOJ** (klijent — samo izgled njegovog sajta).
+
 ---
+
+# ELOKAL BAZA — deljeni motor
 
 ## v0.2.x — Faza 2: Kupovina & Nalozi
 
@@ -95,10 +99,6 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Callback request email adminu — v0.2.23
 - [ ] Nova recenzija email adminu — v0.2.14
 
-**Feature flagovi:**
-
----
-
 ## v0.3.x — Faza 3: Napredna prodaja
 
 ### v0.3.9 — Dostava: Admin + Storefront
@@ -120,18 +120,10 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 ### Odloženo — Faza 3
 
-> Stavke koje zahtevaju eksternu zavisnost, velik UI rad ili SMTP.
-
-**Eksterno:**
+> Stavke koje zahtevaju eksternu zavisnost ili SMTP.
 
 - [ ] Stripe integracija (API ključ) — v0.3.10
 - [ ] Email sa tracking brojem — v0.3.9
-
-**UI-heavy (iterativno sa dizajnom):**
-
-**Backend (manja prioritetnost):**
-
----
 
 ## v0.4.x — Faza 4: Proširenja
 
@@ -143,8 +135,6 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 
 - [ ] Image optimization (WebP, responsive srcset)
 - [ ] Critical CSS inline
-
----
 
 ## DevOps (paralelno sa razvojem)
 
@@ -167,9 +157,37 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [ ] Media sync na eksterni storage
 - [ ] Mesečni test restore na staging-u
 
-## Sloj storefront (klijent) — Pangaia redizajn
+## Feature flags cleanup — FLAGS-001
+
+> Detalji i acceptance criteria: `.mdjdocs/tasks/FLAGS-001.md`
+
+- [x] [SECURITY] Zastititi CheckoutController store credit logiku sa `feature('feature_store_credits')` gate-om — 422 kad je flag off + gate u obradi. Usput fixovan latentan bug dedukcije (pogresne kolone → sada `debit()`). Testovi: `CheckoutFeatureFlagTest` (2026-07-14)
+- [x] [SECURITY] Webhook zastita premestena na API rute — novi `EnsureFeatureEnabled` middleware (`feature:webhooks` → 403). Testovi: `WebhookFeatureFlagTest` (2026-07-14)
+- [x] [BUG, otkriven u auditu] Admin Settings snimao flagove pod `features_*` (mnozina) umesto kanonskih `feature_*` — Feature Flags tab nikad nije radio. Fix: kanonski kljucevi bez prefiksa + cleanup migracija + `FeatureFlagSettingsChainTest` (2026-07-14)
+- [ ] Auditi mrtve flagove (`feature_wishlist`, `feature_compare`, `feature_multi_currency`) — za svaki: implementiraj proveru ili obrisi toggle
+- [ ] Konsolidovati abandoned cart na jedan kljuc (`feature_abandoned_cart`); ukloniti `cart_feature_abandoned_cart` iz ExitIntentPopup.vue
+- [ ] Izloziti `feature_store_locator`, `feature_downloads`, `feature_multi_language` u Settings → Feature Flags UI
+- [ ] Kreirati centralni registry/enum za sve kljuceve flagova i zameniti string literale
+
+---
+
+# SLOJ — klijent (samo izgled)
+
+## Pangaia redizajn
 
 > Vizuelni uzori: Vitra (layout) + Pangaia (brand). Vidi `.mdjdocs/notes/vizuelni-uzori-storefront.md`.
+
+### Otvoreno
+
+- [~] Standardizacija širine svih strana na `container-site` (sve strane trenutno razne `max-w-{4xl..7xl} mx-auto` → različite širine). **Urađeno + push-ovano: `[slug].vue`** (CMS/uslovi) kao šablon (container-site + brand ink + readable prose) — `fd0ea6f`. **Ostatak (~15 strana) čeka potvrdu „kreni"** pre batch-a:
+  - tekst (čitljiv prose): `blog/[slug]`, `nalog/preuzimanja`
+  - grid/lista (full-bleed): `blog/index`, `blog/kategorija`, `blog/tag`, `pretraga`, `prodavnice`, `uporedi`, `izgled`
+  - nalog dashboard (8 strana): `nalog/{index,addresses,krediti,orders,orders/[number],poeni,profile,wishlist}`
+  - forme ostaju centrirane-uske (preporuka): `login/register/forgot-password`, `poklon-kartica/*`, `pracenje`, `porudzbina/{index,success}`
+  - Default odluke: forme centrirane, nalog full-bleed. Detalji plana: notes 2026-06-22.
+- [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
+
+### Završeno (push-ovano)
 
 - [x] Header redizajn (Pangaia stil): crni announcement bar, logo centriran, nav levo (CAPS), full-bleed red, niža visina (h-14)
 - [x] Font: Afacad Flux primenjen svuda (link + tailwind `sans` + CSS `html`); JetBrains Mono ostaje za mono
@@ -178,7 +196,7 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] PLP zaglavlje (`proizvodi/index.vue`): editorial Vitra stil — svetli breadcrumb (Početna › Kategorije › X), centriran bold naslov + centriran opis, čist sort bar. Zamenilo crni breadcrumb band + hero strip (i raniji all-caps band). **Push-ovano + uživo.**
 - [x] Standardizacija container-a: `.container-site` u `tailwind.css` kao 1 izvor istine za gutter; zamenjeno 18× po sloj `.vue`. **Push-ovano.**
 - [x] Standardizacija breadcrumb-a: deljena `Breadcrumbs.vue` na brend tokene (ink, 12px); PLP prebačen na `<LayoutBreadcrumbs>`. **Push-ovano.**
-- [x] Konzistentna linija sajta: `.container-site` prebačen sa 1400-boxed na **full-bleed** (`px-6 lg:px-10`) — meni, breadcrumb, filteri, footer sad na istoj liniji (~40px). Breadcrumb vertikalno poravnat PLP↔PDP (`pt-8`). Lokalno, čeka push. (Boxed-1400 = 1-linija toggle ako se predomisliš.)
+- [x] Konzistentna linija sajta: `.container-site` prebačen sa 1400-boxed na **full-bleed** (`px-6 lg:px-10`) — meni, breadcrumb, filteri, footer sad na istoj liniji (~40px). Breadcrumb vertikalno poravnat PLP↔PDP (`pt-8`). (Boxed-1400 = 1-linija toggle ako se predomisliš.)
 - [x] Konzistentna linija + breadcrumb pt-8 — **Push-ovano.**
 - [x] PLP vrh kompaktniji: manji naslov (56→44px) + manji padding. **Push-ovano.**
 - [x] Top padding PLP+PDP spušten na `pt-4`. **Push-ovano.**
@@ -189,28 +207,3 @@ Verzija format: `v0.{faza}.{sekcija}` — svaka sekcija = jedan release.
 - [x] Mini cart cross-sell („Često kupljeno") — skinut `-mx-6 px-6` edge-bleed. **Push-ovano.**
 - [x] Loader: sloj override `Spinner.vue` — tanka ink linija umesto debelog primary spinnera. **Push-ovano.**
 - [x] Wishlist srce + dots: rose(crveno) → brend ink/terra (WishlistButton/MobileNav/wishlist strana); rose bila ne-brend boja. **Push-ovano** (`05da949`).
-- [~] Standardizacija širine svih strana na `container-site` (sve strane trenutno razne `max-w-{4xl..7xl} mx-auto` → različite širine). Urađeno: `[slug].vue` (CMS/uslovi) kao šablon (container-site + brand ink + readable prose), lokalno. **Čeka potvrdu opsega** pre batch-a: tekst (`blog/[slug]`, `nalog/preuzimanja`), grid/lista (`blog/*`, `pretraga`, `prodavnice`, `uporedi`, `izgled`), nalog dashboard (8 strana). Forme (login/register/poklon-kartica/pracenje/checkout) ostaju centrirane-uske (preporuka). Detalji plana: notes 2026-06-22.
-- [ ] (opc.) Ukloniti nekorišćen Quicksand font-link nasleđen iz base elokal layera
-
-## rucniradovi (Handmade Marketplace) — ODLUKA: zaseban sajt
-
-> 2026-06-20. Stigao design handoff (Kindred Marketplace, `clients/rucniradovi/…zip`) + PRD.
-> Analiza: elokal je single-merchant (nema seller/shop/tenant/commission/payout model; arhitektura
-> namerno single-tenant — CORE-002). Marketplace = drugačiji proizvod.
-> **Odluka korisnika: ide kao ZASEBAN sajt** (svoj stack/baza/plaćanja), NE forsirati multi-tenant u elokal.
-> elokal ostaje single-merchant. Detalji analize: `.mdjdocs/notes/2026-06-20.md`.
-
-- [ ] (rucniradovi) `clients/rucniradovi/` (design zip) stoji untracked u elokal repou — odlučiti: premestiti van / gitignore (pošto je zaseban projekat)
-
-> Reference: lista sajtova nameštaja od šperploče → `.mdjdocs/notes/sajtovi-namestaj-sperploca.md`
-
-## Feature flags cleanup — FLAGS-001
-
-> Detalji i acceptance criteria: `.mdjdocs/tasks/FLAGS-001.md`
-
-- [ ] [SECURITY] Zastititi CheckoutController store credit logiku sa `feature('store_credits')` gate-om (linije ~46, ~149-153)
-- [ ] [SECURITY] Premestiti webhook zastitu sa Sidebar.vue na same API rute (`api/routes/api.php` ~270-275)
-- [ ] Auditi mrtve flagove (`feature_wishlist`, `feature_compare`, `feature_multi_currency`) — za svaki: implementiraj proveru ili obrisi toggle
-- [ ] Konsolidovati abandoned cart na jedan kljuc (`feature_abandoned_cart`); ukloniti `cart_feature_abandoned_cart` iz ExitIntentPopup.vue
-- [ ] Izloziti `feature_store_locator`, `feature_downloads`, `feature_multi_language` u Settings → Feature Flags UI
-- [ ] Kreirati centralni registry/enum za sve kljuceve flagova i zameniti string literale

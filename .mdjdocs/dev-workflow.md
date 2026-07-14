@@ -124,17 +124,22 @@ Auto se dele i: **admin** (zaseban, jedan za sve) i **api** (deljeni backend).
 
 ## Infrastruktura (referenca)
 
-| Deo | Vrednost |
-|-----|----------|
-| Git repo | `github.com/milosdjoric/elokal` (branch `main`) |
-| sloj sajt | https://sloj-storefront.vercel.app |
-| demo sajt | https://demo-storefront-hazel.vercel.app |
-| Vercel projekti | `sloj-storefront`, `demo-storefront` (team `milos-projects-dadf5bb3`) |
-| Vercel rootDirectory | `clients/sloj/storefront` / `clients/demo/storefront` |
-| installCommand (oba) | `npm install && (cd ../../../storefront && npm install && npx nuxt prepare)` |
-| api | Railway: `https://elokal-api-production.up.railway.app` |
-| baza | Neon `elokal-sloj-eu` (Frankfurt, eu-central-1) — deljena sloj+demo |
-| CORS | Railway env `CORS_ALLOWED_ORIGINS` mora sadržati svaki Vercel domen |
+Konvencija imena: **`elokal-<klijent>-<tip>`** (`web` / `api` / `db`). Svaki klijent
+ima **nezavisan stack** (svoj web + api + bazu).
+
+| Deo | sloj | demo |
+|-----|------|------|
+| **Vercel** (web) | `elokal-sloj-web` → https://elokal-sloj-web.vercel.app | `elokal-demo-web` → https://elokal-demo-web.vercel.app |
+| **Railway** (api, servis) | `elokal-sloj-api` → elokal-sloj-api-production… | `elokal-demo-api` → elokal-demo-api-production… |
+| **Neon** (baza) | `elokal-sloj-db` | `elokal-demo-db` |
+| Vercel rootDirectory | `clients/sloj/storefront` | `clients/demo/storefront` |
+
+- Git repo: `github.com/milosdjoric/elokal` (branch `main`); Vercel team `milos-projects-dadf5bb3`
+- Railway projekat `elokal` drži oba api servisa; sve baze Frankfurt (`eu-central-1`)
+- **Napomena (sloj api domen):** servis je preimenovan u `elokal-sloj-api`, ali stari
+  domen `elokal-api-production.up.railway.app` je ostao (Railway ne menja domen na rename)
+- installCommand (oba web): `npm install && (cd ../../../storefront && npm install && npx nuxt prepare)`
+- CORS: svaki Railway api `CORS_ALLOWED_ORIGINS` mora sadržati domen svog klijenta
 
 **Novi klijent — checklist:** napravi `clients/<ime>/storefront/` (kopiraj demo
 kao šablon: `nuxt.config.ts` sa `extends` + `~/types`/`~/locales` aliasi,
